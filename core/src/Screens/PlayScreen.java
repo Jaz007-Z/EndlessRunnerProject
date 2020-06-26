@@ -6,10 +6,14 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Endless;
+
+import sun.rmi.runtime.Log;
 
 public class PlayScreen implements Screen {
 
@@ -20,8 +24,16 @@ public class PlayScreen implements Screen {
     private static final int GROUND_Y_OFFSET = -50;
 
 
+    //Box2d variables
+    private World world;
+    private Box2DDebugRenderer b2dr;
+
+
     private Texture ground;
     private Vector2 groundPos1, groundPos2;
+
+    //testLogs
+    private static final String TAG = "MyActivity";
 
 
     public PlayScreen(Endless game) {
@@ -31,7 +43,15 @@ public class PlayScreen implements Screen {
         gamecam = new OrthographicCamera();
         gamePort = new FitViewport(Endless.V_WIDTH / Endless.PPM, Endless.V_HEIGHT / Endless.PPM, gamecam);
 
+        //create our Box2D world, setting no gravity in X, -10 gravity in Y, and allow bodies to sleep
+        world = new World(new Vector2(0, -10), true);
+        //allows for debug lines of our box2d world.
+        b2dr = new Box2DDebugRenderer();
+
+
         gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
+
+        Gdx.app.log(TAG, "rendered");
     }
 
     @Override
@@ -63,6 +83,7 @@ public class PlayScreen implements Screen {
             game.batch.draw(ground, groundPos2.x, groundPos2.y);
         }
         game.batch.end();
+
 
     }
 
