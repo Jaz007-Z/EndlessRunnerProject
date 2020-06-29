@@ -9,16 +9,19 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.screens.GameScreenManager;
 import com.mygdx.game.screens.MenuScreen;
 
+/**
+ * Main Game Class.
+ * @author Elias M, Nathaniel Snow, Dallas Eaton, James Zimsky.
+ * @version 1
+ */
 public class Endless extends Game {
 
 	//Virtual Screen size and Box2D Scale(Pixels Per Meter)
 	public static final int V_WIDTH = 700;
 	public static final int V_HEIGHT = 350;
 	public static final String TITLE = "EndlessRunner";
-
 	private GameScreenManager gsm;
 	public SpriteBatch batch;
-
 
 	@Override
 	public void create () {
