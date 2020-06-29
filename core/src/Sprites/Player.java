@@ -24,7 +24,7 @@ import com.mygdx.game.Sprites.Enemies.*;
 public class Player extends Sprite {
 
 
-    public enum State { FALLING, JUMPING, STANDING, RUNNING, GROWING, DEAD };
+    public enum State { FALLING, JUMPING, STANDING, RUNNING, ATTACK, HIT, DEAD };
     public State currentState;
     public State previousState;
 
@@ -33,17 +33,18 @@ public class Player extends Sprite {
 
     private TextureRegion playerStand;
     private Animation playerRun;
+    private Animation playerAttack;
+    private TextureRegion playerHit;
     private TextureRegion playerJump;
     private TextureRegion playerDead;
 
     private float stateTimer;
     private boolean runningRight;
-    private boolean runGrowAnimation;
+    private boolean attackAnimation;
     private boolean timeToRedefinePlayer;
+    private boolean playerIsHit;
     private boolean playerIsDead;
     private PlayScreen screen;
-
-    private Array<FireBall> fireballs;
 
     public Player(PlayScreen screen){
         //initialize default values
@@ -92,13 +93,6 @@ public class Player extends Sprite {
         // there is probably better ways to do that but it works for now.
         if (screen.getHud().isTimeUp() && !isDead()) {
             die();
-        }
-
-
-        for(FireBall  ball : fireballs) {
-            ball.update(dt);
-            if(ball.isDestroyed())
-                fireballs.removeValue(ball, true);
         }
 
     }
