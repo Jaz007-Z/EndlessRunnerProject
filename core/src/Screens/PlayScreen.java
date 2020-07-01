@@ -71,19 +71,21 @@ public class PlayScreen implements Screen {
 
 
 
-        //creates ground an circle, temporaily here for testing and wil end up in level-gen family
+        //creates ground, temporarily here for testing and wil end up in level-gen family
         BodyDef bdef = new BodyDef();
-        bdef.position.set(30 / Endless.PPM, 30 / Endless.PPM);
+        bdef.position.set(30 / Endless.PPM, 30 / Endless.PPM); //position of the chain
         bdef.type = BodyDef.BodyType.StaticBody;
         b2body = world.createBody(bdef);
 
         FixtureDef fdef = new FixtureDef();
         ChainShape groundShape = new ChainShape();
+        //each vector is a start and end point for the chain. It can be a straight line like now or vertical.
         groundShape.createChain(new Vector2[] {new Vector2(-100 ,0), new Vector2(100, 0)});
 
         fdef.shape = groundShape;
         b2body.createFixture(fdef).setUserData(this);
 
+        //circle for testing purposes - code from Mario
         Body b2body2;
         BodyDef bdef2 = new BodyDef();
         bdef2.position.set(32 / Endless.PPM, 32 / Endless.PPM);
