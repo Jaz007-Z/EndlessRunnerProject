@@ -18,6 +18,7 @@ import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -73,14 +74,15 @@ public class PlayScreen implements Screen {
 
         //creates ground, temporarily here for testing and wil end up in level-gen family
         BodyDef bdef = new BodyDef();
-        bdef.position.set(10 / Endless.PPM, 10 / Endless.PPM); //position of the chain
+        bdef.position.set(0 / Endless.PPM, -60 / Endless.PPM); //position of the chain
         bdef.type = BodyDef.BodyType.StaticBody;
         b2body = world.createBody(bdef);
 
         FixtureDef fdef = new FixtureDef();
-        ChainShape groundShape = new ChainShape();
-        //each vector is a start and end point for the chain. It can be a straight line like now or vertical.
-        groundShape.createChain(new Vector2[] {new Vector2(-100 ,0), new Vector2(100, 0)});
+        //makes a box. It can be a straight line like now or vertical. hx is length, hy is height. vector2's x sets new center for box relative to position.
+        PolygonShape groundShape = new PolygonShape();
+        groundShape.setAsBox(50 / Endless.PPM ,0 / Endless.PPM, new Vector2(50 / Endless.PPM ,0 / Endless.PPM), 0 / Endless.PPM );
+
 
         fdef.shape = groundShape;
         b2body.createFixture(fdef).setUserData(this);
@@ -88,7 +90,7 @@ public class PlayScreen implements Screen {
         //circle for testing purposes - code from Mario
         Body b2body2;
         BodyDef bdef2 = new BodyDef();
-        bdef2.position.set(36 / Endless.PPM, 36 / Endless.PPM);
+        bdef2.position.set(0 / Endless.PPM, 0 / Endless.PPM);
         bdef2.type = BodyDef.BodyType.DynamicBody;
         b2body2 = world.createBody(bdef2);
 
