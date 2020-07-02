@@ -1,4 +1,4 @@
-package com.mygdx.game.Sprites.TileObjects;
+/*package com.mygdx.game.Sprites.TileObjects;
 
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -19,9 +19,7 @@ import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.screens.PlayScreen;
 import com.mygdx.game.Sprites.Player;
 
-/**
- * Created by brentaureli on 8/28/15.
- */
+
 public abstract class InteractiveTileObject {
     protected World world;
     protected TiledMap map;
@@ -67,4 +65,4 @@ public abstract class InteractiveTileObject {
                 (int)(body.getPosition().y * Endless.PPM / 16));
     }
 
-}
+}*/

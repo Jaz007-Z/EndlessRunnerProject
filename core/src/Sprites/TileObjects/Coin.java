@@ -1,4 +1,4 @@
-package com.mygdx.game.Sprites.TileObjects;
+/*package com.mygdx.game.Sprites.TileObjects;
 
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.maps.MapObject;
@@ -41,3 +41,4 @@ public class Coin extends InteractiveTileObject {
         }
     }
 }
+*/

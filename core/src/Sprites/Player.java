@@ -1,4 +1,4 @@
-package com.mygdx.game.Sprites;
+/*package com.mygdx.game.Sprites;
 
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -278,3 +278,4 @@ public class Player extends Sprite {
             ball.draw(batch);
     }
 }
+*/

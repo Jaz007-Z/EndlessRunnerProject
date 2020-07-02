@@ -1,4 +1,4 @@
-package com.mygdx.game.Sprites.Enemies;
+/*package com.mygdx.game.Sprites.Enemies;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -7,6 +7,8 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.Sprites.Player;
 import com.mygdx.game.screens.PlayScreen;
 
+import Screens.PlayScreen;
+
 public abstract class Enemy extends Sprite {
     protected World world;
     protected PlayScreen screen;
@@ -14,7 +16,7 @@ public abstract class Enemy extends Sprite {
     public Vector2 velocity;
 
     public Enemy(PlayScreen screen, float x, float y){
-        this.world = screen.getWorld();
+        //this.world = screen.getWorld();
         this.screen = screen;
         setPosition(x, y);
         defineEnemy();
@@ -34,3 +36,4 @@ public abstract class Enemy extends Sprite {
             velocity.y = -velocity.y;
     }
 }
+*/

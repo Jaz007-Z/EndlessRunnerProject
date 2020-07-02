@@ -65,7 +65,7 @@ public class PlayScreen implements Screen {
         gamePort = new FitViewport(Endless.V_WIDTH / Endless.PPM, Endless.V_HEIGHT / Endless.PPM, gamecam);
 
         //create our Box2D world, setting no gravity in X, -10 gravity in Y, and allow bodies to sleep
-        world = new World(new Vector2(0, -10), true);
+        world = new World(new Vector2(0, -1), true); //lowered gravity from -10 to show effect
         //allows for debug lines of our box2d world.
         b2dr = new Box2DDebugRenderer();
 
@@ -73,7 +73,7 @@ public class PlayScreen implements Screen {
 
         //creates ground, temporarily here for testing and wil end up in level-gen family
         BodyDef bdef = new BodyDef();
-        bdef.position.set(30 / Endless.PPM, 30 / Endless.PPM); //position of the chain
+        bdef.position.set(10 / Endless.PPM, 10 / Endless.PPM); //position of the chain
         bdef.type = BodyDef.BodyType.StaticBody;
         b2body = world.createBody(bdef);
 
@@ -88,7 +88,7 @@ public class PlayScreen implements Screen {
         //circle for testing purposes - code from Mario
         Body b2body2;
         BodyDef bdef2 = new BodyDef();
-        bdef2.position.set(32 / Endless.PPM, 32 / Endless.PPM);
+        bdef2.position.set(36 / Endless.PPM, 36 / Endless.PPM);
         bdef2.type = BodyDef.BodyType.DynamicBody;
         b2body2 = world.createBody(bdef2);
 
@@ -110,6 +110,8 @@ public class PlayScreen implements Screen {
 
         gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
+
+
         Gdx.app.log(TAG, "rendered");
     }
 
@@ -120,9 +122,38 @@ public class PlayScreen implements Screen {
 
 
 
+
+    public void update(float dt){
+        //handle user input first
+        //handleInput(dt);
+
+        //takes 1 step in the physics simulation(60 times per second)
+        world.step(1 / 60f, 6, 2);
+
+
+
+        //add code to update player and enemies
+
+        //attach our gamecam to our players.x coordinate
+        //if(player.currentState != Player.State.DEAD) {
+        //  gamecam.position.x = player.b2body.getPosition().x;
+        // }
+
+
+
+        //update our gamecam with correct coordinates after changes
+        //gamecam.update();
+        //tell our renderer to draw only what our camera can see in our game world.
+        //add for loop that will have all of the levels draw themselves in the right range
+
+    }
+
+
     @Override
     public void render(float delta) {
         //Clear the game screen with Black
+        update(delta);
+
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -131,17 +162,18 @@ public class PlayScreen implements Screen {
 
         game.batch.setProjectionMatrix(gamecam.combined);
 
-        game.batch.setProjectionMatrix(stage.getCamera().combined);
+
 
         //renderer our Box2DDebugLines
         b2dr.render(world, gamecam.combined);
 
-        /*gamecam.update();
+
+        //gamecam.update();
         game.batch.begin();
         game.batch.end();
 
-        game.batch.setProjectionMatrix(gamecam.combined);
-        game.batch.setProjectionMatrix(stage.getCamera().combined);*/
+
+        //game.batch.setProjectionMatrix(stage.getCamera().combined);
 
 
     }

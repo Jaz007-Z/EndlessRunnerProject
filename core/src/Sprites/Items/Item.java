@@ -1,5 +1,4 @@
-package com.mygdx.game.Sprites.Items;
-
+/*
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -9,9 +8,7 @@ import com.mygdx.game.Endless;
 import com.mygdx.game.screens.PlayScreen;
 import com.mygdx.game.Sprites.Player;
 
-/**
- * Created by brentaureli on 9/24/15.
- */
+
 public abstract class Item extends Sprite {
     protected PlayScreen screen;
     protected World world;
@@ -56,3 +53,4 @@ public abstract class Item extends Sprite {
             velocity.y = -velocity.y;
     }
 }
+*/

@@ -1,4 +1,4 @@
-package com.mygdx.game.Sprites.Enemies;
+/*package com.mygdx.game.Sprites.Enemies;
 
 
 import com.badlogic.gdx.audio.Sound;
@@ -106,4 +106,4 @@ public abstract class Monster extends com.mygdx.game.Sprites.Enemies.Enemy {
 
 
 
-}
+}*/
