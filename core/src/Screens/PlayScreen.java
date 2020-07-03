@@ -25,11 +25,14 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Endless;
 
+import LevelGen.Level;
 import sun.rmi.runtime.Log;
 
 public class PlayScreen implements Screen {
 
     private Endless game;
+
+    private Level level;
 
     private TextureRegion textureRegion;
     private OrthographicCamera gamecam;
@@ -71,10 +74,13 @@ public class PlayScreen implements Screen {
         b2dr = new Box2DDebugRenderer();
 
 
+        //Level prep
+        level = new Level(world);
 
+        /*
         //creates ground, temporarily here for testing and wil end up in level-gen family
         BodyDef bdef = new BodyDef();
-        bdef.position.set(0 / Endless.PPM, -60 / Endless.PPM); //position of the chain
+        bdef.position.set(0 / Endless.PPM, -60 / Endless.PPM); //position of the polygon
         bdef.type = BodyDef.BodyType.StaticBody;
         b2body = world.createBody(bdef);
 
@@ -85,7 +91,8 @@ public class PlayScreen implements Screen {
 
 
         fdef.shape = groundShape;
-        b2body.createFixture(fdef).setUserData(this);
+        b2body.createFixture(fdef).setUserData(this); */
+        level.generateDesign();
 
         //circle for testing purposes - code from Mario
         Body b2body2;
@@ -147,6 +154,7 @@ public class PlayScreen implements Screen {
         //gamecam.update();
         //tell our renderer to draw only what our camera can see in our game world.
         //add for loop that will have all of the levels draw themselves in the right range
+        System.out.println(gamecam.position);
 
     }
 
@@ -156,7 +164,7 @@ public class PlayScreen implements Screen {
         //Clear the game screen with Black
         update(delta);
 
-        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClearColor(0, 0, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
