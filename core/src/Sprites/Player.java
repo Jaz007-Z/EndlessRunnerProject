@@ -31,8 +31,8 @@ public class Player extends Sprite {
   
     public Player(PlayScreen screen){
         //initialize default values
-        this.screen = screen;
-        this.world = screen.getWorld();
+        //this.screen = screen;
+        //this.world = screen.getWorld();
 
 
         //define mario in Box2d
