@@ -1,5 +1,5 @@
 //Will add code once the code has been merged.
-/*
+
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -57,4 +57,4 @@ public class Mario extends Sprite {
         b2body.createFixture(fdef).setUserData(this);
     }
   
-}*/
+}
