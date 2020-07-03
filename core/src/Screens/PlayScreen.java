@@ -24,6 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Endless;
+import com.mygdx.game.Sprites.Player;
 
 import sun.rmi.runtime.Log;
 
@@ -70,7 +71,8 @@ public class PlayScreen implements Screen {
         //allows for debug lines of our box2d world.
         b2dr = new Box2DDebugRenderer();
 
-
+        //sprites
+        private Player player;
 
         //creates ground, temporarily here for testing and wil end up in level-gen family
         BodyDef bdef = new BodyDef();
@@ -88,7 +90,7 @@ public class PlayScreen implements Screen {
         b2body.createFixture(fdef).setUserData(this);
 
         //circle for testing purposes - code from Mario
-        Body b2body2;
+        /*Body b2body2;
         BodyDef bdef2 = new BodyDef();
         bdef2.position.set(0 / Endless.PPM, 0 / Endless.PPM);
         bdef2.type = BodyDef.BodyType.DynamicBody;
@@ -99,10 +101,11 @@ public class PlayScreen implements Screen {
         shape.setRadius(6 / Endless.PPM);
 
         fdef2.shape = shape;
-        b2body2.createFixture(fdef2).setUserData(this);
+        b2body2.createFixture(fdef2).setUserData(this);*/
 
 
-
+        //create player in game world
+        player = new Player(this);
 
 
         //temp code from hud to render stage
