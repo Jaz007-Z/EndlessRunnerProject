@@ -13,8 +13,8 @@ import Screens.PlayScreen;
 public class Endless extends Game {
 
 	//Virtual Screen size and Box2D Scale(Pixels Per Meter)
-	public static final int V_WIDTH = 1080; //screwed up, needs fixing
-	public static final int V_HEIGHT = 1920;
+	public static final int V_WIDTH = 400; //screwed up, needs fixing
+	public static final int V_HEIGHT = 208;
 	public static final float PPM = 100;
 
 

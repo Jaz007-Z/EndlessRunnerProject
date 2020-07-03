@@ -13,7 +13,13 @@ public class Level {
     private float previousVerticality;
     private float newVerticality;
     private float previousEnd;
+
+
+
+
     private float newEnd;
+    private float groundLengthD2; //because hx for a polygon acts like a radius, this is the ground length divided by 2 "D2"
+    private boolean spacedYet;
 
     private World world;
 
@@ -22,13 +28,36 @@ public class Level {
     private final static float HIGHFLOOR = 0 / Endless.PPM;
 
 
+
+
     public Level (World world) {
         this.world = world;
-        newVerticality = -140;
-        spacing = 20;
+        newEnd = -45;
+        spacing = 10;
+        groundLengthD2 = 50;
+        spacedYet = false;
 
 
     }
+    public Level (World world, float newEnd) {
+        this.world = world;
+        this.newEnd = newEnd;
+        spacing = 10;
+        groundLengthD2 = 50;
+        spacedYet = false;
+
+
+    }
+
+    public float getNewEnd() {
+        return newEnd;
+    }
+
+    public void setNewEnd(float newEnd) {
+        this.newEnd = newEnd;
+    }
+
+
 
     public void generateDesign() {
 
@@ -54,26 +83,31 @@ public class Level {
         FixtureDef fdef = new FixtureDef();
         PolygonShape groundShape = new PolygonShape();
         //making in a loop for real procedural generation
-        for (int i = 0; i < 3; i++) {
-            bdef.position.set(newVerticality / Endless.PPM, -60 / Endless.PPM); //position of the polygon
+        for (int i = 0; i < 30; i++) {
+            bdef.position.set(newEnd / Endless.PPM, -60 / Endless.PPM); //position of the polygon
             bdef.type = BodyDef.BodyType.StaticBody;
             b2body = world.createBody(bdef);
 
             //makes a box. It can be a straight line like now or vertical. hx is length, hy is height. vector2's x sets new center for box relative to position.
 
-            groundShape.setAsBox(25 / Endless.PPM, 0 / Endless.PPM, new Vector2(25 / Endless.PPM, 0 / Endless.PPM), 0 / Endless.PPM);
+            groundShape.setAsBox(groundLengthD2 / Endless.PPM, 1 / Endless.PPM, new Vector2(25 / Endless.PPM, 0 / Endless.PPM), 0 / Endless.PPM);
 
             fdef.shape = groundShape;
             b2body.createFixture(fdef).setUserData(this);
 
-            previousVerticality = newVerticality;
-            newVerticality = previousVerticality + 50 + spacing;
+            previousEnd = newEnd;
 
+            newEnd = previousEnd + (groundLengthD2 * 2) + spacing;
+            //newEnd = previousEnd + (groundLengthD2 * 2);
 
-
-
-       }
+        }
     }
+
+    public void dispose(World world) {
+        world.dispose();
+        this.world.dispose();
+    }
+
 
 
 
