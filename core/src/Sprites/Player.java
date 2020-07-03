@@ -19,7 +19,7 @@ import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Endless;
 import Screens.PlayScreen;
 
-public class Mario extends Sprite {
+public class Player extends Sprite {
     public enum State { FALLING, JUMPING, STANDING, RUNNING, HIT, ATTACK, DEAD };
     public State currentState;
     public State previousState;
