@@ -24,7 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Endless;
-import com.mygdx.game.Sprites.Player;
+import Sprites.Player;
 
 import sun.rmi.runtime.Log;
 
@@ -72,7 +72,7 @@ public class PlayScreen implements Screen {
         b2dr = new Box2DDebugRenderer();
 
         //sprites
-        private Player player;
+        Player player;
 
         //creates ground, temporarily here for testing and wil end up in level-gen family
         BodyDef bdef = new BodyDef();
