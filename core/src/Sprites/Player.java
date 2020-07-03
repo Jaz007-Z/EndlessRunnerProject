@@ -1,4 +1,4 @@
-//Will add code once the code has been merged.
+package java.Sprites;
 
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -17,7 +17,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Endless;
-import com.mygdx.game.Screens.PlayScreen;
+import java.Screens.PlayScreen;
 
 public class Mario extends Sprite {
     public enum State { FALLING, JUMPING, STANDING, RUNNING, HIT, ATTACK, DEAD };
