@@ -7,6 +7,10 @@ import com.mygdx.game.Endless;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.foregroundFPS = 60;
+		config.width = Endless.V_WIDTH;
+		config.height = Endless.V_HEIGHT;
+		config.resizable = false;
 		new LwjglApplication(new Endless(), config);
 	}
 }

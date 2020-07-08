@@ -8,18 +8,19 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import Screens.MenuScreen;
 import Screens.PlayScreen;
 
 public class Endless extends Game {
 
+	public SpriteBatch batch;
 	//Virtual Screen size and Box2D Scale(Pixels Per Meter)
-	public static final int V_WIDTH = 400; //screwed up, needs fixing
-	public static final int V_HEIGHT = 208;
+	public static final int V_WIDTH = 600; //screwed up, needs fixing
+	public static final int V_HEIGHT = 390;
 	public static final float PPM = 100;
 
 
 
-	public SpriteBatch batch;
 	public AssetManager manager;
 
 	//Texture img;
@@ -28,12 +29,11 @@ public class Endless extends Game {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		setScreen(new PlayScreen(this));
+		this.setScreen(new MenuScreen(this));
 	} //work
 
 	@Override
-	public void render () {
-		super.render();
+	public void render () { super.render();
 	}
 	
 	@Override

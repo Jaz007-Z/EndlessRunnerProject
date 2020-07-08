@@ -30,13 +30,14 @@ import sun.rmi.runtime.Log;
 
 public class PlayScreen implements Screen {
 
-    private Endless game;
+    Endless game;
 
     private Level level;
-
     private TextureRegion textureRegion;
     private OrthographicCamera gamecam;
     private Viewport gamePort;
+
+
 
 
     //Box2d variables
@@ -46,6 +47,10 @@ public class PlayScreen implements Screen {
 
 
     private Texture ground;
+    private Texture pausebtnActive;
+    private Texture pausebtnInactive;
+    private static final int PAUSE_WIDTH = 50;
+    private static final int PAUSE_HEIGHT = 50;
 
     //testLogs
     private static final String TAG = "MyActivity";
@@ -63,6 +68,8 @@ public class PlayScreen implements Screen {
         //textures
         ground = new Texture("groundTestPNG.png");
         textureRegion = new TextureRegion(ground);
+        this.pausebtnActive = new Texture("Button_62.png");
+        this.pausebtnInactive = new Texture("Button_63.png");
 
         //cams
         gamecam = new OrthographicCamera();
@@ -164,7 +171,7 @@ public class PlayScreen implements Screen {
         //Clear the game screen with Black
         update(delta);
 
-        Gdx.gl.glClearColor(0, 0, 1, 1);
+        Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
@@ -180,6 +187,9 @@ public class PlayScreen implements Screen {
 
         //gamecam.update();
         game.batch.begin();
+
+        game.batch.draw(pausebtnInactive, Endless.V_WIDTH / 2 - PAUSE_WIDTH / 2, Endless.V_HEIGHT - 90,
+                PAUSE_WIDTH, PAUSE_HEIGHT);
         game.batch.end();
 
 
