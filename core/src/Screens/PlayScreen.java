@@ -25,6 +25,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Endless;
 
+import LevelGen.FireArea;
 import LevelGen.Level;
 import sun.rmi.runtime.Log;
 
@@ -75,7 +76,8 @@ public class PlayScreen implements Screen {
 
 
         //Level prep
-        level = new Level(world);
+        //level = new Level(world);
+        level = new FireArea(world);
 
         /*
         //creates ground, temporarily here for testing and wil end up in level-gen family
@@ -93,6 +95,8 @@ public class PlayScreen implements Screen {
         fdef.shape = groundShape;
         b2body.createFixture(fdef).setUserData(this); */
         level.generateDesign();
+
+
 
         //circle for testing purposes - code from Mario
         Body b2body2;
