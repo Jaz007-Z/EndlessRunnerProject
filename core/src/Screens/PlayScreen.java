@@ -1,6 +1,7 @@
 package Screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -25,7 +26,9 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Endless;
 
+import LevelGen.FireArea;
 import LevelGen.Level;
+import Sprites.Player;
 import sun.rmi.runtime.Log;
 
 public class PlayScreen implements Screen {
@@ -44,6 +47,12 @@ public class PlayScreen implements Screen {
     private World world;
     private Box2DDebugRenderer b2dr;
     private Body b2body;
+    float playerSpeed = 10.0f; // 10 pixels per second.
+    float playerX;
+    float playerY;
+
+    //sprites
+    private Player player = new Player();
 
 
     private Texture ground;
@@ -61,7 +70,6 @@ public class PlayScreen implements Screen {
 
 
     public PlayScreen(Endless game) {
-
 
         this.game = game;
 
@@ -82,7 +90,8 @@ public class PlayScreen implements Screen {
 
 
         //Level prep
-        level = new Level(world);
+        //level = new Level(world);
+        level = new FireArea(world);
 
         /*
         //creates ground, temporarily here for testing and wil end up in level-gen family
@@ -101,8 +110,10 @@ public class PlayScreen implements Screen {
         b2body.createFixture(fdef).setUserData(this); */
         level.generateDesign();
 
+
+
         //circle for testing purposes - code from Mario
-        Body b2body2;
+        /*Body b2body2;
         BodyDef bdef2 = new BodyDef();
         bdef2.position.set(0 / Endless.PPM, 0 / Endless.PPM);
         bdef2.type = BodyDef.BodyType.DynamicBody;
@@ -113,11 +124,10 @@ public class PlayScreen implements Screen {
         shape.setRadius(6 / Endless.PPM);
 
         fdef2.shape = shape;
-        b2body2.createFixture(fdef2).setUserData(this);
+        b2body2.createFixture(fdef2).setUserData(this);*/
 
-
-
-
+        //player = new Player();
+        player.definePlayer(world);
 
         //temp code from hud to render stage
         viewport = new FitViewport(Endless.V_WIDTH, Endless.V_HEIGHT, new OrthographicCamera());
@@ -136,16 +146,25 @@ public class PlayScreen implements Screen {
 
     }
 
+    public void handleInput(float dt){
+        //control our player using immediate impulses
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 2)
+            player.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2body.getWorldCenter(), true);
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -2)
+            player.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2body.getWorldCenter(), true);
+
+    }
+
 
 
 
     public void update(float dt){
         //handle user input first
-        //handleInput(dt);
+        handleInput(dt);
+        player.update(dt);
 
         //takes 1 step in the physics simulation(60 times per second)
         world.step(1 / 60f, 6, 2);
-
 
 
         //add code to update player and enemies
@@ -168,6 +187,7 @@ public class PlayScreen implements Screen {
 
     @Override
     public void render(float delta) {
+
         //Clear the game screen with Black
         update(delta);
 
@@ -184,12 +204,26 @@ public class PlayScreen implements Screen {
         //renderer our Box2DDebugLines
         b2dr.render(world, gamecam.combined);
 
+        if(Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT))
+            playerX -= Gdx.graphics.getDeltaTime() * playerSpeed;
+        if(Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT))
+            playerX += Gdx.graphics.getDeltaTime() * playerSpeed;
+        if(Gdx.input.isKeyPressed(Input.Keys.DPAD_UP))
+            playerY += Gdx.graphics.getDeltaTime() * playerSpeed;
+        if(Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN))
+            playerY -= Gdx.graphics.getDeltaTime() * playerSpeed;
+
 
         //gamecam.update();
         game.batch.begin();
+<<<<<<< HEAD
 
         game.batch.draw(pausebtnInactive, Endless.V_WIDTH / 2 - PAUSE_WIDTH / 2, Endless.V_HEIGHT - 90,
                 PAUSE_WIDTH, PAUSE_HEIGHT);
+=======
+        //game.batch.draw('player', (int)playerX, (int)playerY);
+        //player.draw(game.batch);
+>>>>>>> c3f1ffd040eb8b9e9abd1d6f5a4c1b2427df1d56
         game.batch.end();
 
 
@@ -220,7 +254,6 @@ public class PlayScreen implements Screen {
 
     @Override
     public void dispose() {
-        level.dispose(world);
 
     }
 }

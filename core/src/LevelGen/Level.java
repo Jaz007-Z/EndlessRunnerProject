@@ -1,5 +1,6 @@
 package LevelGen;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -9,33 +10,49 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.Endless;
 
 public class Level {
-    private float spacing;
-    private float previousVerticality;
-    private float newVerticality;
-    private float previousEnd;
+
+    //variables for keeping track of level generation
+    protected float spacing;
+    protected float previousVerticality;
+    protected float newVerticality;
+    protected float previousEnd;
+    protected float newEnd;
+    protected float groundLengthD2; //because hx for a polygon acts like a radius, this is the ground length divided by 2 "D2"
+
+    //textures
+    protected Texture ground;
+    protected Texture fire;
+    protected Texture platform;
 
 
+    //fireVariables
+    float fireLocation;
+    float fireSpacing;
+    float fireMax; //maximum fire spacing
+    float fireMin; //mimumum fire spacing
+    float fireBufferSpace; //space before end of a ground that fire can't appear
 
 
-    private float newEnd;
-    private float groundLengthD2; //because hx for a polygon acts like a radius, this is the ground length divided by 2 "D2"
-    private boolean spacedYet;
+    protected World world;
 
-    private World world;
-
-    private final static float LOWFLOOR = 0 / Endless.PPM; //will provide for set verticality levels later
-    private final static float MEDIUMFLOOR = 0 / Endless.PPM;
-    private final static float HIGHFLOOR = 0 / Endless.PPM;
+    protected final static float LOWFLOOR = 0 / Endless.PPM; //will provide for set verticality levels later
+    protected final static float MEDIUMFLOOR = 0 / Endless.PPM;
+    protected final static float HIGHFLOOR = 0 / Endless.PPM;
 
 
 
 
     public Level (World world) {
+        //regular variables
         this.world = world;
         newEnd = -45;
         spacing = 10;
         groundLengthD2 = 50;
-        spacedYet = false;
+        //fire variables
+        fireSpacing = 30;
+        fireMin = 25;
+        fireMax = 65;
+        fireBufferSpace = 15;
 
 
     }
@@ -44,8 +61,10 @@ public class Level {
         this.newEnd = newEnd;
         spacing = 10;
         groundLengthD2 = 50;
-        spacedYet = false;
-
+        //fire variables
+        fireSpacing = 30;
+        fireMin = 25;
+        fireMax = 70;
 
     }
 
@@ -82,6 +101,7 @@ public class Level {
         BodyDef bdef = new BodyDef();
         FixtureDef fdef = new FixtureDef();
         PolygonShape groundShape = new PolygonShape();
+        //fdef.friction = 0.3f;
         //making in a loop for real procedural generation
         for (int i = 0; i < 30; i++) {
             bdef.position.set(newEnd / Endless.PPM, -60 / Endless.PPM); //position of the polygon
@@ -100,6 +120,9 @@ public class Level {
             newEnd = previousEnd + (groundLengthD2 * 2) + spacing;
             //newEnd = previousEnd + (groundLengthD2 * 2);
 
+
+            //maybe have it return world to keep it as one world, or have multiple worlds so disposal is easy if it causes no issues
+            //return world;
         }
     }
 
