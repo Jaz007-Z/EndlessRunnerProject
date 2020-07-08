@@ -101,6 +101,7 @@ public class Level {
         BodyDef bdef = new BodyDef();
         FixtureDef fdef = new FixtureDef();
         PolygonShape groundShape = new PolygonShape();
+        //fdef.friction = 0.3f;
         //making in a loop for real procedural generation
         for (int i = 0; i < 30; i++) {
             bdef.position.set(newEnd / Endless.PPM, -60 / Endless.PPM); //position of the polygon

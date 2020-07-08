@@ -119,12 +119,15 @@ public class Player extends Sprite{
     public void update(float dt){
 
 
+        b2body.applyLinearImpulse(new Vector2(.01f, 0f ) , b2body.getWorldCenter(), true); // keep applying movement
         //update our sprite to correspond with the position of our Box2D body
-        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+        /*setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
         //update sprite with the correct frame depending on marios current action
         setRegion(getFrame(dt));
         if(timeToRedefinePlayer)
-            redefinePlayer();
+            redefinePlayer();*/
+        //commented out code that makes it crash. We might need to start multi-threading. I'm not sure why it crashed
+        //but from what Nathanial said maybe we need to think about performance more
 
     }
 
@@ -149,18 +152,21 @@ public class Player extends Sprite{
     }
 
     public void definePlayer(World world){
-        Body b2body2;
+        //Body b2body2; needed to be class variable not a seperate one here
         BodyDef bdef2 = new BodyDef();
         bdef2.position.set(0 / Endless.PPM, 0 / Endless.PPM);
         bdef2.type = BodyDef.BodyType.DynamicBody;
-        b2body2 = world.createBody(bdef2);
+        b2body = world.createBody(bdef2);
 
         FixtureDef fdef2 = new FixtureDef();
         CircleShape shape = new CircleShape();
         shape.setRadius(6 / Endless.PPM);
 
         fdef2.shape = shape;
-        b2body2.createFixture(fdef2).setUserData(this);
+
+        b2body.applyLinearImpulse(new Vector2(.01f, 0f ) , b2body.getWorldCenter(), true); //start movement off for one frame
+
+        b2body.createFixture(fdef2).setUserData(this);
     }
 
 
