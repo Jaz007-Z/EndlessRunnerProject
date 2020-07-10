@@ -2,6 +2,8 @@ package Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.Endless;
@@ -23,7 +25,11 @@ public class MenuScreen implements Screen {
     Texture exitbtnInactive;
     Texture background;
 
-    public MenuScreen (Endless game) {
+    public Music music;
+    public AssetManager manager;
+
+    public MenuScreen (Endless game, AssetManager manager) {
+        this.manager = manager;
         this.game = game;
         this.title = new Texture("Endless_Runner_Title_2.png");
         this.playbtnInactive = new Texture("Button_14.png");
@@ -31,6 +37,11 @@ public class MenuScreen implements Screen {
         this.exitbtnActive = new Texture("Button_99.png");
         this.exitbtnInactive = new Texture("Button_98.png");
         this.background = new Texture("Background.png");
+
+        music = manager.get("music/intro.mp3", Music.class);
+        music.setLooping(true);
+        music.setVolume(0.3f);
+        music.play();
     }
 
     @Override
@@ -58,8 +69,9 @@ public class MenuScreen implements Screen {
 
             game.batch.draw(playbtnActive, Endless.V_WIDTH / 2 - PLAY_BTN_WIDTH / 2,
                     Endless.V_HEIGHT / 2 - PLAY_BTN_HEIGHT / 2, PLAY_BTN_WIDTH, PLAY_BTN_HEIGHT);
-            if(Gdx.input.justTouched()){
-                game.setScreen(new PlayScreen(game));
+            if(Gdx.input.justTouched()) {
+                music.stop();
+                game.setScreen(new PlayScreen(game, manager));
             }
         }
         else{
@@ -94,21 +106,30 @@ public class MenuScreen implements Screen {
 
     @Override
     public void pause() {
-
+        music.pause();
     }
 
     @Override
     public void resume() {
-
+        music.play();
     }
 
     @Override
     public void hide() {
-
+        music.pause();
     }
 
     @Override
     public void dispose() {
+        manager.dispose();
+        game.batch.dispose();
+        music.dispose();
+        title.dispose();
+        playbtnActive.dispose();
+        playbtnInactive.dispose();
+        exitbtnActive.dispose();
+        exitbtnInactive.dispose();
+        background.dispose();
 
     }
 }

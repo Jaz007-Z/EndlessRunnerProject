@@ -1,13 +1,15 @@
-package com.mygdx.game.screens;
+package Screens;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 
+import Screens.GameScreenManager;
+
 public abstract class Screen {
 
     protected OrthographicCamera cam;
-    protected GameScreenManager gsm;
+    protected Screens.GameScreenManager gsm;
     protected Vector3 mouse;
 
     protected Screen(GameScreenManager gsm) {

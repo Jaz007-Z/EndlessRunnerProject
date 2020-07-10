@@ -38,12 +38,15 @@ public class Player extends Sprite{
     private boolean runningRight;
 
     //private PlayScreen screen;
-  
+
+
     public Player(){
         //initialize default values
         //this.screen = screen;
         //this.world = screen.getWorld();
-
+        /*Array<TextureRegion> frames = new Array<TextureRegion>();
+        for(int i = 1; i < 4; i++)
+            frames.add(new TextureRegion(getTexture(), i * 16, 0, 16, 16));*/
 
         //define mario in Box2d
         //definePlayer();
