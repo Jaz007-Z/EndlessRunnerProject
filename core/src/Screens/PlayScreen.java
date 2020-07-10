@@ -27,7 +27,9 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Endless;
 
 import LevelGen.FireArea;
+import LevelGen.FireHoleArea;
 import LevelGen.Level;
+import LevelGen.PlatformArea;
 import Sprites.Player;
 import sun.rmi.runtime.Log;
 
@@ -46,7 +48,7 @@ public class PlayScreen implements Screen {
     private World world;
     private Box2DDebugRenderer b2dr;
     private Body b2body;
-    float playerSpeed = 10.0f; // 10 pixels per second.
+    float playerSpeed = 10.0f; // 10 pixels per second. May be too fast
     float playerX;
     float playerY;
 
@@ -85,6 +87,8 @@ public class PlayScreen implements Screen {
         //Level prep
         //level = new Level(world);
         level = new FireArea(world);
+        //level = new FireHoleArea(world);
+        //level = new PlatformArea(world);
 
         /*
         //creates ground, temporarily here for testing and wil end up in level-gen family

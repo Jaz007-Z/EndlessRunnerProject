@@ -11,7 +11,7 @@ import com.mygdx.game.Endless;
 
 public class Level {
 
-    //variables for keeping track of level generation
+    //variables for keeping track of general level generation
     protected float spacing;
     protected float previousVerticality;
     protected float newVerticality;
@@ -24,13 +24,32 @@ public class Level {
     protected Texture fire;
     protected Texture platform;
 
+    //area size(s)
+    int areaSize = 10;
+
 
     //fireVariables
     float fireLocation;
     float fireSpacing;
-    float fireMax; //maximum fire spacing
-    float fireMin; //mimumum fire spacing
-    float fireBufferSpace; //space before end of a ground that fire can't appear
+    float fireMax = 65;; //maximum fire spacing
+    float fireMin = 25;; //minimum fire spacing
+    float fireBufferSpace = 15;; //space before end of a ground that fire can't appear
+
+
+    //holeVariables
+    float holeLocation;
+    float holeSpacing = 30;
+    float holeMax = 50; //maximum hole spacing
+    float holeMin = 20; //minimum hole spacing
+
+    //platformVariables
+    float platformWidthD2 = 15; //because hx for a polygon acts like a radius, this is the platform width divided by 2 "D2"
+    float platformHeight = 6;
+    float platformSpacing;
+    float platformLocation;
+    float platformMax = 50; //maximum platform spacing
+    float platformMin = 20; //minimum platform spacing
+
 
 
     protected World world;
@@ -50,9 +69,6 @@ public class Level {
         groundLengthD2 = 50;
         //fire variables
         fireSpacing = 30;
-        fireMin = 25;
-        fireMax = 65;
-        fireBufferSpace = 15;
 
 
     }
@@ -63,8 +79,6 @@ public class Level {
         groundLengthD2 = 50;
         //fire variables
         fireSpacing = 30;
-        fireMin = 25;
-        fireMax = 70;
 
     }
 
@@ -110,7 +124,7 @@ public class Level {
 
             //makes a box. It can be a straight line like now or vertical. hx is length, hy is height. vector2's x sets new center for box relative to position.
 
-            groundShape.setAsBox(groundLengthD2 / Endless.PPM, 1 / Endless.PPM, new Vector2(25 / Endless.PPM, 0 / Endless.PPM), 0 / Endless.PPM);
+            groundShape.setAsBox(groundLengthD2 / Endless.PPM, 1 / Endless.PPM, new Vector2(groundLengthD2 / Endless.PPM, 0 / Endless.PPM), 0 / Endless.PPM);
 
             fdef.shape = groundShape;
             b2body.createFixture(fdef).setUserData(this);
@@ -126,8 +140,7 @@ public class Level {
         }
     }
 
-    public void dispose(World world) {
-        world.dispose();
+    public void dispose() {
         this.world.dispose();
     }
 
