@@ -45,7 +45,7 @@ public class Level {
     public Level (World world) {
         //regular variables
         this.world = world;
-        newEnd = -45;
+        newEnd = -70;
         spacing = 10;
         groundLengthD2 = 50;
         //fire variables
