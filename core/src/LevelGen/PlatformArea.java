@@ -8,8 +8,9 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.Endless;
 
-public class HoleArea extends Level {
-    public HoleArea(World world) {
+public class PlatformArea extends Level {
+
+    public PlatformArea(World world) {
         super(world);
     }
 
@@ -32,17 +33,17 @@ public class HoleArea extends Level {
 
             //makes a box. It can be a straight line like now or vertical. hx is length, hy is height. vector2's x sets new center for box relative to position.
 
-            groundShape.setAsBox(groundLengthD2 / Endless.PPM, 6 / Endless.PPM, new Vector2(groundLengthD2 / Endless.PPM, 0 / Endless.PPM), 0 / Endless.PPM);
+            groundShape.setAsBox(platformWidthD2 / Endless.PPM, platformHeight / Endless.PPM, new Vector2(platformWidthD2 / Endless.PPM, 0 / Endless.PPM), 0 / Endless.PPM);
 
             fdef.shape = groundShape;
             b2body.createFixture(fdef).setUserData(this);
 
             previousEnd = newEnd;
 
-            holeSpacing = (float) (Math.random() * (holeMax - holeMin + 1) + holeMin);
-            holeLocation += holeSpacing; //makes the space between holes random within set bounds
+            platformSpacing = (float) (Math.random() * (platformMax - platformMin + 1) + platformMin);
+            platformLocation += platformSpacing; //makes the space between holes random within set bounds
 
-            newEnd = previousEnd + (groundLengthD2 * 2) + holeSpacing;
+            newEnd = previousEnd + (platformWidthD2 * 2) + platformSpacing;
             //newEnd = previousEnd + (groundLengthD2 * 2);
 
 

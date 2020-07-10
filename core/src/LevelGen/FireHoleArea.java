@@ -9,12 +9,8 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.Endless;
 
-public class FireArea extends Level {
-
-
-
-
-    public FireArea(World world) {
+public class FireHoleArea extends Level  {
+    public FireHoleArea(World world) {
         super(world);
     }
 
@@ -27,7 +23,7 @@ public class FireArea extends Level {
         FixtureDef fdef = new FixtureDef();
         PolygonShape groundShape = new PolygonShape();
         //making in a loop for real procedural generation
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < areaSize; i++) {
             bdef.position.set(newEnd / Endless.PPM, -60 / Endless.PPM); //position of the polygon
             bdef.type = BodyDef.BodyType.StaticBody;
             b2body = world.createBody(bdef);
@@ -39,11 +35,17 @@ public class FireArea extends Level {
             fdef.shape = groundShape;
             b2body.createFixture(fdef).setUserData(this);
 
-            previousEnd = newEnd;
-            newEnd = previousEnd + (groundLengthD2 * 2);
 
-            if (i == 0)
-            generateFire(previousEnd, newEnd);
+
+
+            holeSpacing = (float) (Math.random() * (holeMax - holeMin + 1) + holeMin); //makes the space between holes random within set bounds
+
+            previousEnd = newEnd;
+            newEnd = previousEnd + (groundLengthD2 * 2) + holeSpacing;
+
+            //if (i == 0 || i == 1)
+                generateFire(previousEnd, newEnd - holeSpacing);
+
 
         }
     }
@@ -59,9 +61,9 @@ public class FireArea extends Level {
         CircleShape shape = new CircleShape();
         fireLocation = previousEnd;
 
-       for (int i = 0; i < areaSize; i++) {
-           fireSpacing = (float) (Math.random() * (fireMax - fireMin + 1) + fireMin);
-           fireLocation += fireSpacing; //make fireSpacing random later on
+        for (int i = 0; i < areaSize; i++) {
+            fireSpacing = (float) (Math.random() * (fireMax - fireMin + 1) + fireMin);
+            fireLocation += fireSpacing; //make fireSpacing random later on
             if (fireLocation > newEnd - fireBufferSpace) {//make new minus the spacing if there are holes in the level area
                 break;
             }
@@ -74,6 +76,6 @@ public class FireArea extends Level {
             b2Fire.createFixture(fdefFire).setUserData(this);
         }
     }
+
+
 }
-
-
