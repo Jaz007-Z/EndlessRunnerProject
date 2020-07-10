@@ -1,43 +1,53 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import Screens.PlayScreen;
+import Screens.MenuScreen;
+import Screens.SplashScreen;
 
 public class Endless extends Game {
 
+	public static final String TITLE = "Endless Runner";
+	public SpriteBatch batch;
 	//Virtual Screen size and Box2D Scale(Pixels Per Meter)
-	public static final int V_WIDTH = 400; //better but could use a bit of refining
-	public static final int V_HEIGHT = 208;
+	public static final int V_WIDTH = 600;
+	public static final int V_HEIGHT = 390;
 	public static final float PPM = 100;
 
 
 
-	public SpriteBatch batch;
 	public AssetManager manager;
-
+	public Endless game;
 	//Texture img;
 
 
 	@Override
 	public void create () {
+		manager = new AssetManager();
 		batch = new SpriteBatch();
-		setScreen(new PlayScreen(this));
+		game = this;
+		manager.load("music/intro.mp3", Music.class);
+		manager.load("music/main.mp3", Music.class);
+
+		manager.finishLoading();
+		this.setScreen(new SplashScreen(game, manager));
 	} //work
 
 	@Override
-	public void render () {
-		super.render();
+	public void render () { super.render();
 	}
 	
 	@Override
 	public void dispose () {
 		batch.dispose();
+		manager.dispose();
 	}
+
+	public void getMenu() {
+		this.setScreen(new MenuScreen(this, manager));
+	}
+
 }

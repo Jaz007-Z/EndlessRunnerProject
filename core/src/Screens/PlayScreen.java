@@ -3,6 +3,9 @@ package Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -35,13 +38,14 @@ import sun.rmi.runtime.Log;
 
 public class PlayScreen implements Screen {
 
-    private Endless game;
+    Endless game;
 
     private Level level;
-
     private TextureRegion textureRegion;
-    private OrthographicCamera gamecam;
+    public OrthographicCamera gamecam;
     private Viewport gamePort;
+
+
 
 
     //Box2d variables
@@ -57,6 +61,10 @@ public class PlayScreen implements Screen {
 
 
     private Texture ground;
+    private Texture pausebtnActive;
+    private Texture pausebtnInactive;
+    private static final int PAUSE_WIDTH = 50;
+    private static final int PAUSE_HEIGHT = 50;
 
     //testLogs
     private static final String TAG = "MyActivity";
@@ -64,22 +72,26 @@ public class PlayScreen implements Screen {
     //temp variables to render stage from Hud
     public Stage stage;
     private Viewport viewport;
+    private Music music;
 
+    public AssetManager manager;
 
-    public PlayScreen(Endless game) {
-
+    public PlayScreen(Endless game, AssetManager manager) {
+        this.manager = manager;
         this.game = game;
 
         //textures
         ground = new Texture("groundTestPNG.png");
         textureRegion = new TextureRegion(ground);
+        this.pausebtnActive = new Texture("Button_62.png");
+        this.pausebtnInactive = new Texture("Button_63.png");
 
         //cams
         gamecam = new OrthographicCamera();
         gamePort = new FitViewport(Endless.V_WIDTH / Endless.PPM, Endless.V_HEIGHT / Endless.PPM, gamecam);
 
         //create our Box2D world, setting no gravity in X, -10 gravity in Y, and allow bodies to sleep
-        world = new World(new Vector2(0, -1), true); //lowered gravity from -10 to show effect
+        world = new World(new Vector2(0, -5), true); //lowered gravity from -10 to show effect
         //allows for debug lines of our box2d world.
         b2dr = new Box2DDebugRenderer();
 
@@ -133,6 +145,10 @@ public class PlayScreen implements Screen {
 
         gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
+        music = manager.get("music/main.mp3", Music.class);
+        music.setLooping(true);
+        music.setVolume(0.3f);
+        music.play();
 
 
         Gdx.app.log(TAG, "rendered");
@@ -167,14 +183,15 @@ public class PlayScreen implements Screen {
         //add code to update player and enemies
 
         //attach our gamecam to our players.x coordinate
-        //if(player.currentState != Player.State.DEAD) {
-        //  gamecam.position.x = player.b2body.getPosition().x;
-        // }
+        if(player.currentState != Player.State.DEAD) {
+          gamecam.position.x = player.b2body.getPosition().x;
+        }
 
 
 
         //update our gamecam with correct coordinates after changes
-        //gamecam.update();
+
+
         //tell our renderer to draw only what our camera can see in our game world.
         //add for loop that will have all of the levels draw themselves in the right range
         System.out.println(gamecam.position);
@@ -188,7 +205,7 @@ public class PlayScreen implements Screen {
         //Clear the game screen with Black
         update(delta);
 
-        Gdx.gl.glClearColor(0, 0, 1, 1);
+        Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
@@ -213,8 +230,14 @@ public class PlayScreen implements Screen {
 
         //gamecam.update();
         game.batch.begin();
+//<<<<<<< HEAD
+
+        game.batch.draw(pausebtnInactive, Endless.V_WIDTH / 2 - PAUSE_WIDTH / 2, Endless.V_HEIGHT - 90,
+                PAUSE_WIDTH, PAUSE_HEIGHT);
+//=======
         //game.batch.draw('player', (int)playerX, (int)playerY);
         //player.draw(game.batch);
+//>>>>>>> c3f1ffd040eb8b9e9abd1d6f5a4c1b2427df1d56
         game.batch.end();
 
 
@@ -230,21 +253,23 @@ public class PlayScreen implements Screen {
 
     @Override
     public void pause() {
-
+        music.pause();
     }
 
     @Override
     public void resume() {
-
+        music.play();
     }
 
     @Override
     public void hide() {
-
+        music.pause();
     }
 
     @Override
     public void dispose() {
-
+        music.dispose();
+        game.batch.dispose();
+        manager.dispose();
     }
 }
