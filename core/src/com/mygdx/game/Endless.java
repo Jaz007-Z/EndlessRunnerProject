@@ -6,6 +6,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import Screens.MenuScreen;
+import Screens.PlayScreen;
 import Screens.SplashScreen;
 
 public class Endless extends Game {
@@ -33,7 +34,9 @@ public class Endless extends Game {
 		manager.load("music/main.mp3", Music.class);
 
 		manager.finishLoading();
-		this.setScreen(new SplashScreen(game, manager));
+
+		setScreen(new PlayScreen(game, manager));
+		//this.setScreen(new SplashScreen(game, manager));
 	} //work
 
 	@Override

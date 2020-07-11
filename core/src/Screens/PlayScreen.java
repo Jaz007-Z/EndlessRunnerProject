@@ -46,7 +46,8 @@ public class PlayScreen implements Screen {
     private Viewport gamePort;
 
 
-
+    //test
+    int ii;
 
     //Box2d variables
     private World world;
@@ -80,6 +81,8 @@ public class PlayScreen implements Screen {
         this.manager = manager;
         this.game = game;
 
+        ii = 0;
+
         //textures
         ground = new Texture("groundTestPNG.png");
         textureRegion = new TextureRegion(ground);
@@ -87,6 +90,8 @@ public class PlayScreen implements Screen {
         this.pausebtnInactive = new Texture("Button_63.png");
 
         //cams
+        //gamecam = new OrthographicCamera(Endless.V_WIDTH / Endless.PPM, Endless.V_HEIGHT / Endless.PPM);
+
         gamecam = new OrthographicCamera();
         gamePort = new FitViewport(Endless.V_WIDTH / Endless.PPM, Endless.V_HEIGHT / Endless.PPM, gamecam);
 
@@ -102,48 +107,19 @@ public class PlayScreen implements Screen {
         //level = new FireHoleArea(world);
         //level = new PlatformArea(world);
 
-        /*
-        //creates ground, temporarily here for testing and wil end up in level-gen family
-        BodyDef bdef = new BodyDef();
-        bdef.position.set(0 / Endless.PPM, -60 / Endless.PPM); //position of the polygon
-        bdef.type = BodyDef.BodyType.StaticBody;
-        b2body = world.createBody(bdef);
-
-        FixtureDef fdef = new FixtureDef();
-        //makes a box. It can be a straight line like now or vertical. hx is length, hy is height. vector2's x sets new center for box relative to position.
-        PolygonShape groundShape = new PolygonShape();
-        groundShape.setAsBox(50 / Endless.PPM ,0 / Endless.PPM, new Vector2(50 / Endless.PPM ,0 / Endless.PPM), 0 / Endless.PPM );
 
 
-        fdef.shape = groundShape;
-        b2body.createFixture(fdef).setUserData(this); */
         level.generateDesign();
 
 
-
-        //circle for testing purposes - code from Mario
-        /*Body b2body2;
-        BodyDef bdef2 = new BodyDef();
-        bdef2.position.set(0 / Endless.PPM, 0 / Endless.PPM);
-        bdef2.type = BodyDef.BodyType.DynamicBody;
-        b2body2 = world.createBody(bdef2);
-
-        FixtureDef fdef2 = new FixtureDef();
-        CircleShape shape = new CircleShape();
-        shape.setRadius(6 / Endless.PPM);
-
-        fdef2.shape = shape;
-        b2body2.createFixture(fdef2).setUserData(this);*/
-
-        //player = new Player();
         player.definePlayer(world);
 
         //temp code from hud to render stage
-        viewport = new FitViewport(Endless.V_WIDTH, Endless.V_HEIGHT, new OrthographicCamera());
-        stage = new Stage(viewport, game.batch);
+        //viewport = new FitViewport(Endless.V_WIDTH, Endless.V_HEIGHT, new OrthographicCamera());
+        //stage = new Stage(viewport, game.batch);
 
 
-        gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
+        //gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
         music = manager.get("music/main.mp3", Music.class);
         music.setLooping(true);
@@ -183,15 +159,21 @@ public class PlayScreen implements Screen {
         //add code to update player and enemies
 
         //attach our gamecam to our players.x coordinate
-        if(player.currentState != Player.State.DEAD) {
-          gamecam.position.x = player.b2body.getPosition().x;
-        }
+        //if(player.currentState != Player.State.DEAD){
+         gamecam.position.x = player.b2body.getPosition().x;
+        //gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
 
+        //}
 
-        //update our gamecam with correct coordinates after changes
 
-
+        /*ii++;
+        if (ii == 10) {
+            //update our gamecam with correct coordinates after changes
+            gamecam.position.x = player.b2body.getPosition().x;
+            gamecam.update();
+        }*/
+        gamecam.update();
         //tell our renderer to draw only what our camera can see in our game world.
         //add for loop that will have all of the levels draw themselves in the right range
         System.out.println(gamecam.position);
@@ -248,7 +230,7 @@ public class PlayScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
+        gamePort.update(width,height);
     }
 
     @Override
