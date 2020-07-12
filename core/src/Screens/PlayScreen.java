@@ -1,5 +1,6 @@
 package Screens;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -9,6 +10,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 
@@ -26,6 +28,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Endless;
 
@@ -42,14 +45,16 @@ public class PlayScreen implements Screen {
 
     private Level level;
     private TextureRegion textureRegion;
+    private TextureAtlas atlas;
     public OrthographicCamera gamecam;
     private Viewport gamePort;
 
-
+    //test
+    int ii;
 
 
     //Box2d variables
-    private World world;
+    public World world;
     private Box2DDebugRenderer b2dr;
     private Body b2body;
     float playerSpeed = 10.0f; // 10 pixels per second. May be too fast
@@ -57,8 +62,7 @@ public class PlayScreen implements Screen {
     float playerY;
 
     //sprites
-    private Player player = new Player();
-
+    private Player player;
 
     private Texture ground;
     private Texture pausebtnActive;
@@ -77,8 +81,12 @@ public class PlayScreen implements Screen {
     public AssetManager manager;
 
     public PlayScreen(Endless game, AssetManager manager) {
+
+        atlas = new TextureAtlas("playerAnimations.txt");
         this.manager = manager;
         this.game = game;
+
+        ii = 0;
 
         //textures
         ground = new Texture("groundTestPNG.png");
@@ -102,48 +110,16 @@ public class PlayScreen implements Screen {
         //level = new FireHoleArea(world);
         //level = new PlatformArea(world);
 
-        /*
-        //creates ground, temporarily here for testing and wil end up in level-gen family
-        BodyDef bdef = new BodyDef();
-        bdef.position.set(0 / Endless.PPM, -60 / Endless.PPM); //position of the polygon
-        bdef.type = BodyDef.BodyType.StaticBody;
-        b2body = world.createBody(bdef);
-
-        FixtureDef fdef = new FixtureDef();
-        //makes a box. It can be a straight line like now or vertical. hx is length, hy is height. vector2's x sets new center for box relative to position.
-        PolygonShape groundShape = new PolygonShape();
-        groundShape.setAsBox(50 / Endless.PPM ,0 / Endless.PPM, new Vector2(50 / Endless.PPM ,0 / Endless.PPM), 0 / Endless.PPM );
-
-
-        fdef.shape = groundShape;
-        b2body.createFixture(fdef).setUserData(this); */
         level.generateDesign();
 
-
-
-        //circle for testing purposes - code from Mario
-        /*Body b2body2;
-        BodyDef bdef2 = new BodyDef();
-        bdef2.position.set(0 / Endless.PPM, 0 / Endless.PPM);
-        bdef2.type = BodyDef.BodyType.DynamicBody;
-        b2body2 = world.createBody(bdef2);
-
-        FixtureDef fdef2 = new FixtureDef();
-        CircleShape shape = new CircleShape();
-        shape.setRadius(6 / Endless.PPM);
-
-        fdef2.shape = shape;
-        b2body2.createFixture(fdef2).setUserData(this);*/
-
-        //player = new Player();
-        player.definePlayer(world);
+        player = new Player(this);
 
         //temp code from hud to render stage
-        viewport = new FitViewport(Endless.V_WIDTH, Endless.V_HEIGHT, new OrthographicCamera());
-        stage = new Stage(viewport, game.batch);
+        //viewport = new FitViewport(Endless.V_WIDTH, Endless.V_HEIGHT, new OrthographicCamera());
+        //stage = new Stage(viewport, game.batch);
 
 
-        gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
+        //gamecam.position.set(player.getX(), player.getY(), 0);
 
         music = manager.get("music/main.mp3", Music.class);
         music.setLooping(true);
@@ -154,6 +130,9 @@ public class PlayScreen implements Screen {
         Gdx.app.log(TAG, "rendered");
     }
 
+    public TextureAtlas getAtlas() {return atlas;}
+
+    /** Called when this screen becomes the current screen for a {@link Game}. */
     @Override
     public void show() {
 
@@ -161,11 +140,14 @@ public class PlayScreen implements Screen {
 
     public void handleInput(float dt){
         //control our player using immediate impulses
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 2)
-            player.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2body.getWorldCenter(), true);
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -2)
-            player.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2body.getWorldCenter(), true);
-
+        if(player.currentState != Player.State.DEAD) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.UP))
+                player.jump();
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 2)
+                player.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2body.getWorldCenter(), true);
+            /*if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
+                player.fire();*/
+        }
     }
 
 
@@ -174,18 +156,20 @@ public class PlayScreen implements Screen {
     public void update(float dt){
         //handle user input first
         handleInput(dt);
-        player.update(dt);
 
         //takes 1 step in the physics simulation(60 times per second)
         world.step(1 / 60f, 6, 2);
-
+        player.update(dt);
 
         //add code to update player and enemies
 
         //attach our gamecam to our players.x coordinate
         if(player.currentState != Player.State.DEAD) {
-          gamecam.position.x = player.b2body.getPosition().x;
+            gamecam.position.x = player.b2body.getPosition().x;
         }
+        gamecam.update();
+
+
 
 
 
@@ -209,46 +193,40 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
-
+        //renderer our Box2DDebugLines
+        b2dr.render(world, gamecam.combined);
 
         game.batch.setProjectionMatrix(gamecam.combined);
 
 
-
-        //renderer our Box2DDebugLines
-        b2dr.render(world, gamecam.combined);
-
-        if(Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT))
-            playerX -= Gdx.graphics.getDeltaTime() * playerSpeed;
-        if(Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT))
-            playerX += Gdx.graphics.getDeltaTime() * playerSpeed;
-        if(Gdx.input.isKeyPressed(Input.Keys.DPAD_UP))
-            playerY += Gdx.graphics.getDeltaTime() * playerSpeed;
-        if(Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN))
-            playerY -= Gdx.graphics.getDeltaTime() * playerSpeed;
-
-
         //gamecam.update();
         game.batch.begin();
-//<<<<<<< HEAD
 
         game.batch.draw(pausebtnInactive, Endless.V_WIDTH / 2 - PAUSE_WIDTH / 2, Endless.V_HEIGHT - 90,
                 PAUSE_WIDTH, PAUSE_HEIGHT);
-//=======
+
         //game.batch.draw('player', (int)playerX, (int)playerY);
         //player.draw(game.batch);
-//>>>>>>> c3f1ffd040eb8b9e9abd1d6f5a4c1b2427df1d56
+
         game.batch.end();
 
 
-        //game.batch.setProjectionMatrix(stage.getCamera().combined);
+        //game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
+        //hud.stage.draw();
 
+        /*if(gameOver()){
+            game.setScreen(new GameOverScreen(game));
+            dispose();
+        }*/
+    }
 
+    public boolean gameOver(){
+        return player.currentState == Player.State.DEAD && player.getStateTimer() > 3;
     }
 
     @Override
     public void resize(int width, int height) {
-
+        gamePort.update(width, height);
     }
 
     @Override
@@ -271,5 +249,14 @@ public class PlayScreen implements Screen {
         music.dispose();
         game.batch.dispose();
         manager.dispose();
+        world.dispose();
+        b2dr.dispose();
+        //hud.dispose();
     }
+
+    public World getWorld() {
+        return world;
+    }
+
+    //public Hud getHud(){return hud;}
 }

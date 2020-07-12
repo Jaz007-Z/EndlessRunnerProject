@@ -31,8 +31,8 @@ public class Level {
     //fireVariables
     float fireLocation;
     float fireSpacing;
-    float fireMax = 65;; //maximum fire spacing
-    float fireMin = 25;; //minimum fire spacing
+    float fireMax = 65; //maximum fire spacing
+    float fireMin = 25; //minimum fire spacing
     float fireBufferSpace = 15;; //space before end of a ground that fire can't appear
 
 
@@ -94,22 +94,6 @@ public class Level {
 
     public void generateDesign() {
 
-        //static creation for testing
-        /*Body b2bodyT;
-        BodyDef bdefT = new BodyDef();
-
-        bdefT.position.set(0 / Endless.PPM, -60 / Endless.PPM); //position of the polygon
-        bdefT.type = BodyDef.BodyType.StaticBody;
-        b2bodyT = world.createBody(bdefT);
-
-        FixtureDef fdefT = new FixtureDef();
-        //makes a box. It can be a straight line like now or vertical. hx is length, hy is height. vector2's x sets new center for box relative to position.
-        PolygonShape groundShapeT = new PolygonShape();
-        groundShapeT.setAsBox(50 / Endless.PPM, 0 / Endless.PPM, new Vector2(50 / Endless.PPM, 0 / Endless.PPM), 0 / Endless.PPM);
-
-        fdefT.shape = groundShapeT;
-        b2bodyT.createFixture(fdefT).setUserData(this);*/
-
         //setting loop up
         Body b2body;
         BodyDef bdef = new BodyDef();
@@ -124,7 +108,7 @@ public class Level {
 
             //makes a box. It can be a straight line like now or vertical. hx is length, hy is height. vector2's x sets new center for box relative to position.
 
-            groundShape.setAsBox(groundLengthD2 / Endless.PPM, 1 / Endless.PPM, new Vector2(groundLengthD2 / Endless.PPM, 0 / Endless.PPM), 0 / Endless.PPM);
+            groundShape.setAsBox(/*groundLengthD2 / Endless.PPM*/Endless.V_WIDTH, 1 / Endless.PPM, new Vector2(groundLengthD2 / Endless.PPM, 0 / Endless.PPM), 0 / Endless.PPM);
 
             fdef.shape = groundShape;
             b2body.createFixture(fdef).setUserData(this);
