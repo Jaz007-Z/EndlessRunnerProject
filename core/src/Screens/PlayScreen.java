@@ -44,10 +44,8 @@ public class PlayScreen implements Screen {
     private TextureRegion textureRegion;
     public OrthographicCamera gamecam;
     private Viewport gamePort;
+    
 
-
-    //test
-    int ii;
 
     //Box2d variables
     private World world;
@@ -81,8 +79,6 @@ public class PlayScreen implements Screen {
         this.manager = manager;
         this.game = game;
 
-        ii = 0;
-
         //textures
         ground = new Texture("groundTestPNG.png");
         textureRegion = new TextureRegion(ground);
@@ -90,8 +86,7 @@ public class PlayScreen implements Screen {
         this.pausebtnInactive = new Texture("Button_63.png");
 
         //cams
-        //gamecam = new OrthographicCamera(Endless.V_WIDTH / Endless.PPM, Endless.V_HEIGHT / Endless.PPM);
-
+        //gamecam = new OrthographicCamera(Endless.V_WIDTH / Endless.PPM, Endless.V_HEIGHT / Endless.PPM); used make cam without viewport
         gamecam = new OrthographicCamera();
         gamePort = new FitViewport(Endless.V_WIDTH / Endless.PPM, Endless.V_HEIGHT / Endless.PPM, gamecam);
 
@@ -114,12 +109,11 @@ public class PlayScreen implements Screen {
 
         player.definePlayer(world);
 
-        //temp code from hud to render stage
-        //viewport = new FitViewport(Endless.V_WIDTH, Endless.V_HEIGHT, new OrthographicCamera());
-        //stage = new Stage(viewport, game.batch);
 
 
-        //gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
+
+        //gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0); doesn't seem ot be needed
+        //getWorldWidth breaks the game too
 
         music = manager.get("music/main.mp3", Music.class);
         music.setLooping(true);
@@ -147,7 +141,7 @@ public class PlayScreen implements Screen {
 
 
 
-    public void update(float dt){
+    public void update(float dt) {
         //handle user input first
         handleInput(dt);
         player.update(dt);
@@ -160,19 +154,9 @@ public class PlayScreen implements Screen {
 
         //attach our gamecam to our players.x coordinate
         //if(player.currentState != Player.State.DEAD){
-         gamecam.position.x = player.b2body.getPosition().x;
-        //gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
+        gamecam.position.x = player.b2body.getPosition().x;
+        // }
 
-
-        //}
-
-
-        /*ii++;
-        if (ii == 10) {
-            //update our gamecam with correct coordinates after changes
-            gamecam.position.x = player.b2body.getPosition().x;
-            gamecam.update();
-        }*/
         gamecam.update();
         //tell our renderer to draw only what our camera can see in our game world.
         //add for loop that will have all of the levels draw themselves in the right range
@@ -212,14 +196,12 @@ public class PlayScreen implements Screen {
 
         //gamecam.update();
         game.batch.begin();
-//<<<<<<< HEAD
 
         game.batch.draw(pausebtnInactive, Endless.V_WIDTH / 2 - PAUSE_WIDTH / 2, Endless.V_HEIGHT - 90,
                 PAUSE_WIDTH, PAUSE_HEIGHT);
-//=======
+
         //game.batch.draw('player', (int)playerX, (int)playerY);
         //player.draw(game.batch);
-//>>>>>>> c3f1ffd040eb8b9e9abd1d6f5a4c1b2427df1d56
         game.batch.end();
 
 
