@@ -7,7 +7,10 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Endless;
+
+import java.util.ArrayList;
 
 public class Level {
 
@@ -25,8 +28,11 @@ public class Level {
     protected Texture platform;
 
     //area size(s)
-    int areaSize = 10;
+    int areaSize = 5;
 
+
+    //body array for disposal
+    ArrayList<Body> bodies;
 
     //fireVariables
     float fireLocation;
@@ -69,6 +75,7 @@ public class Level {
         groundLengthD2 = 50;
         //fire variables
         fireSpacing = 30;
+        bodies = new ArrayList<Body>();
 
 
     }
@@ -140,8 +147,14 @@ public class Level {
         }
     }
 
+
+
     public void dispose() {
-        this.world.dispose();
+        for (Body b : bodies) {
+            world.destroyBody(b);
+        }
+        bodies.clear();
+        System.out.println("bodies dispose");
     }
 
 

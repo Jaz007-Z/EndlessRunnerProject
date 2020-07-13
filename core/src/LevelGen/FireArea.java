@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Endless;
 
 public class FireArea extends Level {
@@ -38,11 +39,12 @@ public class FireArea extends Level {
 
             fdef.shape = groundShape;
             b2body.createFixture(fdef).setUserData(this);
+            bodies.add(b2body);
 
             previousEnd = newEnd;
             newEnd = previousEnd + (groundLengthD2 * 2);
 
-            if (i == 0)
+            //if (i == 0)
             generateFire(previousEnd, newEnd);
 
         }
@@ -72,6 +74,7 @@ public class FireArea extends Level {
             shape.setRadius(5 / Endless.PPM);
             fdefFire.shape = shape;
             b2Fire.createFixture(fdefFire).setUserData(this);
+            bodies.add(b2Fire);
         }
     }
 }
