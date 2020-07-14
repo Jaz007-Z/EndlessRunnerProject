@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -27,6 +29,8 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -37,7 +41,10 @@ import LevelGen.FireHoleArea;
 import LevelGen.Level;
 import LevelGen.PlatformArea;
 import Sprites.Player;
-import sun.rmi.runtime.Log;
+
+
+import static com.badlogic.gdx.Gdx.gl;
+import static com.badlogic.gdx.Gdx.input;
 
 public class PlayScreen implements Screen {
 
@@ -45,7 +52,6 @@ public class PlayScreen implements Screen {
 
     private Level level;
     private TextureRegion textureRegion;
-    private TextureAtlas atlas;
     public OrthographicCamera gamecam;
     private Viewport gamePort;
 
@@ -56,17 +62,25 @@ public class PlayScreen implements Screen {
     //Box2d variables
     public World world;
     private Box2DDebugRenderer b2dr;
-    private Body b2body;
     float playerSpeed = 10.0f; // 10 pixels per second. May be too fast
     float playerX;
     float playerY;
 
     //sprites
     private Player player;
+    private TextureAtlas atlas = new TextureAtlas("RunSmall.pack");
 
+    public TextureRegion playerStand;
+    public Animation playerRun;
+    public Animation playerJump;
+    public Animation playerFall;
+    public Animation playerDead;
+
+    //Array<Body> bodies = new Array<Body>();
     private Texture ground;
-    private Texture pausebtnActive;
-    private Texture pausebtnInactive;
+    private Image background;
+
+
     private static final int PAUSE_WIDTH = 50;
     private static final int PAUSE_HEIGHT = 50;
 
@@ -75,34 +89,29 @@ public class PlayScreen implements Screen {
 
     //temp variables to render stage from Hud
     public Stage stage;
-    private Viewport viewport;
-    private Music music;
+    public Music music;
 
     public AssetManager manager;
 
     public PlayScreen(Endless game, AssetManager manager) {
 
-        atlas = new TextureAtlas("playerAnimations.txt");
         this.manager = manager;
         this.game = game;
 
         ii = 0;
 
         //textures
-        ground = new Texture("groundTestPNG.png");
-        textureRegion = new TextureRegion(ground);
-        this.pausebtnActive = new Texture("Button_62.png");
-        this.pausebtnInactive = new Texture("Button_63.png");
+
+        background = new Image(new Texture("ground.png"));
 
         //cams
         gamecam = new OrthographicCamera();
         gamePort = new FitViewport(Endless.V_WIDTH / Endless.PPM, Endless.V_HEIGHT / Endless.PPM, gamecam);
-
+        //gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
         //create our Box2D world, setting no gravity in X, -10 gravity in Y, and allow bodies to sleep
         world = new World(new Vector2(0, -5), true); //lowered gravity from -10 to show effect
         //allows for debug lines of our box2d world.
         b2dr = new Box2DDebugRenderer();
-
 
         //Level prep
         //level = new Level(world);
@@ -112,14 +121,12 @@ public class PlayScreen implements Screen {
 
         level.generateDesign();
 
-        player = new Player(this);
+        player = new Player(this, manager);
 
         //temp code from hud to render stage
         //viewport = new FitViewport(Endless.V_WIDTH, Endless.V_HEIGHT, new OrthographicCamera());
         //stage = new Stage(viewport, game.batch);
 
-
-        //gamecam.position.set(player.getX(), player.getY(), 0);
 
         music = manager.get("music/main.mp3", Music.class);
         music.setLooping(true);
@@ -135,7 +142,8 @@ public class PlayScreen implements Screen {
     /** Called when this screen becomes the current screen for a {@link Game}. */
     @Override
     public void show() {
-
+        //input.setCatchKey(Input.Keys.BACK, true);
+        //Gdx.input.setInputProcessor(stage);
     }
 
     public void handleInput(float dt){
@@ -167,19 +175,13 @@ public class PlayScreen implements Screen {
         if(player.currentState != Player.State.DEAD) {
             gamecam.position.x = player.b2body.getPosition().x;
         }
-        gamecam.update();
-
-
-
-
-
         //update our gamecam with correct coordinates after changes
-
+        gamecam.update();
 
         //tell our renderer to draw only what our camera can see in our game world.
         //add for loop that will have all of the levels draw themselves in the right range
         System.out.println(gamecam.position);
-
+        System.out.println(player.currentState);
     }
 
 
@@ -189,9 +191,9 @@ public class PlayScreen implements Screen {
         //Clear the game screen with Black
         update(delta);
 
-        Gdx.gl.glClearColor(0, 0, 0, 0);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+        gl.glClearColor(0, 0, 0, 0);
+        gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         //renderer our Box2DDebugLines
         b2dr.render(world, gamecam.combined);
@@ -202,16 +204,13 @@ public class PlayScreen implements Screen {
         //gamecam.update();
         game.batch.begin();
 
-        game.batch.draw(pausebtnInactive, Endless.V_WIDTH / 2 - PAUSE_WIDTH / 2, Endless.V_HEIGHT - 90,
-                PAUSE_WIDTH, PAUSE_HEIGHT);
+        player.draw(game.batch);
 
-        //game.batch.draw('player', (int)playerX, (int)playerY);
-        //player.draw(game.batch);
 
         game.batch.end();
 
 
-        //game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
+        //game.batch.setProjectionMatrix(stage.getCamera().combined);
         //hud.stage.draw();
 
         /*if(gameOver()){
@@ -247,10 +246,13 @@ public class PlayScreen implements Screen {
     @Override
     public void dispose() {
         music.dispose();
-        game.batch.dispose();
         manager.dispose();
         world.dispose();
         b2dr.dispose();
+        stage.dispose();
+        atlas.dispose();
+
+
         //hud.dispose();
     }
 
