@@ -63,6 +63,9 @@ public class PlayScreen implements Screen {
     boolean destroyLv4;
     boolean setLevel3;
     boolean setLevel4;
+    boolean useTimer;
+    float timer;
+    float area2NewEnd;
 
     private float oldNewEnd;
 
@@ -122,6 +125,7 @@ public class PlayScreen implements Screen {
         setLevel4 = true;
         destroyLv3 = false;
         destroyLv4 = false;
+        useTimer = false;
 
         /*levels.add(level);
         levels.get(0).generateDesign();
@@ -160,6 +164,7 @@ public class PlayScreen implements Screen {
         levels.get(3).setNewEnd(oldNewEnd);
         levels.get(3).generateDesign();
         //Level prep finished
+        area2NewEnd = levels.get(2).getNewEnd() / Endless.PPM;
 
 
         player.definePlayer(world);
@@ -184,6 +189,8 @@ public class PlayScreen implements Screen {
             player.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2body.getWorldCenter(), true);
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -2)
             player.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2body.getWorldCenter(), true);
+        if (Gdx.input.isKeyPressed(Input.Keys.UP))// && player.b2body.getLinearVelocity().x >= -2)
+            player.b2body.applyLinearImpulse(new Vector2(0, 0.25f), player.b2body.getWorldCenter(), true);
 
     }
 
@@ -193,7 +200,7 @@ public class PlayScreen implements Screen {
     public void update(float dt) {
         //handle user input first
         handleInput(dt);
-        player.update(dt);
+        //player.update(dt);
 
         //takes 1 step in the physics simulation(60 times per second)
         world.step(1 / 60f, 6, 2);
@@ -211,8 +218,7 @@ public class PlayScreen implements Screen {
         //add for loop that will have all of the levels draw themselves in the right range
         //System.out.println(gamecam.position);
 
-       if ( (int) (levels.get(2).getNewEnd() / Endless.PPM) + 4 < (int) player.b2body.getPosition().x && destroy) {
-           //if (player.b2body.getPosition().x > 200) {
+       if ( (int) (area2NewEnd) + 4 < (int) player.b2body.getPosition().x && destroy) {
            levels.get(0).dispose();
            levels.get(1).dispose();
            levels.get(2).dispose();
@@ -223,11 +229,21 @@ public class PlayScreen implements Screen {
                levels.get(4).dispose();
                destroyLv4 = false;
            }
-           //destroy = false;
+           destroy = false;
+           useTimer = true;
            randomizeLevels();
+           area2NewEnd = levels.get(2).getNewEnd() / Endless.PPM;
        }
+       if (useTimer == true) {
+           timer = timer + dt;
+       }
+        if (timer >= 10) {
+            destroy = true;
+            timer = 0;
+            useTimer = false;
+        }
 
-        //System.out.println("Player Position: "+ player.b2body.getPosition().x);
+            //System.out.println("Player Position: "+ player.b2body.getPosition().x);
         //System.out.println("End: "+ levels.get(2).getNewEnd() / Endless.PPM);
         System.out.println("End: " + levels.get(1).getNewEnd() / Endless.PPM);
 
@@ -279,11 +295,11 @@ public class PlayScreen implements Screen {
     }
 
     public void randomizeLevels () {
-        randomizeArea(level0);
-        randomizeArea(level1);
-        randomizeArea(level2);
-        randomizeArea(level3);
-        randomizeArea(level4);
+        level0 = randomizeArea(level0);
+        level1 = randomizeArea(level1);
+        level2 = randomizeArea(level2);
+        level3 = randomizeArea(level3);
+        level4 = randomizeArea(level4);
 
         levels.set(0, level0);
         levels.set(1, level1);
@@ -296,6 +312,13 @@ public class PlayScreen implements Screen {
             destroyLv3 = true;
         }
 
+        if (setLevel3) {
+            oldNewEnd = levels.get(3).getNewEnd();
+            levels.get(0).setNewEnd(oldNewEnd);
+        } else {
+            oldNewEnd = levels.get(3).getNewEnd();
+            levels.get(0).setNewEnd(oldNewEnd);
+        }
         levels.get(0).generateDesign();
 
         oldNewEnd = levels.get(0).getNewEnd();

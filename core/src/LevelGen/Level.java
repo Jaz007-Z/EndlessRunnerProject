@@ -28,7 +28,7 @@ public class Level {
     protected Texture platform;
 
     //area size(s)
-    int areaSize = 5;
+    int areaSize = 3;
 
 
     //body array for disposal
@@ -140,10 +140,6 @@ public class Level {
 
             newEnd = previousEnd + (groundLengthD2 * 2) + spacing;
             //newEnd = previousEnd + (groundLengthD2 * 2);
-
-
-            //maybe have it return world to keep it as one world, or have multiple worlds so disposal is easy if it causes no issues
-            //return world;
         }
     }
 

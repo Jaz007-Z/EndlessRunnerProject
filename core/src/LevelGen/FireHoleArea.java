@@ -45,8 +45,6 @@ public class FireHoleArea extends Level  {
 
             //if (i == 0 || i == 1)
                 generateFire(previousEnd, newEnd - holeSpacing);
-
-
         }
     }
 

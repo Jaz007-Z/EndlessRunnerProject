@@ -46,7 +46,6 @@ public class FireArea extends Level {
 
             //if (i == 0)
             generateFire(previousEnd, newEnd);
-
         }
     }
 

@@ -31,8 +31,7 @@ public class HoleArea extends Level {
             b2body = world.createBody(bdef);
 
             //makes a box. It can be a straight line like now or vertical. hx is length, hy is height. vector2's x sets new center for box relative to position.
-
-            groundShape.setAsBox(groundLengthD2 / Endless.PPM, 6 / Endless.PPM, new Vector2(groundLengthD2 / Endless.PPM, 0 / Endless.PPM), 0 / Endless.PPM);
+            groundShape.setAsBox(groundLengthD2 / Endless.PPM, 1 / Endless.PPM, new Vector2(groundLengthD2 / Endless.PPM, 0 / Endless.PPM), 0 / Endless.PPM);
 
             fdef.shape = groundShape;
             b2body.createFixture(fdef).setUserData(this);
@@ -45,9 +44,6 @@ public class HoleArea extends Level {
             newEnd = previousEnd + (groundLengthD2 * 2) + holeSpacing;
             //newEnd = previousEnd + (groundLengthD2 * 2);
 
-
-            //maybe have it return world to keep it as one world, or have multiple worlds so disposal is easy if it causes no issues
-            //return world;
         }
     }
 

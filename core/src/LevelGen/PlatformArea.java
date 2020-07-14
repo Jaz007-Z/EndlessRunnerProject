@@ -32,8 +32,7 @@ public class PlatformArea extends Level {
             b2body = world.createBody(bdef);
 
             //makes a box. It can be a straight line like now or vertical. hx is length, hy is height. vector2's x sets new center for box relative to position.
-
-            groundShape.setAsBox(platformWidthD2 / Endless.PPM, platformHeight / Endless.PPM, new Vector2(platformWidthD2 / Endless.PPM, 0 / Endless.PPM), 0 / Endless.PPM);
+            groundShape.setAsBox(platformWidthD2 / Endless.PPM, platformHeight / Endless.PPM, new Vector2(platformWidthD2 / Endless.PPM, -2 / Endless.PPM), 0 / Endless.PPM);
 
             fdef.shape = groundShape;
             b2body.createFixture(fdef).setUserData(this);
