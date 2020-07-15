@@ -171,7 +171,9 @@ public class Player extends Sprite{
 
 
     }
-
+    
+    
+    public void setPlayerIsDead() {playerIsDead = true;}
 
     public void draw(Batch batch){
         super.draw(batch);
