@@ -33,6 +33,9 @@ import Screens.PlayScreen;
 
 
 public class Player extends Sprite {
+    public void setPlayerIsDead() {
+    }
+
     public enum State { FALLING, JUMPING, RUNNING, DEAD, STANDING }
     public State currentState;
     public State previousState;
@@ -72,41 +75,29 @@ public class Player extends Sprite {
         screen.playerStand = new TextureRegion(new Texture("Run1s.png"));
         //frames.clear();
 
-        /*animate.add("jump1");
-        animate.add("jump2");
+        frames.add(new TextureRegion(new Texture("jump1.png")));
+        frames.add(new TextureRegion(new Texture("jump2.png")));
 
-        for(int i = 0; i < 2; i++) {
-            frames.add(new TextureRegion(atlas.findRegion(animate.get(i))));
-        }
 
-        playerJump = new Animation(0.1f, frames);
+        screen.playerJump = new Animation(0.1f, frames);
 
-        animate.clear();
         frames.clear();
 
-        animate.add("fall1");
-        animate.add("fall2");
+        frames.add(new TextureRegion(new Texture("jump1.png")));
+        frames.add(new TextureRegion(new Texture("jump2.png")));
 
-        for(int i = 0; i < 2; i++) {
-            frames.add(new TextureRegion(atlas.findRegion(animate.get(i))));
-        }
+        screen.playerFall = new Animation(0.1f, frames);
 
-        playerFall = new Animation(0.1f, frames);
-
-        animate.clear();
         frames.clear();
 
-        animate.add("die1");
-        animate.add("die2");
-        animate.add("die3");
-        animate.add("die4");
-        animate.add("die5");
+        frames.add(new TextureRegion(new Texture("die1.png")));
+        frames.add(new TextureRegion(new Texture("die2.png")));
+        frames.add(new TextureRegion(new Texture("die3.png")));
+        frames.add(new TextureRegion(new Texture("die4.png")));
+        frames.add(new TextureRegion(new Texture("die5.png")));
 
-        for(int i = 0; i < 5; i++) {
-            frames.add(new TextureRegion(atlas.findRegion(animate.get(i))));
-        }
 
-        playerDead = new Animation(0.1f, frames);*/
+        screen.playerDead = new Animation(0.1f, frames);
 
         definePlayer(world);
         setBounds(0, 0, 16 / Endless.PPM, 16 / Endless.PPM);
@@ -139,15 +130,15 @@ public class Player extends Sprite {
 
         //depending on the state, get corresponding animation keyFrame.
         switch(currentState){
-            /*case DEAD:
-                region = (TextureRegion) playerDead.getKeyFrame(stateTimer);
+            case DEAD:
+                region = (TextureRegion) screen.playerDead.getKeyFrame(stateTimer);
                 break;
             case JUMPING:
-                region = (TextureRegion) playerJump.getKeyFrame(stateTimer);
+                region = (TextureRegion) screen.playerJump.getKeyFrame(stateTimer);
                 break;
             case FALLING:
-                region = (TextureRegion) playerFall.getKeyFrame(stateTimer);
-                break;*/
+                region = (TextureRegion) screen.playerFall.getKeyFrame(stateTimer);
+                break;
             case RUNNING:
                 region = (TextureRegion) screen.playerRun.getKeyFrame(stateTimer);
                 break;

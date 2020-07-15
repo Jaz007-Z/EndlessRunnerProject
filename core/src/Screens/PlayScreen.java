@@ -6,48 +6,32 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-
-
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.ChainShape;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.EdgeShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Endless;
+import com.mygdx.game.Scenes.Hud;
 
 import LevelGen.FireArea;
-import LevelGen.FireHoleArea;
 import LevelGen.Level;
-import LevelGen.PlatformArea;
 import Sprites.Player;
 
-
 import static com.badlogic.gdx.Gdx.gl;
-import static com.badlogic.gdx.Gdx.input;
 
 public class PlayScreen implements Screen {
 
+    private final Texture pausebtnActive;
+    private final Texture pausebtnInactive;
     Endless game;
 
     private Level level;
@@ -55,9 +39,7 @@ public class PlayScreen implements Screen {
     public OrthographicCamera gamecam;
     private Viewport gamePort;
 
-    //test
     int ii;
-
 
     //Box2d variables
     public World world;
@@ -68,6 +50,7 @@ public class PlayScreen implements Screen {
 
     //sprites
     private Player player;
+
     private TextureAtlas atlas = new TextureAtlas("RunSmall.pack");
 
     public TextureRegion playerStand;
@@ -84,11 +67,15 @@ public class PlayScreen implements Screen {
     private static final int PAUSE_WIDTH = 50;
     private static final int PAUSE_HEIGHT = 50;
 
+    //HUD
+    private Hud hud;
+
     //testLogs
     private static final String TAG = "MyActivity";
 
     //temp variables to render stage from Hud
     public Stage stage;
+    private Viewport viewport;
     public Music music;
 
     public AssetManager manager;
@@ -101,8 +88,13 @@ public class PlayScreen implements Screen {
         ii = 0;
 
         //textures
+        ground = new Texture("ground.png");
+        textureRegion = new TextureRegion(ground);
+        this.pausebtnActive = new Texture("Button_62.png");
+        this.pausebtnInactive = new Texture("Button_63.png");
+        background = new Image(new Texture("Background.png"));
 
-        background = new Image(new Texture("ground.png"));
+        hud = new Hud(game.batch);
 
         //cams
         gamecam = new OrthographicCamera();
@@ -124,9 +116,10 @@ public class PlayScreen implements Screen {
         player = new Player(this, manager);
 
         //temp code from hud to render stage
-        //viewport = new FitViewport(Endless.V_WIDTH, Endless.V_HEIGHT, new OrthographicCamera());
-        //stage = new Stage(viewport, game.batch);
+        viewport = new FitViewport(Endless.V_WIDTH, Endless.V_HEIGHT, new OrthographicCamera());
+        stage = new Stage(viewport, game.batch);
 
+        gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
         music = manager.get("music/main.mp3", Music.class);
         music.setLooping(true);
@@ -167,10 +160,16 @@ public class PlayScreen implements Screen {
 
         //takes 1 step in the physics simulation(60 times per second)
         world.step(1 / 60f, 6, 2);
-        player.update(dt);
 
         //add code to update player and enemies
+        player.update(dt);
 
+        //update the HUD
+        hud.update(dt);
+
+        if(player.b2body.getPosition().x <= -0.52){
+            player.setPlayerIsDead();
+        }
         //attach our gamecam to our players.x coordinate
         if(player.currentState != Player.State.DEAD) {
             gamecam.position.x = player.b2body.getPosition().x;
@@ -191,9 +190,11 @@ public class PlayScreen implements Screen {
         //Clear the game screen with Black
         update(delta);
 
-        gl.glClearColor(0, 0, 0, 0);
-        gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        Gdx.gl.glClearColor(0, 0, 0, 0);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        hud.stage.draw();
 
         //renderer our Box2DDebugLines
         b2dr.render(world, gamecam.combined);
@@ -203,6 +204,14 @@ public class PlayScreen implements Screen {
 
         //gamecam.update();
         game.batch.begin();
+
+        game.batch.draw(pausebtnInactive, Endless.V_WIDTH / 2 - PAUSE_WIDTH / 2, Endless.V_HEIGHT - 90,
+                PAUSE_WIDTH, PAUSE_HEIGHT);
+        if(player.getState().toString() == Player.State.DEAD.toString()){
+            game.batch.end();
+            game.setScreen(new GameOverScreen(this.game, this.manager, hud.score, game.batch));
+            return;
+        }
 
         player.draw(game.batch);
 
@@ -251,9 +260,8 @@ public class PlayScreen implements Screen {
         b2dr.dispose();
         stage.dispose();
         atlas.dispose();
-
-
-        //hud.dispose();
+        hud.dispose();
+        game.batch.dispose();
     }
 
     public World getWorld() {
