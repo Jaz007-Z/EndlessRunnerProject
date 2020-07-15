@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -34,6 +35,8 @@ public class Hud {
 
     Label scoreTextLabel;
 
+    Label healthLabel;
+
 
     public Hud(SpriteBatch sb) {
 
@@ -47,7 +50,7 @@ public class Hud {
 
         Table table = new Table();
 
-        table.top();
+        table.bottom();
 
         table.setFillParent(true);
 
@@ -55,21 +58,28 @@ public class Hud {
 
         this.scoreTextLabel = new Label("SCORE", new LabelStyle(new BitmapFont(), Color.WHITE));
 
-        this.scoreLabel = new Label(String.format("%06d", score), new LabelStyle(new BitmapFont(), Color.WHITE));
+        this.scoreLabel = new Label(String.format("%d", score), new LabelStyle(new BitmapFont(), Color.WHITE));
 
-        this.countLabel = new Label(String.format("%06d", this.worldTimer), new LabelStyle(new BitmapFont(), Color.WHITE));
+        this.countLabel = new Label(String.format("%d", this.worldTimer), new LabelStyle(new BitmapFont(), Color.WHITE));
 
-        table.add(this.timeLabel).expandX().padTop(10.0F);
 
-        table.add(this.scoreTextLabel).expandX().padTop(10.0F);
+
+        table.add(this.timeLabel).padLeft(-300f);
+        table.add(this.countLabel).padLeft(-160f);
 
         table.row();
 
-        table.add(this.countLabel).expandX().padTop(10.0F);
-
-        table.add(this.scoreLabel).expandX().padTop(10.0F);
+        table.add(this.scoreTextLabel).padLeft(-280f);
+        table.add(this.scoreLabel).padLeft(-160f);
 
         this.stage.addActor(table);
+
+        Table tableHealth = new Table();
+        tableHealth.top();
+        tableHealth.setFillParent(true);
+        this.healthLabel = new Label("HEALTH", new LabelStyle(new BitmapFont(), Color.WHITE));
+        tableHealth.add(this.healthLabel).padLeft(-300f).padTop(5f);
+        this.stage.addActor(tableHealth);
 
     }
 
@@ -81,7 +91,7 @@ public class Hud {
             Integer var2 = this.worldTimer;
             Integer var3 = this.worldTimer = this.worldTimer + 1;
 
-            this.countLabel.setText(String.format("%06d", this.worldTimer));
+            this.countLabel.setText(String.format("%d", this.worldTimer));
 
             this.timeCount = 0.0F;
 
@@ -94,7 +104,7 @@ public class Hud {
 
         if (this.scoreImplement == 5) {
             score = score + 100;
-            this.scoreLabel.setText(String.format("%06d", score));
+            this.scoreLabel.setText(String.format("%d", score));
             this.scoreImplement = 0;
 
         }
