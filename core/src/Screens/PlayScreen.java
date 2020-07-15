@@ -84,7 +84,8 @@ public class PlayScreen implements Screen {
         textureRegion = new TextureRegion(ground);
         this.pausebtnActive = new Texture("Button_62.png");
         this.pausebtnInactive = new Texture("Button_63.png");
-
+        
+        hud = new Hud(game.batch);
         //cams
         //gamecam = new OrthographicCamera(Endless.V_WIDTH / Endless.PPM, Endless.V_HEIGHT / Endless.PPM); used make cam without viewport
         gamecam = new OrthographicCamera();
@@ -109,7 +110,9 @@ public class PlayScreen implements Screen {
 
         player.definePlayer(world);
 
+        viewport = new FitViewport(Endless.V_WIDTH, Endless.V_HEIGHT, new OrthographicCamera());
 
+        stage = new Stage(viewport, game.batch);
 
 
         //gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0); doesn't seem ot be needed
@@ -150,7 +153,12 @@ public class PlayScreen implements Screen {
 
         //takes 1 step in the physics simulation(60 times per second)
         world.step(1 / 60f, 6, 2);
-
+        
+        hud.update(dt);
+        
+        if(player.b2body.getPosition().y <= -1){
+            player.setPlayerIsDead();
+        }
 
         //add code to update player and enemies
 
@@ -176,7 +184,7 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-
+        hud.stage.draw();
 
 
         game.batch.setProjectionMatrix(gamecam.combined);
@@ -201,6 +209,12 @@ public class PlayScreen implements Screen {
 
         game.batch.draw(pausebtnInactive, Endless.V_WIDTH / 2 - PAUSE_WIDTH / 2, Endless.V_HEIGHT - 90,
                 PAUSE_WIDTH, PAUSE_HEIGHT);
+        
+        if(player.getState().toString() == Player.State.DEAD.toString()){
+            game.batch.end();
+            game.setScreen(new GameOverScreen(this.game, this.manager, hud.score, game.batch));
+            return;
+        }
 
         //game.batch.draw('player', (int)playerX, (int)playerY);
         //player.draw(game.batch);
