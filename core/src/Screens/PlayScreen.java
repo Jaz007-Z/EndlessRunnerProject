@@ -313,7 +313,7 @@ public class PlayScreen implements Screen {
         }
 
         if (setLevel3) {
-            oldNewEnd = levels.get(3).getNewEnd();
+            oldNewEnd = levels.get(4).getNewEnd();
             levels.get(0).setNewEnd(oldNewEnd);
         } else {
             oldNewEnd = levels.get(3).getNewEnd();
