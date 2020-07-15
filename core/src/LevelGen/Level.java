@@ -28,7 +28,7 @@ public class Level {
     protected Texture platform;
 
     //area size(s)
-    int areaSize = 3;
+    int areaSize = 2;
 
 
     //body array for disposal

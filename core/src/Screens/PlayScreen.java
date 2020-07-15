@@ -218,7 +218,7 @@ public class PlayScreen implements Screen {
         //add for loop that will have all of the levels draw themselves in the right range
         //System.out.println(gamecam.position);
 
-       if ( (int) (area2NewEnd) + 4 < (int) player.b2body.getPosition().x && destroy) {
+       if ( (int) (area2NewEnd)  < (int) player.b2body.getPosition().x && destroy) {
            levels.get(0).dispose();
            levels.get(1).dispose();
            levels.get(2).dispose();
@@ -237,7 +237,7 @@ public class PlayScreen implements Screen {
        if (useTimer == true) {
            timer = timer + dt;
        }
-        if (timer >= 10) {
+        if (timer >= 5) {
             destroy = true;
             timer = 0;
             useTimer = false;
@@ -298,8 +298,10 @@ public class PlayScreen implements Screen {
         level0 = randomizeArea(level0);
         level1 = randomizeArea(level1);
         level2 = randomizeArea(level2);
-        level3 = randomizeArea(level3);
-        level4 = randomizeArea(level4);
+        //level3 = randomizeArea(level3);
+        level3 = new HoleArea(world);
+        //level4 = randomizeArea(level4);
+        level4 = new HoleArea(world);
 
         levels.set(0, level0);
         levels.set(1, level1);
@@ -359,8 +361,8 @@ public class PlayScreen implements Screen {
                 level = new FireHoleArea(world);
                 break;
             case 3:
-                level = new HoleArea(world);
-                break;
+                //level = new HoleArea(world);
+                //break;
             case 4:
                 level = new PlatformArea(world);
                 break;
