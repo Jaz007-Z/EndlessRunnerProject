@@ -33,6 +33,7 @@ import LevelGen.FireArea;
 import LevelGen.FireHoleArea;
 import LevelGen.Level;
 import LevelGen.PlatformArea;
+import Scenes.Hud;
 import Sprites.Player;
 import sun.rmi.runtime.Log;
 
@@ -64,6 +65,9 @@ public class PlayScreen implements Screen {
     private Texture pausebtnInactive;
     private static final int PAUSE_WIDTH = 50;
     private static final int PAUSE_HEIGHT = 50;
+    
+    //HUD
+    private Hud hud;
 
     //testLogs
     private static final String TAG = "MyActivity";
