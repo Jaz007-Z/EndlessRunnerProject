@@ -1,6 +1,5 @@
 package Screens;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -8,24 +7,15 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.Endless;
-
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
 
 import static com.badlogic.gdx.Gdx.input;
 
@@ -91,8 +81,6 @@ public class MenuScreen implements Screen {
 
 
         MenuListener menuListener = new MenuListener();
-        //playbtnActive.addListener(menuListener);
-        //exitbtnActive.addListener(menuListener);
         playButton.addListener(menuListener);
         exitButton.addListener(menuListener);
 
@@ -127,45 +115,6 @@ public class MenuScreen implements Screen {
             Gdx.app.exit();
         }
 
-        /*game.batch.draw(title, Endless.V_WIDTH / 2 - TITLE_WIDTH / 2, Endless.V_HEIGHT - 90,
-                TITLE_WIDTH, TITLE_HEIGHT);
-        //PLAY BUTTON HANDLING
-        if((Gdx.input.getX() > (Endless.V_WIDTH / 2 - PLAY_BTN_WIDTH / 2) &&
-                Gdx.input.getX() < (Endless.V_WIDTH / 2 - PLAY_BTN_WIDTH / 2) + PLAY_BTN_WIDTH)
-                &&
-                (Gdx.input.getY() > (Endless.V_HEIGHT / 2 - PLAY_BTN_HEIGHT / 2) &&
-                        Gdx.input.getY() < (Endless.V_HEIGHT / 2 - PLAY_BTN_HEIGHT / 2) + PLAY_BTN_HEIGHT)){
-
-            game.batch.draw(playbtnActive, Endless.V_WIDTH / 2 - PLAY_BTN_WIDTH / 2,
-                    Endless.V_HEIGHT / 2 - PLAY_BTN_HEIGHT / 2, PLAY_BTN_WIDTH, PLAY_BTN_HEIGHT);
-            if(Gdx.input.justTouched()) {
-                music.stop();
-                game.setScreen(new PlayScreen(game, manager));
-            }
-        }
-        else{
-            game.batch.draw(playbtnInactive, Endless.V_WIDTH / 2 - PLAY_BTN_WIDTH / 2,
-                    Endless.V_HEIGHT / 2 - PLAY_BTN_HEIGHT / 2, PLAY_BTN_WIDTH, PLAY_BTN_HEIGHT);
-        }
-
-        // EXIT BUTTON HANDLING
-        if((Gdx.input.getX() > (Endless.V_WIDTH - EXIT_BTN_WIDTH - 20) &&
-                Gdx.input.getX() < (Endless.V_WIDTH - EXIT_BTN_WIDTH - 20) + EXIT_BTN_WIDTH) &&
-                (Gdx.input.getY() > (EXIT_BTN_HEIGHT - 20) &&
-                        Gdx.input.getY() < (EXIT_BTN_HEIGHT - 20) + EXIT_BTN_HEIGHT)){
-
-            game.batch.draw(exitbtnActive, Endless.V_WIDTH - EXIT_BTN_WIDTH - 20,
-                    Endless.V_HEIGHT - EXIT_BTN_HEIGHT - 20, EXIT_BTN_WIDTH, EXIT_BTN_HEIGHT);
-            if(Gdx.input.justTouched()){
-                game.batch.end();
-            }
-        }
-        else{
-            game.batch.draw(exitbtnInactive, Endless.V_WIDTH - EXIT_BTN_WIDTH - 20,
-                    Endless.V_HEIGHT - EXIT_BTN_HEIGHT - 20, EXIT_BTN_WIDTH, EXIT_BTN_HEIGHT);
-        }
-
-        game.batch.end();*/
     }
 
     @Override

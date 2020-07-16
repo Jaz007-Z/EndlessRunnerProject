@@ -13,6 +13,8 @@ public class Endless extends Game {
 	public static final String TITLE = "Endless Runner";
 	public SpriteBatch batch;
 	//Virtual Screen size and Box2D Scale(Pixels Per Meter)
+	//public static final int V_WIDTH = 400; //better zoom this way, can be adjusted
+	//public static final int V_HEIGHT = 208;
 	public static final int V_WIDTH = 600;
 	public static final int V_HEIGHT = 390;
 	public static final float PPM = 100;
@@ -27,11 +29,11 @@ public class Endless extends Game {
 	@Override
 	public void create () {
 		manager = new AssetManager();
+		batch = new SpriteBatch();
 		game = this;
 		manager.load("music/intro.mp3", Music.class);
 		manager.load("music/main.mp3", Music.class);
-		//manager.load()
-		batch = new SpriteBatch();
+
 		manager.finishLoading();
 		this.setScreen(new SplashScreen(game, manager));
 	} //work
@@ -42,8 +44,8 @@ public class Endless extends Game {
 	
 	@Override
 	public void dispose () {
-		manager.dispose();
 		batch.dispose();
+		manager.dispose();
 	}
 
 	public void getMenu() {

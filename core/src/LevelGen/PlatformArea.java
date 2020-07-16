@@ -1,5 +1,20 @@
 package LevelGen;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.PolygonRegion;
+import com.badlogic.gdx.graphics.g2d.PolygonSprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.EarClippingTriangulator;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.game.Endless;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -7,6 +22,8 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.Endless;
+
+import Screens.PlayScreen;
 
 public class PlatformArea extends Level {
 
@@ -36,7 +53,8 @@ public class PlatformArea extends Level {
             groundShape.setAsBox(platformWidthD2 / Endless.PPM, platformHeight / Endless.PPM, new Vector2(platformWidthD2 / Endless.PPM, 0 / Endless.PPM), 0 / Endless.PPM);
 
             fdef.shape = groundShape;
-            b2body.createFixture(fdef).setUserData(this);
+            Fixture fixture = b2body.createFixture(fdef);
+            fixture.setUserData(this);
 
             previousEnd = newEnd;
 
@@ -45,7 +63,6 @@ public class PlatformArea extends Level {
 
             newEnd = previousEnd + (platformWidthD2 * 2) + platformSpacing;
             //newEnd = previousEnd + (groundLengthD2 * 2);
-
 
             //maybe have it return world to keep it as one world, or have multiple worlds so disposal is easy if it causes no issues
             //return world;

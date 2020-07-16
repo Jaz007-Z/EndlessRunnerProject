@@ -1,40 +1,24 @@
 package Sprites;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.EdgeShape;
-import com.badlogic.gdx.physics.box2d.Filter;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Endless;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import Screens.PlayScreen;
 
 
 public class Player extends Sprite {
-    public void setPlayerIsDead() {
-    }
 
     public enum State { FALLING, JUMPING, RUNNING, DEAD, STANDING }
     public State currentState;
@@ -55,53 +39,42 @@ public class Player extends Sprite {
         this.screen = screen;
         this.world = screen.world;
         this.manager = manager;
-        currentState = State.STANDING;
-        previousState = State.STANDING;
+        currentState = State.RUNNING;
+        previousState = State.RUNNING;
         stateTimer = 0;
 
         Array<TextureRegion> frames = new Array<>();
 
 
-        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run1s"), 0,0,16,16));
-        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run2s"), 16,0,16,16));
-        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run3s"),32,0,16,16));
-        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run4s"),48,0,16,16));
-        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run5s"),64,0,16,16));
-        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run6s"),80,0,16,16));
-        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run7s"),96,0,16,16));
-        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run8s"),112,0,16,16));
-        screen.playerRun = new Animation(0.1f, frames);
-
-        screen.playerStand = new TextureRegion(new Texture("Run1s.png"));
-        //frames.clear();
-
-        frames.add(new TextureRegion(new Texture("jump1.png")));
-        frames.add(new TextureRegion(new Texture("jump2.png")));
-
-
-        screen.playerJump = new Animation(0.1f, frames);
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run1m"), 0,0,32,32));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run2m"), 0,32,32,32));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run3m"),0,64,16,32));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run4m"),0,96,16,32));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run5m"),0,128,32,32));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run6m"),0,160,32,32));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run7m"),0,192,32,32));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run8m"),0,224,32,32));
+        screen.playerRun = new Animation(.7f, frames);
 
         frames.clear();
 
-        frames.add(new TextureRegion(new Texture("jump1.png")));
-        frames.add(new TextureRegion(new Texture("jump2.png")));
+        screen.playerJump = new TextureRegion(new Texture("jump1.png"));
 
-        screen.playerFall = new Animation(0.1f, frames);
+        screen.playerFall = new TextureRegion(new Texture("fall1.png"));
 
-        frames.clear();
 
-        frames.add(new TextureRegion(new Texture("die1.png")));
+        /*frames.add(new TextureRegion(new Texture("die1.png")));
         frames.add(new TextureRegion(new Texture("die2.png")));
         frames.add(new TextureRegion(new Texture("die3.png")));
         frames.add(new TextureRegion(new Texture("die4.png")));
-        frames.add(new TextureRegion(new Texture("die5.png")));
+        frames.add(new TextureRegion(new Texture("die5.png")));*/
 
 
-        screen.playerDead = new Animation(0.1f, frames);
+        //screen.playerDead = new Animation(0.1f, frames);
 
         definePlayer(world);
-        setBounds(0, 0, 16 / Endless.PPM, 16 / Endless.PPM);
-        setRegion(screen.playerStand);
+        setBounds(0, 0, 32 / Endless.PPM, 32 / Endless.PPM);
+        setRegion(screen.playerFall);
     }
 
 
@@ -111,78 +84,12 @@ public class Player extends Sprite {
         if(currentState == State.RUNNING) {
             b2body.applyLinearImpulse(new Vector2(.04f, 0f), b2body.getWorldCenter(), true);
         }
+       //b2body.applyLinearImpulse(new Vector2(.015f, 0f ) , b2body.getWorldCenter(), true); // keep applying movement
             // keep applying movement
         //update our sprite to correspond with the position of our Box2D body
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
         setRegion(getFrame(dt));
 
-
-        //commented out code that makes it crash. We might need to start multi-threading. I'm not sure why it crashed
-        //but from what Nathanial said maybe we need to think about performance more
-
-    }
-
-    public TextureRegion getFrame(float dt){
-        //get player current state. ie. jumping, running, falling, etc.
-        currentState = getState();
-
-        TextureRegion region;
-
-        //depending on the state, get corresponding animation keyFrame.
-        switch(currentState){
-            case DEAD:
-                region = (TextureRegion) screen.playerDead.getKeyFrame(stateTimer);
-                break;
-            case JUMPING:
-                region = (TextureRegion) screen.playerJump.getKeyFrame(stateTimer);
-                break;
-            case FALLING:
-                region = (TextureRegion) screen.playerFall.getKeyFrame(stateTimer);
-                break;
-            case RUNNING:
-                region = (TextureRegion) screen.playerRun.getKeyFrame(stateTimer);
-                break;
-            case STANDING:
-            default:
-                region = screen.playerStand;
-                break;
-        }
-
-
-        //if the current state is the same as the previous state increase the state timer.
-        //otherwise the state has changed and we need to reset timer.
-        stateTimer = currentState == previousState ? stateTimer + dt : 0;
-        //update previous state
-        previousState = currentState;
-        //return our final adjusted frame
-        return region;
-
-
-    }
-
-
-
-    public void definePlayer(World world){
-        //Body b2body2; needed to be class variable not a seperate one here
-        BodyDef bdef2 = new BodyDef();
-        bdef2.position.set(-45 / Endless.PPM, -58 / Endless.PPM);
-        bdef2.type = BodyDef.BodyType.DynamicBody;
-        b2body = world.createBody(bdef2);
-
-        FixtureDef fdef2 = new FixtureDef();
-        CircleShape shape = new CircleShape();
-        shape.setRadius(6 / Endless.PPM);
-
-        fdef2.shape = shape;
-        b2body.createFixture(fdef2).setUserData(this);
-        //b2body.applyLinearImpulse(new Vector2(.7f, 0f ) , b2body.getWorldCenter(), true); //start movement off for one frame
-        /*EdgeShape head = new EdgeShape();
-        head.set(new Vector2(-2 / Endless.PPM, 6 / Endless.PPM), new Vector2(2 / Endless.PPM, 6 / Endless.PPM));
-        fdef2.filter.categoryBits = 512;
-        fdef2.shape = head;
-        fdef2.isSensor = true;
-
-        b2body.createFixture(fdef2).setUserData(this);*/
     }
 
 
@@ -199,36 +106,67 @@ public class Player extends Sprite {
             //if none of these return then he must be running
         else if(b2body.getLinearVelocity().x != 0)
             return State.RUNNING;
-            //if none of these return then he must be standing
+        //if none of these return then he must be standing
         else
-            return State.STANDING;
+            return null;
     }
 
-    public void die() {
 
-        if (!isDead()) {
+    public TextureRegion getFrame(float dt){
+        //get player current state. ie. jumping, running, falling, etc.
+        currentState = getState();
 
-            manager.get(String.valueOf(screen.music), Music.class).stop();
-            //screen.manager.get("", Sound.class).play();
-            playerIsDead = true;
-            Filter filter = new Filter();
-            filter.maskBits = 0;
+        TextureRegion region;
 
-            for (Fixture fixture : b2body.getFixtureList()) {
-                fixture.setFilterData(filter);
-            }
+        //depending on the state, get corresponding animation keyFrame.
+        switch(currentState){
+            /*case DEAD:
+                region = (TextureRegion) screen.playerDead.getKeyFrame(getStateTimer());
+                break;*/
+            case FALLING:
+                region = (TextureRegion) screen.playerFall;
+                break;
+            case JUMPING:
+                region = (TextureRegion) screen.playerJump;
+                break;
+            case RUNNING:
+            default:
+                region = (TextureRegion) screen.playerRun.getKeyFrame(stateTimer, true);
+                break;
 
-            b2body.applyLinearImpulse(new Vector2(0, 4f), b2body.getWorldCenter(), true);
         }
+
+
+        //if the current state is the same as the previous state increase the state timer.
+        //otherwise the state has changed and we need to reset timer.
+        stateTimer = currentState == previousState ? stateTimer + dt : 0;
+        //update previous state
+        previousState = currentState;
+        //return our final adjusted frame
+        return region;
+
+
     }
 
-    public boolean isDead(){
-        return playerIsDead;
+
+    public void definePlayer(World world){
+        //Body b2body2; needed to be class variable not a seperate one here
+        BodyDef bdef2 = new BodyDef();
+        bdef2.position.set(-45 / Endless.PPM, -58 / Endless.PPM);
+        bdef2.type = BodyDef.BodyType.DynamicBody;
+        b2body = world.createBody(bdef2);
+
+        FixtureDef fdef2 = new FixtureDef();
+        CircleShape shape = new CircleShape();
+        shape.setRadius(6 / Endless.PPM);
+
+        fdef2.shape = shape;
+        b2body.createFixture(fdef2).setUserData(this);
+        b2body.applyLinearImpulse(new Vector2(.7f, 0f ) , b2body.getWorldCenter(), true); //start movement off for one frame
+
+
     }
 
-    public float getStateTimer(){
-        return stateTimer;
-    }
 
     public void jump(){
         if ( currentState != State.JUMPING ) {
@@ -236,6 +174,13 @@ public class Player extends Sprite {
             currentState = State.JUMPING;
         }
     }
+
+    public float getStateTimer(){
+        return stateTimer;
+    }
+
+
+    public void setPlayerIsDead() {playerIsDead = true;}
 
     public void draw(Batch batch){
         super.draw(batch);

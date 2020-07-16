@@ -10,13 +10,16 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.PolygonSprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Endless;
@@ -26,24 +29,21 @@ import LevelGen.FireArea;
 import LevelGen.Level;
 import Sprites.Player;
 
-import static com.badlogic.gdx.Gdx.gl;
-
 public class PlayScreen implements Screen {
 
-    private final Texture pausebtnActive;
-    private final Texture pausebtnInactive;
     Endless game;
 
     private Level level;
     private TextureRegion textureRegion;
     public OrthographicCamera gamecam;
     private Viewport gamePort;
+    PolygonSprite polygonSprite = FireArea.getPoly();
 
-    int ii;
 
     //Box2d variables
     public World world;
     private Box2DDebugRenderer b2dr;
+    private Body b2body;
     float playerSpeed = 10.0f; // 10 pixels per second. May be too fast
     float playerX;
     float playerY;
@@ -51,24 +51,26 @@ public class PlayScreen implements Screen {
     //sprites
     private Player player;
 
-    private TextureAtlas atlas = new TextureAtlas("RunSmall.pack");
+    private TextureAtlas atlas = new TextureAtlas("Run.pack");
 
-    public TextureRegion playerStand;
     public Animation playerRun;
-    public Animation playerJump;
-    public Animation playerFall;
-    public Animation playerDead;
-
-    //Array<Body> bodies = new Array<Body>();
-    private Texture ground;
-    private Image background;
+    public TextureRegion playerJump;
+    public TextureRegion playerFall;
+    //public Animation playerDead;
 
 
-    private static final int PAUSE_WIDTH = 50;
-    private static final int PAUSE_HEIGHT = 50;
 
-    //HUD
+    public TextureRegionDrawable background = new TextureRegionDrawable((new TextureRegion(new Texture("playscreen_background.jpg"))));
+    private final Texture pausebtnActive;
+    private final Texture pausebtnInactive;
+    private static final float PAUSE_WIDTH = 0.3f;
+    private static final float PAUSE_HEIGHT = 0.3f;
+
+    //HUD AND HEALTH BAR
     private Hud hud;
+    Texture blank;
+    float damage = 0;
+    float health = 0.7f;
 
     //testLogs
     private static final String TAG = "MyActivity";
@@ -77,29 +79,23 @@ public class PlayScreen implements Screen {
     public Stage stage;
     private Viewport viewport;
     public Music music;
-
     public AssetManager manager;
 
     public PlayScreen(Endless game, AssetManager manager) {
-
         this.manager = manager;
         this.game = game;
 
-        ii = 0;
-
         //textures
-        ground = new Texture("ground.png");
-        textureRegion = new TextureRegion(ground);
-        this.pausebtnActive = new Texture("Button_62.png");
-        this.pausebtnInactive = new Texture("Button_63.png");
-        background = new Image(new Texture("Background.png"));
 
-        hud = new Hud(game.batch);
+        pausebtnActive = new Texture("Button_62.png");
+        pausebtnInactive = new Texture("Button_63.png");
+        blank = new Texture("blank.png");
 
+        hud = new Hud(game.batch, this);
         //cams
         gamecam = new OrthographicCamera();
         gamePort = new FitViewport(Endless.V_WIDTH / Endless.PPM, Endless.V_HEIGHT / Endless.PPM, gamecam);
-        //gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
+
         //create our Box2D world, setting no gravity in X, -10 gravity in Y, and allow bodies to sleep
         world = new World(new Vector2(0, -5), true); //lowered gravity from -10 to show effect
         //allows for debug lines of our box2d world.
@@ -115,11 +111,12 @@ public class PlayScreen implements Screen {
 
         player = new Player(this, manager);
 
-        //temp code from hud to render stage
+
         viewport = new FitViewport(Endless.V_WIDTH, Endless.V_HEIGHT, new OrthographicCamera());
+
         stage = new Stage(viewport, game.batch);
 
-        gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
+        //gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
         music = manager.get("music/main.mp3", Music.class);
         music.setLooping(true);
@@ -157,24 +154,31 @@ public class PlayScreen implements Screen {
     public void update(float dt){
         //handle user input first
         handleInput(dt);
+        player.update(dt);
 
         //takes 1 step in the physics simulation(60 times per second)
         world.step(1 / 60f, 6, 2);
 
-        //add code to update player and enemies
-        player.update(dt);
-
         //update the HUD
         hud.update(dt);
 
-        if(player.b2body.getPosition().x <= -0.52){
+        //THIS IS THE LOGIC TO "DAMAGE" THE HERO.
+        // add some number to var damage, in the example above
+        // the hero's life will decrease a little every 3 seconds.
+        if(hud.scoreImplement == 1){
+            damage += 0.005f;
+        }
+
+        if(player.b2body.getPosition().y <= -1){
             player.setPlayerIsDead();
         }
+
         //attach our gamecam to our players.x coordinate
         if(player.currentState != Player.State.DEAD) {
             gamecam.position.x = player.b2body.getPosition().x;
         }
         //update our gamecam with correct coordinates after changes
+
         gamecam.update();
 
         //tell our renderer to draw only what our camera can see in our game world.
@@ -197,39 +201,39 @@ public class PlayScreen implements Screen {
         hud.stage.draw();
 
         //renderer our Box2DDebugLines
-        b2dr.render(world, gamecam.combined);
+        //b2dr.render(world, gamecam.combined);
 
         game.batch.setProjectionMatrix(gamecam.combined);
-
 
         //gamecam.update();
         game.batch.begin();
 
-        game.batch.draw(pausebtnInactive, Endless.V_WIDTH / 2 - PAUSE_WIDTH / 2, Endless.V_HEIGHT - 90,
+        player.draw(game.batch);
+
+        game.batch.draw(pausebtnInactive, gamecam.position.x - 0.1f, gamecam.position.y + 0.7f,
                 PAUSE_WIDTH, PAUSE_HEIGHT);
-        if(player.getState().toString() == Player.State.DEAD.toString()){
+
+        game.batch.draw(blank, gamecam.position.x - 1.1f, gamecam.position.y + 0.82f,
+                health - damage, 0.15f);
+
+        // Conditions to GAME OVER:
+        // 1 - the player falls,
+        // 2 - the health goes 0.
+        // feel free to add what you want in this IF STATEMENT.
+        if(player.getState().toString() == Player.State.DEAD.toString() || damage >= 0.7f){
             game.batch.end();
             game.setScreen(new GameOverScreen(this.game, this.manager, hud.score, game.batch));
             return;
         }
 
-        player.draw(game.batch);
+
+
 
 
         game.batch.end();
 
-
         //game.batch.setProjectionMatrix(stage.getCamera().combined);
-        //hud.stage.draw();
 
-        /*if(gameOver()){
-            game.setScreen(new GameOverScreen(game));
-            dispose();
-        }*/
-    }
-
-    public boolean gameOver(){
-        return player.currentState == Player.State.DEAD && player.getStateTimer() > 3;
     }
 
     @Override
@@ -255,18 +259,15 @@ public class PlayScreen implements Screen {
     @Override
     public void dispose() {
         music.dispose();
-        manager.dispose();
-        world.dispose();
-        b2dr.dispose();
-        stage.dispose();
-        atlas.dispose();
-        hud.dispose();
         game.batch.dispose();
+        manager.dispose();
     }
 
     public World getWorld() {
         return world;
     }
 
-    //public Hud getHud(){return hud;}
+    public Hud getHud(){return hud;}
+
+    public Screen getScreen() {return this; }
 }
