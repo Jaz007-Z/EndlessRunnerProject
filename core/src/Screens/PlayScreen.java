@@ -229,6 +229,7 @@ public class PlayScreen implements Screen {
                levels.get(4).dispose();
                destroyLv4 = false;
            }
+
            destroy = false;
            useTimer = true;
            randomizeLevels();
@@ -237,15 +238,15 @@ public class PlayScreen implements Screen {
        if (useTimer == true) {
            timer = timer + dt;
        }
-        if (timer >= 5) {
+        if (timer >= 4) {
             destroy = true;
             timer = 0;
             useTimer = false;
         }
 
-            //System.out.println("Player Position: "+ player.b2body.getPosition().x);
+        //System.out.println("Player Position: "+ player.b2body.getPosition().x);
         //System.out.println("End: "+ levels.get(2).getNewEnd() / Endless.PPM);
-        System.out.println("End: " + levels.get(1).getNewEnd() / Endless.PPM);
+        //System.out.println("End: " + levels.get(1).getNewEnd() / Endless.PPM);
 
     }
 
@@ -298,10 +299,9 @@ public class PlayScreen implements Screen {
         level0 = randomizeArea(level0);
         level1 = randomizeArea(level1);
         level2 = randomizeArea(level2);
-        //level3 = randomizeArea(level3);
-        level3 = new HoleArea(world);
-        //level4 = randomizeArea(level4);
-        level4 = new HoleArea(world);
+        level3 = randomizeArea(level3);
+        level4 = randomizeArea(level4);
+
 
         levels.set(0, level0);
         levels.set(1, level1);
@@ -352,8 +352,8 @@ public class PlayScreen implements Screen {
         int int_random = random.nextInt(5);
         switch (int_random) {
             case 0:
-                //level = new Level(world);
-                //break;
+                level = new Level(world);
+                break;
             case 1:
                 level = new FireArea(world);
                 break;
@@ -361,8 +361,8 @@ public class PlayScreen implements Screen {
                 level = new FireHoleArea(world);
                 break;
             case 3:
-                //level = new HoleArea(world);
-                //break;
+                level = new HoleArea(world);
+                break;
             case 4:
                 level = new PlatformArea(world);
                 break;

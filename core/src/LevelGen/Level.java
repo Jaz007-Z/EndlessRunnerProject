@@ -20,7 +20,7 @@ public class Level {
     protected float newVerticality;
     protected float previousEnd;
     protected float newEnd;
-    protected float groundLengthD2; //because hx for a polygon acts like a radius, this is the ground length divided by 2 "D2"
+     //because hx for a polygon acts like a radius, this is the ground length divided by 2 "D2"
 
     //textures
     protected Texture ground;
@@ -28,7 +28,9 @@ public class Level {
     protected Texture platform;
 
     //area size(s)
-    int areaSize = 2;
+    int areaSize = 5;
+    int areaSizePlatform = 7;
+    protected float groundLengthD2 = 75;
 
 
     //body array for disposal
@@ -37,9 +39,9 @@ public class Level {
     //fireVariables
     float fireLocation;
     float fireSpacing;
-    float fireMax = 65;; //maximum fire spacing
-    float fireMin = 25;; //minimum fire spacing
-    float fireBufferSpace = 15;; //space before end of a ground that fire can't appear
+    float fireMax = 75;; //maximum fire spacing
+    float fireMin = 40;; //minimum fire spacing
+    float fireBufferSpace = 20;; //space before end of a ground that fire can't appear
 
 
     //holeVariables
@@ -72,7 +74,6 @@ public class Level {
         this.world = world;
         newEnd = -70;
         spacing = 10;
-        groundLengthD2 = 50;
         //fire variables
         fireSpacing = 30;
         bodies = new ArrayList<Body>();
@@ -135,10 +136,11 @@ public class Level {
 
             fdef.shape = groundShape;
             b2body.createFixture(fdef).setUserData(this);
+            bodies.add(b2body);
 
             previousEnd = newEnd;
 
-            newEnd = previousEnd + (groundLengthD2 * 2) + spacing;
+            newEnd = previousEnd + (groundLengthD2 * 2) ;
             //newEnd = previousEnd + (groundLengthD2 * 2);
         }
     }

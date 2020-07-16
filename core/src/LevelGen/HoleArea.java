@@ -35,6 +35,7 @@ public class HoleArea extends Level {
 
             fdef.shape = groundShape;
             b2body.createFixture(fdef).setUserData(this);
+            bodies.add(b2body);
 
             previousEnd = newEnd;
 

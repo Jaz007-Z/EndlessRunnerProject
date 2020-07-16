@@ -26,7 +26,7 @@ public class PlatformArea extends Level {
 
 
         //making in a loop for real procedural generation
-        for (int i = 0; i < areaSize; i++) {
+        for (int i = 0; i < areaSizePlatform; i++) {
             bdef.position.set(newEnd / Endless.PPM, -60 / Endless.PPM); //position of the polygon
             bdef.type = BodyDef.BodyType.StaticBody;
             b2body = world.createBody(bdef);
@@ -36,6 +36,7 @@ public class PlatformArea extends Level {
 
             fdef.shape = groundShape;
             b2body.createFixture(fdef).setUserData(this);
+            bodies.add(b2body);
 
             previousEnd = newEnd;
 
