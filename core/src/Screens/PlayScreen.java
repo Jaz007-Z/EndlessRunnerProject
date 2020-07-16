@@ -218,26 +218,26 @@ public class PlayScreen implements Screen {
         //add for loop that will have all of the levels draw themselves in the right range
         //System.out.println(gamecam.position);
 
-       if ( (int) (area2NewEnd)  < (int) player.b2body.getPosition().x && destroy) {
-           levels.get(0).dispose();
-           levels.get(1).dispose();
-           levels.get(2).dispose();
-           if (destroyLv3) {
-               levels.get(3).dispose();
-               destroyLv3 = false;
-           } else if (destroyLv4) {
-               levels.get(4).dispose();
-               destroyLv4 = false;
-           }
+        if ( (int) (area2NewEnd)  < (int) player.b2body.getPosition().x && destroy) {
+            levels.get(0).dispose();
+            levels.get(1).dispose();
+            levels.get(2).dispose();
+            if (destroyLv3) {
+                levels.get(3).dispose();
+                destroyLv3 = false;
+            } else if (destroyLv4) {
+                levels.get(4).dispose();
+                destroyLv4 = false;
+            }
 
-           destroy = false;
-           useTimer = true;
-           randomizeLevels();
-           area2NewEnd = levels.get(2).getNewEnd() / Endless.PPM;
-       }
-       if (useTimer == true) {
-           timer = timer + dt;
-       }
+            destroy = false;
+            useTimer = true;
+            randomizeLevels();
+            area2NewEnd = levels.get(2).getNewEnd() / Endless.PPM;
+        }
+        if (useTimer == true) {
+            timer = timer + dt;
+        }
         if (timer >= 4) {
             destroy = true;
             timer = 0;
