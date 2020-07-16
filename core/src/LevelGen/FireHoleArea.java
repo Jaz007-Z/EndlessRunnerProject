@@ -34,6 +34,7 @@ public class FireHoleArea extends Level  {
 
             fdef.shape = groundShape;
             b2body.createFixture(fdef).setUserData(this);
+            bodies.add(b2body);
 
 
 
@@ -45,8 +46,6 @@ public class FireHoleArea extends Level  {
 
             //if (i == 0 || i == 1)
                 generateFire(previousEnd, newEnd - holeSpacing);
-
-
         }
     }
 
@@ -74,6 +73,7 @@ public class FireHoleArea extends Level  {
             shape.setRadius(5 / Endless.PPM);
             fdefFire.shape = shape;
             b2Fire.createFixture(fdefFire).setUserData(this);
+            bodies.add(b2Fire);
         }
     }
 
