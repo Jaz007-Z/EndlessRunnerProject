@@ -48,7 +48,7 @@ public class PlayScreen implements Screen {
     private TextureRegion textureRegion;
     public OrthographicCamera gamecam;
     private Viewport gamePort;
-    
+
 
     //areas
     private ArrayList<Level> levels = new ArrayList<>();

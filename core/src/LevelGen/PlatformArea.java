@@ -46,9 +46,6 @@ public class PlatformArea extends Level {
             newEnd = previousEnd + (platformWidthD2 * 2) + platformSpacing;
             //newEnd = previousEnd + (groundLengthD2 * 2);
 
-
-            //maybe have it return world to keep it as one world, or have multiple worlds so disposal is easy if it causes no issues
-            //return world;
         }
     }
 
