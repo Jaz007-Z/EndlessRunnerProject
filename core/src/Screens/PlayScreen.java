@@ -45,7 +45,7 @@ public class PlayScreen implements Screen {
     private TextureRegion textureRegion;
     public OrthographicCamera gamecam;
     private Viewport gamePort;
-    
+
 
 
     //Box2d variables
