@@ -38,6 +38,8 @@ import LevelGen.HoleArea;
 import LevelGen.Level;
 import LevelGen.PlatformArea;
 import Sprites.Player;
+import Scenes.Hud;
+
 import sun.rmi.runtime.Log;
 
 public class PlayScreen implements Screen {
@@ -85,6 +87,14 @@ public class PlayScreen implements Screen {
     private Texture ground;
     private Texture pausebtnActive;
     private Texture pausebtnInactive;
+    //private static final float PAUSE_WIDTH = 0.3f;
+    //private static final float PAUSE_HEIGHT = 0.3f;
+
+    //HUD AND HEALTH BAR
+    private Hud hud;
+    Texture blank;
+    float damage = 0;
+    float health = 0.7f;
     private static final int PAUSE_WIDTH = 50;
     private static final int PAUSE_HEIGHT = 50;
 
@@ -107,7 +117,9 @@ public class PlayScreen implements Screen {
         textureRegion = new TextureRegion(ground);
         this.pausebtnActive = new Texture("Button_62.png");
         this.pausebtnInactive = new Texture("Button_63.png");
+        blank = new Texture("blank.png");
 
+        hud = new Hud(game.batch);
         //cams
         //gamecam = new OrthographicCamera(Endless.V_WIDTH / Endless.PPM, Endless.V_HEIGHT / Endless.PPM); used make cam without viewport
         gamecam = new OrthographicCamera();
@@ -169,6 +181,15 @@ public class PlayScreen implements Screen {
 
         player.definePlayer(world);
 
+        viewport = new FitViewport(Endless.V_WIDTH, Endless.V_HEIGHT, new OrthographicCamera());
+
+        stage = new Stage(viewport, game.batch);
+
+
+        //gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0); doesn't seem ot be needed
+        //getWorldWidth breaks the game too
+
+
         music = manager.get("music/main.mp3", Music.class);
         music.setLooping(true);
         music.setVolume(0.3f);
@@ -189,8 +210,14 @@ public class PlayScreen implements Screen {
             player.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2body.getWorldCenter(), true);
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -2)
             player.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2body.getWorldCenter(), true);
-        if (Gdx.input.isKeyPressed(Input.Keys.UP))// && player.b2body.getLinearVelocity().x >= -2)
-            player.b2body.applyLinearImpulse(new Vector2(0, 0.25f), player.b2body.getWorldCenter(), true);
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) && player.b2body.getLinearVelocity().x >= -2) //comment && code out for flying to test game
+            player.b2body.applyLinearImpulse(new Vector2(0, 0.15f), player.b2body.getWorldCenter(), true);
+
+        if (Gdx.input.isTouched()) {
+            if (Gdx.input.getX() < Gdx.graphics.getWidth() / 2){
+                player.b2body.applyLinearImpulse(new Vector2(0, 0.15f), player.b2body.getWorldCenter(), true);
+            }
+        }
 
     }
 
@@ -200,11 +227,23 @@ public class PlayScreen implements Screen {
     public void update(float dt) {
         //handle user input first
         handleInput(dt);
-        //player.update(dt);
+        player.update(dt);
 
         //takes 1 step in the physics simulation(60 times per second)
         world.step(1 / 60f, 6, 2);
 
+        hud.update(dt);
+
+        //THIS IS THE LOGIC TO "DAMAGE" THE HERO.
+        // add some number to var damage, in the example above
+        // the hero's life will decrease a little every 3 seconds.
+        if(hud.scoreImplement == 1){
+            //damage += 0.005f;
+        }
+
+        if(player.b2body.getPosition().y <= -1){
+            player.setPlayerIsDead();
+        }
 
         //add code to update player and enemies
 
@@ -216,7 +255,7 @@ public class PlayScreen implements Screen {
         gamecam.update();
         //tell our renderer to draw only what our camera can see in our game world.
         //add for loop that will have all of the levels draw themselves in the right range
-        //System.out.println(gamecam.position);
+        System.out.println(gamecam.position);
 
         if ( (int) (area2NewEnd)  < (int) player.b2body.getPosition().x && destroy) {
             levels.get(0).dispose();
@@ -257,10 +296,10 @@ public class PlayScreen implements Screen {
         //Clear the game screen with Black
         update(delta);
 
-        Gdx.gl.glClearColor(0, 0, 0, 0);
+        Gdx.gl.glClearColor(0.13f, 0.14f, 0.19f, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-
+        hud.stage.draw();
 
         game.batch.setProjectionMatrix(gamecam.combined);
 
@@ -282,8 +321,21 @@ public class PlayScreen implements Screen {
         //gamecam.update();
         game.batch.begin();
 
-        game.batch.draw(pausebtnInactive, Endless.V_WIDTH / 2 - PAUSE_WIDTH / 2, Endless.V_HEIGHT - 90,
+        game.batch.draw(pausebtnInactive, gamecam.position.x - 0.1f, gamecam.position.y + 0.7f,
                 PAUSE_WIDTH, PAUSE_HEIGHT);
+
+        game.batch.draw(blank, gamecam.position.x - 1.1f, gamecam.position.y + 0.82f,
+                health - damage, 0.15f);
+
+        // Conditions to GAME OVER:
+        // 1 - the player falls,
+        // 2 - the health goes 0.
+        // feel free to add what you want in this IF STATEMENT.
+        if(player.getState().toString() == Player.State.DEAD.toString() || damage >= 0.7f){
+            game.batch.end();
+            game.setScreen(new GameOverScreen(this.game, this.manager, hud.score, game.batch));
+            return;
+        }
 
         //game.batch.draw('player', (int)playerX, (int)playerY);
         //player.draw(game.batch);
