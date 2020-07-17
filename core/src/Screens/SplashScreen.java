@@ -1,29 +1,22 @@
 package Screens;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.Endless;
 
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
 
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
-/**
- * Splash screen for drop game, displays a fading logo then redirects user to main menu screen
- *
- * @author Jake Barnby
- *
- * 5 February 2015
- *
- */
 public class SplashScreen implements Screen {												//Resolver for GPGS events
     private Texture texture = new Texture(Gdx.files.internal("splashlogo.png"));    	//Load splash logo image
     private Image splashImage = new Image(texture);											//Create image from texture of splash logo

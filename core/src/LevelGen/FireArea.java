@@ -60,9 +60,9 @@ public class FireArea extends Level {
         CircleShape shape = new CircleShape();
         fireLocation = previousEnd;
 
-       for (int i = 0; i < areaSize; i++) {
-           fireSpacing = (float) (Math.random() * (fireMax - fireMin + 1) + fireMin);
-           fireLocation += fireSpacing; //make fireSpacing random later on
+        for (int i = 0; i < areaSize; i++) {
+            fireSpacing = (float) (Math.random() * (fireMax - fireMin + 1) + fireMin);
+            fireLocation += fireSpacing; //make fireSpacing random later on
             if (fireLocation > newEnd - fireBufferSpace) {//make new minus the spacing if there are holes in the level area
                 break;
             }
@@ -77,5 +77,3 @@ public class FireArea extends Level {
         }
     }
 }
-
-

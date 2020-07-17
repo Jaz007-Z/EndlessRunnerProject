@@ -20,7 +20,7 @@ public class Level {
     protected float newVerticality;
     protected float previousEnd;
     protected float newEnd;
-     //because hx for a polygon acts like a radius, this is the ground length divided by 2 "D2"
+
 
     //textures
     protected Texture ground;
@@ -105,16 +105,13 @@ public class Level {
         //static creation for testing
         /*Body b2bodyT;
         BodyDef bdefT = new BodyDef();
-
         bdefT.position.set(0 / Endless.PPM, -60 / Endless.PPM); //position of the polygon
         bdefT.type = BodyDef.BodyType.StaticBody;
         b2bodyT = world.createBody(bdefT);
-
         FixtureDef fdefT = new FixtureDef();
         //makes a box. It can be a straight line like now or vertical. hx is length, hy is height. vector2's x sets new center for box relative to position.
         PolygonShape groundShapeT = new PolygonShape();
         groundShapeT.setAsBox(50 / Endless.PPM, 0 / Endless.PPM, new Vector2(50 / Endless.PPM, 0 / Endless.PPM), 0 / Endless.PPM);
-
         fdefT.shape = groundShapeT;
         b2bodyT.createFixture(fdefT).setUserData(this);*/
 
