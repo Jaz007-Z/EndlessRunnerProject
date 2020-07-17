@@ -1,25 +1,19 @@
 package LevelGen;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.PolygonRegion;
-import com.badlogic.gdx.graphics.g2d.PolygonSprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.EarClippingTriangulator;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Endless;
 
 public class FireArea extends Level {
 
 
-    PolygonSprite polySprite;
+
 
     public FireArea(World world) {
         super(world);
@@ -44,37 +38,15 @@ public class FireArea extends Level {
             groundShape.setAsBox(groundLengthD2 / Endless.PPM, 1 / Endless.PPM, new Vector2(groundLengthD2 / Endless.PPM, 0 / Endless.PPM), 0 / Endless.PPM);
 
             fdef.shape = groundShape;
-
-            Fixture fixture = b2body.createFixture(fdef);
-            fixture.setUserData(this);
+            b2body.createFixture(fdef).setUserData(this);
+            bodies.add(b2body);
 
             previousEnd = newEnd;
             newEnd = previousEnd + (groundLengthD2 * 2);
 
-            if (i == 0)
-                generateFire(previousEnd, newEnd);
-
-            Vector2 mTmp = new Vector2();
-            PolygonShape shape = (PolygonShape) fixture.getShape();
-            int vertexCount = shape.getVertexCount();
-            float[] vertices = new float[vertexCount * 2];
-            for (int k = 0; k < vertexCount; k++) {
-                shape.getVertex(k, mTmp);
-                mTmp.rotate(b2body.getAngle()* MathUtils.radiansToDegrees);
-                mTmp.add(b2body.getPosition());
-                vertices[k * 2] = mTmp.x * Endless.PPM;
-                vertices[k * 2 + 1] = mTmp.y * Endless.PPM;
-            }
-            short triangles[] = new EarClippingTriangulator().computeTriangles(vertices).toArray();
-            Texture ground = new Texture("ground.png");
-            ground.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-            TextureRegion groundRegion = new TextureRegion(ground);
-            PolygonRegion polyGround = new PolygonRegion(groundRegion, vertices, triangles);
-            polySprite = new PolygonSprite(polyGround);
-
+            //if (i == 0)
+            generateFire(previousEnd, newEnd);
         }
-
-
     }
 
 
@@ -101,14 +73,7 @@ public class FireArea extends Level {
             shape.setRadius(5 / Endless.PPM);
             fdefFire.shape = shape;
             b2Fire.createFixture(fdefFire).setUserData(this);
+            bodies.add(b2Fire);
         }
-
-
-    }
-
-    public static PolygonSprite getPoly() {
-        return polySprite;
     }
 }
-
-

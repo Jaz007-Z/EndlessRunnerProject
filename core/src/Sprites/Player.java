@@ -17,10 +17,13 @@ import com.mygdx.game.Endless;
 
 import Screens.PlayScreen;
 
+import static com.badlogic.gdx.graphics.g2d.Animation.PlayMode.LOOP;
+import static com.badlogic.gdx.graphics.g2d.Animation.PlayMode.LOOP_PINGPONG;
+
 
 public class Player extends Sprite {
 
-    public enum State { FALLING, JUMPING, RUNNING, DEAD, STANDING }
+    public enum State { FALLING, JUMPING, RUNNING, DEAD}
     public State currentState;
     public State previousState;
 
@@ -48,13 +51,13 @@ public class Player extends Sprite {
 
         frames.add(new TextureRegion(screen.getAtlas().findRegion("Run1m"), 0,0,32,32));
         frames.add(new TextureRegion(screen.getAtlas().findRegion("Run2m"), 0,32,32,32));
-        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run3m"),0,64,16,32));
-        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run4m"),0,96,16,32));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run3m"),0,64,32,32));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run4m"),0,96,32,32));
         frames.add(new TextureRegion(screen.getAtlas().findRegion("Run5m"),0,128,32,32));
         frames.add(new TextureRegion(screen.getAtlas().findRegion("Run6m"),0,160,32,32));
         frames.add(new TextureRegion(screen.getAtlas().findRegion("Run7m"),0,192,32,32));
         frames.add(new TextureRegion(screen.getAtlas().findRegion("Run8m"),0,224,32,32));
-        screen.playerRun = new Animation(.7f, frames);
+        screen.playerRun = new Animation(0.083333f, frames, LOOP_PINGPONG);
 
         frames.clear();
 
@@ -73,7 +76,7 @@ public class Player extends Sprite {
         //screen.playerDead = new Animation(0.1f, frames);
 
         definePlayer(world);
-        setBounds(0, 0, 32 / Endless.PPM, 32 / Endless.PPM);
+        setBounds(0, 1, 32 / Endless.PPM, 32 / Endless.PPM);
         setRegion(screen.playerFall);
     }
 
@@ -81,9 +84,9 @@ public class Player extends Sprite {
 
     public void update(float dt){
 
-        if(currentState == State.RUNNING) {
-            b2body.applyLinearImpulse(new Vector2(.04f, 0f), b2body.getWorldCenter(), true);
-        }
+        //if(currentState == State.RUNNING) {
+        //    b2body.applyLinearImpulse(new Vector2(.04f, 0f), b2body.getWorldCenter(), true);
+        //}
        //b2body.applyLinearImpulse(new Vector2(.015f, 0f ) , b2body.getWorldCenter(), true); // keep applying movement
             // keep applying movement
         //update our sprite to correspond with the position of our Box2D body
@@ -104,11 +107,11 @@ public class Player extends Sprite {
         else if((b2body.getLinearVelocity().y > 0 && currentState == State.JUMPING) || (b2body.getLinearVelocity().y < 0 && previousState == State.JUMPING))
             return State.JUMPING;
             //if none of these return then he must be running
-        else if(b2body.getLinearVelocity().x != 0)
+        else //if(b2body.getLinearVelocity().x != 0)
             return State.RUNNING;
         //if none of these return then he must be standing
-        else
-            return null;
+        /*else
+            return State.RUNNING;*/
     }
 
 
@@ -120,9 +123,9 @@ public class Player extends Sprite {
 
         //depending on the state, get corresponding animation keyFrame.
         switch(currentState){
-            /*case DEAD:
+            case DEAD:
                 region = (TextureRegion) screen.playerDead.getKeyFrame(getStateTimer());
-                break;*/
+                break;
             case FALLING:
                 region = (TextureRegion) screen.playerFall;
                 break;
