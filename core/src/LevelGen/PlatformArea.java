@@ -26,17 +26,17 @@ public class PlatformArea extends Level {
 
 
         //making in a loop for real procedural generation
-        for (int i = 0; i < areaSize; i++) {
+        for (int i = 0; i < areaSizePlatform; i++) {
             bdef.position.set(newEnd / Endless.PPM, -60 / Endless.PPM); //position of the polygon
             bdef.type = BodyDef.BodyType.StaticBody;
             b2body = world.createBody(bdef);
 
             //makes a box. It can be a straight line like now or vertical. hx is length, hy is height. vector2's x sets new center for box relative to position.
-
-            groundShape.setAsBox(platformWidthD2 / Endless.PPM, platformHeight / Endless.PPM, new Vector2(platformWidthD2 / Endless.PPM, 0 / Endless.PPM), 0 / Endless.PPM);
+            groundShape.setAsBox(platformWidthD2 / Endless.PPM, platformHeight / Endless.PPM, new Vector2(platformWidthD2 / Endless.PPM, -2 / Endless.PPM), 0 / Endless.PPM);
 
             fdef.shape = groundShape;
             b2body.createFixture(fdef).setUserData(this);
+            bodies.add(b2body);
 
             previousEnd = newEnd;
 
@@ -46,9 +46,6 @@ public class PlatformArea extends Level {
             newEnd = previousEnd + (platformWidthD2 * 2) + platformSpacing;
             //newEnd = previousEnd + (groundLengthD2 * 2);
 
-
-            //maybe have it return world to keep it as one world, or have multiple worlds so disposal is easy if it causes no issues
-            //return world;
         }
     }
 

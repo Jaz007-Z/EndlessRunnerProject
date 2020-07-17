@@ -7,7 +7,10 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Endless;
+
+import java.util.ArrayList;
 
 public class Level {
 
@@ -17,7 +20,7 @@ public class Level {
     protected float newVerticality;
     protected float previousEnd;
     protected float newEnd;
-    protected float groundLengthD2; //because hx for a polygon acts like a radius, this is the ground length divided by 2 "D2"
+
 
     //textures
     protected Texture ground;
@@ -25,15 +28,20 @@ public class Level {
     protected Texture platform;
 
     //area size(s)
-    int areaSize = 10;
+    int areaSize = 5;
+    int areaSizePlatform = 7;
+    protected float groundLengthD2 = 75;
 
+
+    //body array for disposal
+    ArrayList<Body> bodies;
 
     //fireVariables
     float fireLocation;
     float fireSpacing;
-    float fireMax = 65;; //maximum fire spacing
-    float fireMin = 25;; //minimum fire spacing
-    float fireBufferSpace = 15;; //space before end of a ground that fire can't appear
+    float fireMax = 75;; //maximum fire spacing
+    float fireMin = 40;; //minimum fire spacing
+    float fireBufferSpace = 20;; //space before end of a ground that fire can't appear
 
 
     //holeVariables
@@ -66,9 +74,9 @@ public class Level {
         this.world = world;
         newEnd = -70;
         spacing = 10;
-        groundLengthD2 = 50;
         //fire variables
         fireSpacing = 30;
+        bodies = new ArrayList<Body>();
 
 
     }
@@ -97,16 +105,13 @@ public class Level {
         //static creation for testing
         /*Body b2bodyT;
         BodyDef bdefT = new BodyDef();
-
         bdefT.position.set(0 / Endless.PPM, -60 / Endless.PPM); //position of the polygon
         bdefT.type = BodyDef.BodyType.StaticBody;
         b2bodyT = world.createBody(bdefT);
-
         FixtureDef fdefT = new FixtureDef();
         //makes a box. It can be a straight line like now or vertical. hx is length, hy is height. vector2's x sets new center for box relative to position.
         PolygonShape groundShapeT = new PolygonShape();
         groundShapeT.setAsBox(50 / Endless.PPM, 0 / Endless.PPM, new Vector2(50 / Endless.PPM, 0 / Endless.PPM), 0 / Endless.PPM);
-
         fdefT.shape = groundShapeT;
         b2bodyT.createFixture(fdefT).setUserData(this);*/
 
@@ -128,20 +133,23 @@ public class Level {
 
             fdef.shape = groundShape;
             b2body.createFixture(fdef).setUserData(this);
+            bodies.add(b2body);
 
             previousEnd = newEnd;
 
-            newEnd = previousEnd + (groundLengthD2 * 2) + spacing;
+            newEnd = previousEnd + (groundLengthD2 * 2) ;
             //newEnd = previousEnd + (groundLengthD2 * 2);
-
-
-            //maybe have it return world to keep it as one world, or have multiple worlds so disposal is easy if it causes no issues
-            //return world;
         }
     }
 
+
+
     public void dispose() {
-        this.world.dispose();
+        for (Body b : bodies) {
+            world.destroyBody(b);
+        }
+        bodies.clear();
+        System.out.println("bodies dispose");
     }
 
 

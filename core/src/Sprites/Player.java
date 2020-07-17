@@ -1,7 +1,7 @@
 package Sprites;
 
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -10,104 +10,135 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.EdgeShape;
-import com.badlogic.gdx.physics.box2d.Filter;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Endless;
 
+import Screens.PlayScreen;
 
-public class Player extends Sprite{
-    public enum State { FALLING, JUMPING, STANDING, RUNNING, HIT, ATTACK, DEAD };
+import static com.badlogic.gdx.graphics.g2d.Animation.PlayMode.LOOP;
+import static com.badlogic.gdx.graphics.g2d.Animation.PlayMode.LOOP_PINGPONG;
+
+
+public class Player extends Sprite {
+
+    public enum State { FALLING, JUMPING, RUNNING, DEAD}
     public State currentState;
     public State previousState;
 
     public World world;
     public Body b2body;
-    private TextureRegion playerStand;
-    private Animation playerRun;
-    private TextureRegion playerJump;
-    private TextureRegion playerDead;
+
+    AssetManager manager;
 
     private boolean playerIsDead;
-    private boolean timeToRedefinePlayer;
     private float stateTimer;
-    private boolean runningRight;
 
-    //private PlayScreen screen;
+    private PlayScreen screen;
 
 
-    public Player(){
-        //initialize default values
-        //this.screen = screen;
-        //this.world = screen.getWorld();
-        /*Array<TextureRegion> frames = new Array<TextureRegion>();
-        for(int i = 1; i < 4; i++)
-            frames.add(new TextureRegion(getTexture(), i * 16, 0, 16, 16));*/
+    public Player(PlayScreen screen, AssetManager manager){
+        this.screen = screen;
+        this.world = screen.world;
+        this.manager = manager;
+        currentState = State.RUNNING;
+        previousState = State.RUNNING;
+        stateTimer = 0;
 
-        //define mario in Box2d
-        //definePlayer();
+        Array<TextureRegion> frames = new Array<>();
 
-        //setBounds(0, 0, 16 / Endless.PPM, 16 / Endless.PPM);
-        //setRegion(playerStand);
+
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run1m"), 0,0,32,32));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run2m"), 0,32,32,32));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run3m"),0,64,32,32));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run4m"),0,96,32,32));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run5m"),0,128,32,32));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run6m"),0,160,32,32));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run7m"),0,192,32,32));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run8m"),0,224,32,32));
+        screen.playerRun = new Animation(0.083333f, frames, LOOP_PINGPONG);
+
+        frames.clear();
+
+        screen.playerJump = new TextureRegion(new Texture("jump1.png"));
+
+        screen.playerFall = new TextureRegion(new Texture("fall1.png"));
+
+
+        /*frames.add(new TextureRegion(new Texture("die1.png")));
+        frames.add(new TextureRegion(new Texture("die2.png")));
+        frames.add(new TextureRegion(new Texture("die3.png")));
+        frames.add(new TextureRegion(new Texture("die4.png")));
+        frames.add(new TextureRegion(new Texture("die5.png")));*/
+
+
+        //screen.playerDead = new Animation(0.1f, frames);
+
+        definePlayer(world);
+        setBounds(0, 1, 32 / Endless.PPM, 32 / Endless.PPM);
+        setRegion(screen.playerFall);
     }
+
+
+
+    public void update(float dt){
+
+        //if(currentState == State.RUNNING) {
+        //    b2body.applyLinearImpulse(new Vector2(.04f, 0f), b2body.getWorldCenter(), true);
+        //}
+       //b2body.applyLinearImpulse(new Vector2(.015f, 0f ) , b2body.getWorldCenter(), true); // keep applying movement
+            // keep applying movement
+        //update our sprite to correspond with the position of our Box2D body
+        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+        setRegion(getFrame(dt));
+
+    }
+
 
     public State getState(){
         //Test to Box2D for velocity on the X and Y-Axis
-        //if mario is going positive in Y-Axis he is jumping... or if he just jumped and is falling remain in jump state
+        //if player is going positive in Y-Axis he is jumping... or if he just jumped and is falling remain in jump state
         if(playerIsDead)
             return State.DEAD;
+            //if Y-Axis is negative, player is falling
+        else if(0 > b2body.getLinearVelocity().y)
+            return State.FALLING;
         else if((b2body.getLinearVelocity().y > 0 && currentState == State.JUMPING) || (b2body.getLinearVelocity().y < 0 && previousState == State.JUMPING))
             return State.JUMPING;
-            //if negative in Y-Axis mario is falling
-        else if(b2body.getLinearVelocity().y < 0)
-            return State.FALLING;
-            //if mario is positive or negative in the X axis he is running
-        else if(b2body.getLinearVelocity().x != 0)
+            //if none of these return then he must be running
+        else //if(b2body.getLinearVelocity().x != 0)
             return State.RUNNING;
-            //if none of these return then he must be standing
-        else
-            return State.STANDING;
+        //if none of these return then he must be standing
+        /*else
+            return State.RUNNING;*/
     }
 
+
     public TextureRegion getFrame(float dt){
-        //get marios current state. ie. jumping, running, standing...
+        //get player current state. ie. jumping, running, falling, etc.
         currentState = getState();
 
-        TextureRegion region = new TextureRegion();
+        TextureRegion region;
 
         //depending on the state, get corresponding animation keyFrame.
         switch(currentState){
             case DEAD:
-                region = playerDead;
-                break;
-            case JUMPING:
-                region = playerJump;
-                break;
-            case RUNNING:
-                //region = playerRun.getKeyFrame(stateTimer, true);
+                region = (TextureRegion) screen.playerDead.getKeyFrame(getStateTimer());
                 break;
             case FALLING:
-            case STANDING:
-            default:
-                region = playerStand;
+                region = (TextureRegion) screen.playerFall;
                 break;
+            case JUMPING:
+                region = (TextureRegion) screen.playerJump;
+                break;
+            case RUNNING:
+            default:
+                region = (TextureRegion) screen.playerRun.getKeyFrame(stateTimer, true);
+                break;
+
         }
 
-        //if mario is running left and the texture isnt facing left... flip it.
-        if((b2body.getLinearVelocity().x < 0 || !runningRight) && !region.isFlipX()){
-            region.flip(true, false);
-            runningRight = false;
-        }
-
-        //if mario is running right and the texture isnt facing right... flip it.
-        else if((b2body.getLinearVelocity().x > 0 || runningRight) && region.isFlipX()){
-            region.flip(true, false);
-            runningRight = true;
-        }
 
         //if the current state is the same as the previous state increase the state timer.
         //otherwise the state has changed and we need to reset timer.
@@ -117,42 +148,9 @@ public class Player extends Sprite{
         //return our final adjusted frame
         return region;
 
-    }
-
-    public void update(float dt){
-
-
-        b2body.applyLinearImpulse(new Vector2(.015f, 0f ) , b2body.getWorldCenter(), true); // keep applying movement
-        //update our sprite to correspond with the position of our Box2D body
-        /*setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
-        //update sprite with the correct frame depending on marios current action
-        setRegion(getFrame(dt));
-        if(timeToRedefinePlayer)
-            redefinePlayer();*/
-        //commented out code that makes it crash. We might need to start multi-threading. I'm not sure why it crashed
-        //but from what Nathanial said maybe we need to think about performance more
 
     }
 
-    public void redefinePlayer(){
-        Vector2 position = b2body.getPosition();
-        world.destroyBody(b2body);
-
-        BodyDef bdef = new BodyDef();
-        bdef.position.set(position);
-        bdef.type = BodyDef.BodyType.DynamicBody;
-        b2body = world.createBody(bdef);
-
-        FixtureDef fdef2 = new FixtureDef();
-        CircleShape shape = new CircleShape();
-        shape.setRadius(6 / Endless.PPM);
-
-        fdef2.shape = shape;
-        b2body.createFixture(fdef2).setUserData(this);
-
-        timeToRedefinePlayer = false;
-
-    }
 
     public void definePlayer(World world){
         //Body b2body2; needed to be class variable not a seperate one here
@@ -175,8 +173,21 @@ public class Player extends Sprite{
     
     public void setPlayerIsDead() {playerIsDead = true;}
 
+    public void jump(){
+        if ( currentState != State.JUMPING ) {
+            b2body.applyLinearImpulse(new Vector2(0, 2f), b2body.getWorldCenter(), true);
+            currentState = State.JUMPING;
+        }
+    }
+
+    public float getStateTimer(){
+        return stateTimer;
+    }
+
+
+    public void setPlayerIsDead() {playerIsDead = true;}
+
     public void draw(Batch batch){
         super.draw(batch);
     }
-
 }

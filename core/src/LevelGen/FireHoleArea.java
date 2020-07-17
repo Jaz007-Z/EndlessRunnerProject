@@ -1,3 +1,4 @@
+
 package LevelGen;
 
 import com.badlogic.gdx.math.Vector2;
@@ -34,6 +35,7 @@ public class FireHoleArea extends Level  {
 
             fdef.shape = groundShape;
             b2body.createFixture(fdef).setUserData(this);
+            bodies.add(b2body);
 
 
 
@@ -44,11 +46,8 @@ public class FireHoleArea extends Level  {
             newEnd = previousEnd + (groundLengthD2 * 2) + holeSpacing;
 
             //if (i == 0 || i == 1)
-                generateFire(previousEnd, newEnd - holeSpacing);
+              generateFire(previousEnd, newEnd - holeSpacing);
 
-
-        }
-    }
 
 
     public void generateFire(float previousEnd, float newEnd) {
@@ -74,6 +73,7 @@ public class FireHoleArea extends Level  {
             shape.setRadius(5 / Endless.PPM);
             fdefFire.shape = shape;
             b2Fire.createFixture(fdefFire).setUserData(this);
+            bodies.add(b2Fire);
         }
     }
 
