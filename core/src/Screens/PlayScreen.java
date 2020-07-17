@@ -93,7 +93,6 @@ public class PlayScreen implements Screen {
     //HUD AND HEALTH BAR
     private Hud hud;
     Texture blank;
-    float damage = 0;
     float health = 0.7f;
     private static final int PAUSE_WIDTH = 50;
     private static final int PAUSE_HEIGHT = 50;
@@ -325,13 +324,13 @@ public class PlayScreen implements Screen {
                 PAUSE_WIDTH, PAUSE_HEIGHT);
 
         game.batch.draw(blank, gamecam.position.x - 1.1f, gamecam.position.y + 0.82f,
-                health - damage, 0.15f);
+                health, 0.15f);
 
         // Conditions to GAME OVER:
         // 1 - the player falls,
         // 2 - the health goes 0.
         // feel free to add what you want in this IF STATEMENT.
-        if(player.getState().toString() == Player.State.DEAD.toString() || damage >= 0.7f){
+        if(player.getState().toString() == Player.State.DEAD.toString() || health <= 0){
             game.batch.end();
             game.setScreen(new GameOverScreen(this.game, this.manager, hud.score, game.batch));
             return;
