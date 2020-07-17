@@ -169,7 +169,9 @@ public class Player extends Sprite {
 
 
     }
-
+    
+    
+    public void setPlayerIsDead() {playerIsDead = true;}
 
     public void jump(){
         if ( currentState != State.JUMPING ) {
