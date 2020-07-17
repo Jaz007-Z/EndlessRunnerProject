@@ -53,11 +53,11 @@ public class Player extends Sprite {
         frames.add(new TextureRegion(screen.getAtlas().findRegion("Run2m"), 0,32,32,32));
         frames.add(new TextureRegion(screen.getAtlas().findRegion("Run3m"),0,64,32,32));
         frames.add(new TextureRegion(screen.getAtlas().findRegion("Run4m"),0,96,32,32));
-        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run5m"),0,128,32,32));
-        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run6m"),0,160,32,32));
-        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run7m"),0,192,32,32));
-        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run8m"),0,224,32,32));
-        screen.playerRun = new Animation(0.083333f, frames, LOOP_PINGPONG);
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run5m"),0,129,32,32));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run6m"),0,161,32,32));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run7m"),0,193,32,32));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("Run8m"),0,225,32,32));
+        screen.playerRun = new Animation(0.083333f, frames, LOOP);
 
         frames.clear();
 
@@ -66,14 +66,14 @@ public class Player extends Sprite {
         screen.playerFall = new TextureRegion(new Texture("fall1.png"));
 
 
-        /*frames.add(new TextureRegion(new Texture("die1.png")));
+        frames.add(new TextureRegion(new Texture("die1.png")));
         frames.add(new TextureRegion(new Texture("die2.png")));
         frames.add(new TextureRegion(new Texture("die3.png")));
         frames.add(new TextureRegion(new Texture("die4.png")));
-        frames.add(new TextureRegion(new Texture("die5.png")));*/
+        frames.add(new TextureRegion(new Texture("die5.png")));
 
 
-        //screen.playerDead = new Animation(0.1f, frames);
+        screen.playerDead = new Animation(0.1f, frames);
 
         definePlayer(world);
         setBounds(0, 1, 32 / Endless.PPM, 32 / Endless.PPM);
@@ -165,7 +165,7 @@ public class Player extends Sprite {
 
         fdef2.shape = shape;
         b2body.createFixture(fdef2).setUserData(this);
-        b2body.applyLinearImpulse(new Vector2(.7f, 0f ) , b2body.getWorldCenter(), true); //start movement off for one frame
+        //b2body.applyLinearImpulse(new Vector2(.7f, 0f ) , b2body.getWorldCenter(), true); //start movement off for one frame
 
 
     }

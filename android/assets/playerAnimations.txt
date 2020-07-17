@@ -1,0 +1,145 @@
+playerSpriteSheet.png
+size: 938, 482
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+die1
+  rotate: false
+  xy: 417, 312
+  size: 151, 170
+  orig: 151, 170
+  offset: 0, 0
+  index: -1
+die2
+  rotate: false
+  xy: 212, 151
+  size: 134, 155
+  orig: 134, 155
+  offset: 0, 0
+  index: -1
+die3
+  rotate: false
+  xy: 568, 312
+  size: 185, 142
+  orig: 185, 142
+  offset: 0, 0
+  index: -1
+die4
+  rotate: false
+  xy: 497, 0
+  size: 188, 70
+  orig: 188, 70
+  offset: 0, 0
+  index: -1
+die5
+  rotate: false
+  xy: 0, 151
+  size: 212, 54
+  orig: 212, 54
+  offset: 0, 0
+  index: -1
+fall1
+  rotate: false
+  xy: 0, 312
+  size: 137, 162
+  orig: 137, 162
+  offset: 0, 0
+  index: -1
+fall2
+  rotate: false
+  xy: 621, 151
+  size: 136, 161
+  orig: 136, 161
+  offset: 0, 0
+  index: -1
+jump1
+  rotate: false
+  xy: 274, 312
+  size: 143, 169
+  orig: 143, 169
+  offset: 0, 0
+  index: -1
+jump2
+  rotate: false
+  xy: 137, 312
+  size: 137, 163
+  orig: 137, 163
+  offset: 0, 0
+  index: -1
+run1
+  rotate: false
+  xy: 167, 0
+  size: 108, 141
+  orig: 108, 141
+  offset: 0, 0
+  index: -1
+run2
+  rotate: false
+  xy: 804, 0
+  size: 130, 134
+  orig: 130, 134
+  offset: 0, 0
+  index: -1
+run3
+  rotate: false
+  xy: 275, 0
+  size: 107, 146
+  orig: 107, 146
+  offset: 0, 0
+  index: -1
+run4
+  rotate: false
+  xy: 81, 0
+  size: 86, 151
+  orig: 86, 151
+  offset: 0, 0
+  index: -1
+run5
+  rotate: false
+  xy: 685, 0
+  size: 119, 139
+  orig: 119, 139
+  offset: 0, 0
+  index: -1
+run6
+  rotate: false
+  xy: 480, 151
+  size: 141, 153
+  orig: 141, 153
+  offset: 0, 0
+  index: -1
+run7
+  rotate: false
+  xy: 382, 0
+  size: 115, 140
+  orig: 115, 140
+  offset: 0, 0
+  index: -1
+run8
+  rotate: false
+  xy: 0, 0
+  size: 81, 142
+  orig: 81, 142
+  offset: 0, 0
+  index: -1
+slide1
+  rotate: false
+  xy: 757, 151
+  size: 136, 161
+  orig: 136, 161
+  offset: 0, 0
+  index: -1
+slide2
+  rotate: false
+  xy: 753, 312
+  size: 185, 142
+  orig: 185, 142
+  offset: 0, 0
+  index: -1
+slide3
+  rotate: false
+  xy: 346, 151
+  size: 134, 155
+  orig: 134, 155
+  offset: 0, 0
+  index: -1

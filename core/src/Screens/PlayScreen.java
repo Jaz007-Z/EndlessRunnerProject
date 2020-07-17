@@ -88,7 +88,7 @@ public class PlayScreen implements Screen {
 
 
     public TextureRegionDrawable background = new TextureRegionDrawable((new TextureRegion(new Texture("playscreen_background.jpg"))));
-    private Texture ground;
+    private TextureRegionDrawable ground;
     private final Texture pausebtnActive;
     private final Texture pausebtnInactive;
     //private static final float PAUSE_WIDTH = 0.3f;
@@ -117,7 +117,7 @@ public class PlayScreen implements Screen {
         this.game = game;
 
         //textures
-        ground = new Texture("groundTestPNG.png");
+        ground = new TextureRegionDrawable(new Texture("groundTestPNG.png"));
         pausebtnActive = new Texture("Button_62.png");
         pausebtnInactive = new Texture("Button_63.png");
         blank = new Texture("blank.png");
@@ -128,7 +128,7 @@ public class PlayScreen implements Screen {
         gamePort = new FitViewport(Endless.V_WIDTH / Endless.PPM, Endless.V_HEIGHT / Endless.PPM, gamecam);
 
         //create our Box2D world, setting no gravity in X, -10 gravity in Y, and allow bodies to sleep
-        world = new World(new Vector2(0, -5), true); //lowered gravity from -10 to show effect
+        world = new World(new Vector2(1, -5), true); //lowered gravity from -10 to show effect
         //allows for debug lines of our box2d world.
         b2dr = new Box2DDebugRenderer();
 
@@ -234,9 +234,9 @@ public class PlayScreen implements Screen {
         //THIS IS THE LOGIC TO "DAMAGE" THE HERO.
         // add some number to var damage, in the example above
         // the hero's life will decrease a little every 3 seconds.
-        if(hud.scoreImplement == 1){
-            damage += 0.005f;
-        }
+        //if(hud.scoreImplement == 1){
+        //    damage += 0.005f;
+        //}
 
         if(player.b2body.getPosition().y <= -1){
             player.setPlayerIsDead();
