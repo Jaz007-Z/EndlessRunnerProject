@@ -74,13 +74,6 @@ public class Hud {
 
         this.stage.addActor(table);
 
-        Table tableHealth = new Table();
-        tableHealth.top();
-        tableHealth.setFillParent(true);
-        this.healthLabel = new Label("HEALTH", new LabelStyle(new BitmapFont(), Color.WHITE));
-        tableHealth.add(this.healthLabel).padLeft(-300f).padTop(5f);
-        this.stage.addActor(tableHealth);
-
     }
 
     public void update(float dt) {
