@@ -43,8 +43,8 @@ public class HoleArea extends Level {
             holeLocation += holeSpacing; //makes the space between holes random within set bounds
 
             newEnd = previousEnd + (groundLengthD2 * 2) + holeSpacing;
-            //newEnd = previousEnd + (groundLengthD2 * 2);
 
+            generateCoin(previousEnd, newEnd);
         }
     }
 

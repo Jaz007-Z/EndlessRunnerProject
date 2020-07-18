@@ -44,8 +44,8 @@ public class PlatformArea extends Level {
             platformLocation += platformSpacing; //makes the space between holes random within set bounds
 
             newEnd = previousEnd + (platformWidthD2 * 2) + platformSpacing;
-            //newEnd = previousEnd + (groundLengthD2 * 2);
 
+            generateCoin(previousEnd, newEnd);
         }
     }
 

@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -30,18 +31,28 @@ public class Level {
     //area size(s)
     int areaSize = 5;
     int areaSizePlatform = 7;
-    protected float groundLengthD2 = 75;
+    protected float groundLengthD2 = 90;
 
 
     //body array for disposal
     ArrayList<Body> bodies;
 
+
+    //fireVariables
+    float coinLocation;
+    float coinSpacing;
+    float coinHeight = -15;
+    float coinMax = 120; //maximum coin spacing
+    float coinMin = 10;; //minimum coin spacing
+    float coinBufferSpace = 0;; //space before end of a ground that coin can't appear
+
+
     //fireVariables
     float fireLocation;
     float fireSpacing;
-    float fireMax = 75;; //maximum fire spacing
-    float fireMin = 40;; //minimum fire spacing
-    float fireBufferSpace = 20;; //space before end of a ground that fire can't appear
+    float fireMax = 120;; //maximum fire spacing
+    float fireMin = 60;; //minimum fire spacing
+    float fireBufferSpace = 40;; //space before end of a ground that fire can't appear
 
 
     //holeVariables
@@ -105,13 +116,16 @@ public class Level {
         //static creation for testing
         /*Body b2bodyT;
         BodyDef bdefT = new BodyDef();
+
         bdefT.position.set(0 / Endless.PPM, -60 / Endless.PPM); //position of the polygon
         bdefT.type = BodyDef.BodyType.StaticBody;
         b2bodyT = world.createBody(bdefT);
+
         FixtureDef fdefT = new FixtureDef();
         //makes a box. It can be a straight line like now or vertical. hx is length, hy is height. vector2's x sets new center for box relative to position.
         PolygonShape groundShapeT = new PolygonShape();
         groundShapeT.setAsBox(50 / Endless.PPM, 0 / Endless.PPM, new Vector2(50 / Endless.PPM, 0 / Endless.PPM), 0 / Endless.PPM);
+
         fdefT.shape = groundShapeT;
         b2bodyT.createFixture(fdefT).setUserData(this);*/
 
@@ -122,7 +136,7 @@ public class Level {
         PolygonShape groundShape = new PolygonShape();
         //fdef.friction = 0.3f;
         //making in a loop for real procedural generation
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < areaSize; i++) {
             bdef.position.set(newEnd / Endless.PPM, -60 / Endless.PPM); //position of the polygon
             bdef.type = BodyDef.BodyType.StaticBody;
             b2body = world.createBody(bdef);
@@ -137,8 +151,37 @@ public class Level {
 
             previousEnd = newEnd;
 
-            newEnd = previousEnd + (groundLengthD2 * 2) ;
+            newEnd = previousEnd + (groundLengthD2 * 2);
+
+            generateCoin(previousEnd, newEnd);
             //newEnd = previousEnd + (groundLengthD2 * 2);
+        }
+    }
+
+    public void generateCoin(float previousEnd, float newEnd) {
+
+        Body b2Coin;
+        BodyDef bdefCoin = new BodyDef();
+        bdefCoin.gravityScale = 0;
+        FixtureDef fdefCoin = new FixtureDef();
+        fdefCoin.isSensor = true;
+        CircleShape shape = new CircleShape();
+        coinLocation = previousEnd;
+
+        for (int i = 0; i < areaSize; i++) {
+            coinSpacing = (float) (Math.random() * (coinMax - coinMin + 1) + coinMin);
+            coinLocation += coinSpacing; //make fireSpacing random later on
+            if (coinLocation > newEnd - coinBufferSpace) {//make new minus the spacing if there are holes in the level area
+                break;
+            }
+
+            bdefCoin.position.set(coinLocation / Endless.PPM, coinHeight / Endless.PPM); //position of the polygon
+            bdefCoin.type = BodyDef.BodyType.DynamicBody;
+            b2Coin = world.createBody(bdefCoin);
+            shape.setRadius(3 / Endless.PPM);
+            fdefCoin.shape = shape;
+            b2Coin.createFixture(fdefCoin).setUserData(this);
+            bodies.add(b2Coin);
         }
     }
 
@@ -149,11 +192,6 @@ public class Level {
             world.destroyBody(b);
         }
         bodies.clear();
-        System.out.println("bodies dispose");
     }
-
-
-
-
 
 }
