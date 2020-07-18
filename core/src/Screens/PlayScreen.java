@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -87,15 +88,20 @@ public class PlayScreen implements Screen {
     private Texture ground;
     private Texture pausebtnActive;
     private Texture pausebtnInactive;
-    //private static final float PAUSE_WIDTH = 0.3f;
-    //private static final float PAUSE_HEIGHT = 0.3f;
+    private Texture healthBarContainer;
+    private Texture menuContainer;
+    private static final float PAUSE_WIDTH = 0.3f;
+    private static final float PAUSE_HEIGHT = 0.3f;
 
     //HUD AND HEALTH BAR
     private Hud hud;
     Texture blank;
-    float health = 0.7f;
-    private static final int PAUSE_WIDTH = 50;
-    private static final int PAUSE_HEIGHT = 50;
+    Texture blank2;
+    float health = 0.95f;
+    private final Vector2 mouseInWorld2D = new Vector2();
+    private final Vector3 mouseInWorld3D = new Vector3();
+    private boolean isPaused = false;
+
 
     //testLogs
     private static final String TAG = "MyActivity";
@@ -114,9 +120,12 @@ public class PlayScreen implements Screen {
         //textures
         ground = new Texture("groundTestPNG.png");
         textureRegion = new TextureRegion(ground);
-        this.pausebtnActive = new Texture("Button_62.png");
-        this.pausebtnInactive = new Texture("Button_63.png");
-        blank = new Texture("blank.png");
+        this.pausebtnActive = new Texture("Button_63.png");
+        this.pausebtnInactive = new Texture("Button_62.png");
+        this.healthBarContainer = new Texture("Windows_52.png");
+        this.menuContainer = new Texture("Windows_07.png");
+        blank = new Texture("Windows_50.png");
+        blank2 = new Texture("blank.png");
 
         hud = new Hud(game.batch);
         //cams
@@ -225,20 +234,12 @@ public class PlayScreen implements Screen {
 
     public void update(float dt) {
         //handle user input first
+
         handleInput(dt);
         player.update(dt);
 
         //takes 1 step in the physics simulation(60 times per second)
-        world.step(1 / 60f, 6, 2);
 
-        hud.update(dt);
-
-        //THIS IS THE LOGIC TO "DAMAGE" THE HERO.
-        // add some number to var damage, in the example above
-        // the hero's life will decrease a little every 3 seconds.
-        if(hud.scoreImplement == 1){
-            //damage += 0.005f;
-        }
 
         if(player.b2body.getPosition().y <= -1){
             player.setPlayerIsDead();
@@ -286,6 +287,16 @@ public class PlayScreen implements Screen {
         //System.out.println("End: "+ levels.get(2).getNewEnd() / Endless.PPM);
         //System.out.println("End: " + levels.get(1).getNewEnd() / Endless.PPM);
 
+        //PAUSE CODE
+        if(isPaused){
+            game.pause();
+            world.step(0, 0, 0);
+        }
+        else{
+            game.resume();
+            world.step(1 / 60f, 6, 2);
+            hud.update(dt);
+        }
     }
 
 
@@ -302,7 +313,12 @@ public class PlayScreen implements Screen {
 
         game.batch.setProjectionMatrix(gamecam.combined);
 
-
+        mouseInWorld3D.x = Gdx.input.getX();
+        mouseInWorld3D.y = Gdx.input.getY();
+        mouseInWorld3D.z = 0;
+        gamecam.unproject(mouseInWorld3D);
+        mouseInWorld2D.x = mouseInWorld3D.x;
+        mouseInWorld2D.y = mouseInWorld3D.y;
 
         //renderer our Box2DDebugLines
         b2dr.render(world, gamecam.combined);
@@ -320,11 +336,57 @@ public class PlayScreen implements Screen {
         //gamecam.update();
         game.batch.begin();
 
-        game.batch.draw(pausebtnInactive, gamecam.position.x - 0.1f, gamecam.position.y + 0.7f,
-                PAUSE_WIDTH, PAUSE_HEIGHT);
+        game.batch.draw(healthBarContainer, gamecam.position.x - 1.8f, gamecam.position.y + 0.7f,
+                1.5f, PAUSE_HEIGHT);
 
-        game.batch.draw(blank, gamecam.position.x - 1.1f, gamecam.position.y + 0.82f,
+        game.batch.draw(blank, gamecam.position.x - 1.4f, gamecam.position.y + 0.78f,
                 health, 0.15f);
+
+        //PAUSE BUTTON HANDLING
+        if((mouseInWorld2D.x > gamecam.position.x - 0.1f && mouseInWorld2D.x < gamecam.position.x - 0.1f + PAUSE_WIDTH)&&
+                (mouseInWorld2D.y > gamecam.position.y + 0.6f && mouseInWorld2D.y < gamecam.position.y + 0.6f + PAUSE_HEIGHT)){
+                isPaused = true;
+        }
+
+        //PAUSE MENU
+        if(isPaused){
+            game.batch.draw(pausebtnActive, gamecam.position.x - 0.1f, gamecam.position.y + 0.7f,
+                    PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(menuContainer, gamecam.position.x - 1f, gamecam.position.y - 1f,
+                    2f, 2f);
+            health -= 0.01f;
+            // RESUME BUTTON
+            if((mouseInWorld2D.x > gamecam.position.x - 0.5f && mouseInWorld2D.x < gamecam.position.x - 0.5f +(1)) &&
+                    (mouseInWorld2D.y > gamecam.position.y + 0.36f && mouseInWorld2D.y < gamecam.position.y + 0.36f + 0.3f)
+            ){
+                isPaused = false;
+            }
+            // RESTART BUTTON
+            if((mouseInWorld2D.x > gamecam.position.x - 0.5f && mouseInWorld2D.x < gamecam.position.x - 0.5f +(1)) &&
+                    (mouseInWorld2D.y > gamecam.position.y && mouseInWorld2D.y < gamecam.position.y + 0.3f)
+            ){
+                game.batch.end();
+                this.game.setScreen(new PlayScreen(this.game, this.manager));
+                return;
+            }
+            //EXIT BUTTON
+            if((mouseInWorld2D.x > gamecam.position.x - 0.5f && mouseInWorld2D.x < gamecam.position.x - 0.5f +(1)) &&
+                    (mouseInWorld2D.y > gamecam.position.y - 0.76f && mouseInWorld2D.y < gamecam.position.y - 0.76f + 0.3f)
+            ){
+                Gdx.app.exit();
+            }
+
+        }
+        else{
+            game.batch.draw(pausebtnInactive, gamecam.position.x - 0.1f, gamecam.position.y + 0.7f,
+                    PAUSE_WIDTH, PAUSE_HEIGHT);
+            isPaused = false;
+        }
+
+
+
+
+
 
         // Conditions to GAME OVER:
         // 1 - the player falls,
