@@ -1,4 +1,4 @@
-package com.mygdx.game.Scenes;//
+package Scenes;//
 // Source code recreated from a .class file by IntelliJ IDEA
 // (powered by Fernflower decompiler)
 //
@@ -24,8 +24,6 @@ public class Hud {
 
     public Integer worldTimer = 0;
 
-    Screen screen;
-
     public static Integer score;
 
     public float timeCount = 0.0F;
@@ -41,7 +39,6 @@ public class Hud {
     Label scoreTextLabel;
 
     Label healthLabel;
-
 
     public Hud(SpriteBatch sb, PlayScreen screen) {
 
@@ -81,13 +78,6 @@ public class Hud {
 
         this.stage.addActor(table);
 
-        Table tableHealth = new Table();
-        tableHealth.top();
-        tableHealth.setFillParent(true);
-        this.healthLabel = new Label("HEALTH", new LabelStyle(new BitmapFont(), Color.WHITE));
-        tableHealth.add(this.healthLabel).padLeft(-300f).padTop(5f);
-        this.stage.addActor(tableHealth);
-
     }
 
     public void update(float dt) {
@@ -118,7 +108,11 @@ public class Hud {
 
     }
 
+
     public void dispose() {
+
         this.stage.dispose();
+
     }
+
 }
