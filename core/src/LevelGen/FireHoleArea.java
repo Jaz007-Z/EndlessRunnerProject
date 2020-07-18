@@ -1,4 +1,3 @@
-
 package LevelGen;
 
 import com.badlogic.gdx.math.Vector2;
@@ -38,8 +37,6 @@ public class FireHoleArea extends Level  {
             bodies.add(b2body);
 
 
-
-
             holeSpacing = (float) (Math.random() * (holeMax - holeMin + 1) + holeMin); //makes the space between holes random within set bounds
 
             previousEnd = newEnd;
@@ -47,11 +44,15 @@ public class FireHoleArea extends Level  {
 
             //if (i == 0 || i == 1)
             generateFire(previousEnd, newEnd - holeSpacing);
+
+
+
+
+
         }
     }
 
-
-    public void generateFire(float previousEnd, float newEnd) {
+    public void generateFire(float previousEnd, float newEnd){
 
         Body b2Fire;
         BodyDef bdefFire = new BodyDef();
@@ -77,6 +78,4 @@ public class FireHoleArea extends Level  {
             bodies.add(b2Fire);
         }
     }
-
-
 }
