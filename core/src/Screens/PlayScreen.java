@@ -356,7 +356,7 @@ public class PlayScreen implements Screen {
                     PAUSE_WIDTH, PAUSE_HEIGHT);
             game.batch.draw(menuContainer, gamecam.position.x - 1f, gamecam.position.y - 1f,
                     2f, 2f);
-            health -= 0.01f;
+            //health -= 0.01f;
             // RESUME BUTTON
             if((mouseInWorld2D.x > gamecam.position.x - 0.5f && mouseInWorld2D.x < gamecam.position.x - 0.5f +(1)) &&
                     (mouseInWorld2D.y > gamecam.position.y + 0.36f && mouseInWorld2D.y < gamecam.position.y + 0.36f + 0.3f)

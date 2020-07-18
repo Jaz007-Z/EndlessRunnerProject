@@ -21,7 +21,7 @@ public class Level {
     protected float newVerticality;
     protected float previousEnd;
     protected float newEnd;
-    //because hx for a polygon acts like a radius, this is the ground length divided by 2 "D2"
+
 
     //textures
     protected Texture ground;
