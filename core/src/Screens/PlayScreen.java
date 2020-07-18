@@ -218,13 +218,19 @@ public class PlayScreen implements Screen {
             player.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2body.getWorldCenter(), true);
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -2)
             player.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2body.getWorldCenter(), true);
-        if (Gdx.input.isKeyPressed(Input.Keys.UP) && player.b2body.getLinearVelocity().x >= -2) //comment && code out for flying to test game
-            player.b2body.applyLinearImpulse(new Vector2(0, 0.15f), player.b2body.getWorldCenter(), true);
-
-        if (Gdx.input.isTouched()) {
-            if (Gdx.input.getX() < Gdx.graphics.getWidth() / 2){
-                player.b2body.applyLinearImpulse(new Vector2(0, 0.15f), player.b2body.getWorldCenter(), true);
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) && player.b2body.getPosition().y < -30 / Endless.PPM && (player.b2body.getLinearVelocity().x >= -2 || player.b2body.getLinearVelocity().x >= 2))
+            if (player.getState() != Player.State.FALLING) {
+                player.b2body.applyForceToCenter(0, 30f, true);
             }
+
+
+        if (Gdx.input.isTouched() && player.b2body.getPosition().y < -30 / Endless.PPM && (player.b2body.getLinearVelocity().x >= -2 || player.b2body.getLinearVelocity().x >= 2)) {
+
+            if (player.getState() != Player.State.FALLING) {
+                //player.b2body.applyLinearImpulse(new Vector2(0, 0.4f), player.b2body.getWorldCenter(), true);
+                player.b2body.applyForceToCenter(0, 30f, true);
+            }
+
         }
 
     }
