@@ -40,8 +40,7 @@ import Sprites.Player;
 
 /**
  * @author      Jimmy Zimsky, Dallas Eaton, Elias Moreira, Nathaniel Snow 
- * @version     Final                
- * @since       7/19/2020          
+ * @version     1.0                     
  */
 
 public class PlayScreen implements Screen {
