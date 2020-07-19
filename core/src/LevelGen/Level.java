@@ -1,5 +1,6 @@
 package LevelGen;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -14,6 +15,8 @@ import com.mygdx.game.Endless;
 
 import java.util.ArrayList;
 
+import Sprites.Player;
+
 public class Level {
 
     //variables for keeping track of general level generation
@@ -22,6 +25,8 @@ public class Level {
     protected float newVerticality;
     protected float previousEnd;
     protected float newEnd;
+
+    private static final String TAG = "MyActivity";
 
 
     //textures
@@ -194,10 +199,18 @@ public class Level {
             bdefCoin.type = BodyDef.BodyType.DynamicBody;
             b2Coin = world.createBody(bdefCoin);
             shape.setRadius(3 / Endless.PPM);
+            //contact
+            fdefCoin.filter.categoryBits = Endless.COIN_BIT;
+            fdefCoin.filter.maskBits =  Endless.PLAYER_BIT;
+
             fdefCoin.shape = shape;
             b2Coin.createFixture(fdefCoin).setUserData(this);
             bodiesCoin.add(b2Coin);
         }
+    }
+
+    public void coinCollect (Player player) {
+            Gdx.app.log(TAG, "coin collected");
     }
 
 

@@ -152,6 +152,12 @@ public class Player extends Sprite {
         CircleShape shape = new CircleShape();
         shape.setRadius(6 / Endless.PPM);
 
+        fdef2.filter.categoryBits = Endless.PLAYER_BIT;
+        fdef2.filter.maskBits = Endless.GROUND_BIT |
+                Endless.COIN_BIT |
+                Endless.FIRE_BIT;
+
+
         fdef2.shape = shape;
         b2body.createFixture(fdef2).setUserData(this);
         b2body.applyLinearImpulse(new Vector2(.7f, 0f ) , b2body.getWorldCenter(), true); //start movement off for one frame

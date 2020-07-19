@@ -33,6 +33,7 @@ import LevelGen.HoleArea;
 import LevelGen.Level;
 import LevelGen.PlatformArea;
 import Sprites.Player;
+import Tools.WorldContactListener;
 
 public class PlayScreen implements Screen {
 
@@ -136,6 +137,9 @@ public class PlayScreen implements Screen {
         world = new World(new Vector2(0, -5), true); //lowered gravity from -10 to show effect
         //allows for debug lines of our box2d world.
         b2dr = new Box2DDebugRenderer();
+
+        //add contact listener
+        world.setContactListener(new WorldContactListener());
 
         //Level prep
         destroy = true;
