@@ -16,6 +16,11 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Endless;
 
+/**
+ * @author      Jimmy Zimsky, Dallas Eaton, Elias Moreira, Nathaniel Snow 
+ * @version     1.0                         
+ */
+
 public class GameOverScreen implements Screen {
 
     public Stage stage;
