@@ -37,15 +37,10 @@ public class Hud {
     public Integer scoreImplement;
 
     Label countLabel;
-
     Label scoreLabel;
-
     Label timeLabel;
-
     Label scoreTextLabel;
-
     Label healthLabel;
-
     Label coinsLabel;
 
     public Hud(SpriteBatch sb, PlayScreen screen) {
@@ -54,29 +49,23 @@ public class Hud {
         coins = 0;
 
         this.scoreImplement = 0;
-
         this.viewport = new FitViewport(400.0F, 208.0F, new OrthographicCamera());
-
         this.stage = new Stage(this.viewport, sb);
 
         Table table = new Table();
 
         table.bottom();
-
         table.setFillParent(true);
-
         table.background(screen.background);
 
+        //creates the time and score labels for the hud
         this.timeLabel = new Label("TIME", new LabelStyle(new BitmapFont(), Color.WHITE));
-
         this.scoreTextLabel = new Label("SCORE", new LabelStyle(new BitmapFont(), Color.WHITE));
-
         this.scoreLabel = new Label(String.format("%d", score), new LabelStyle(new BitmapFont(), Color.WHITE));
-
         this.countLabel = new Label(String.format("%d", this.worldTimer), new LabelStyle(new BitmapFont(), Color.WHITE));
 
 
-
+        //adds labels
         table.add(this.timeLabel).padLeft(-300f);
         table.add(this.countLabel).padLeft(-160f);
 
@@ -87,6 +76,7 @@ public class Hud {
 
         this.stage.addActor(table);
 
+        //coin amounts on the hud
         Table table2 = new Table();
         table2.top();
         table2.setFillParent(true);
@@ -105,16 +95,14 @@ public class Hud {
             Integer var3 = this.worldTimer = this.worldTimer + 1;
 
             this.countLabel.setText(String.format("%d", this.worldTimer));
-
             this.timeCount = 0.0F;
 
             var2 = this.scoreImplement;
-
             var3 = this.scoreImplement = this.scoreImplement + 1;
             coinsLabel.setText(coins);
         }
 
-
+        //changes the score
         if (this.scoreImplement == 5) {
             score = score + 100;
             this.scoreLabel.setText(String.format("%d", score));
