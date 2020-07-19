@@ -193,6 +193,7 @@ public class PlayScreen implements Screen {
 
 
         player = new Player(this, manager);
+        world.setContactListener(new WorldContactListener());//feel free to move this if needed
 
         //coins
         frames.add(new TextureRegion(coinTex, 0, 0, 16, 16));
