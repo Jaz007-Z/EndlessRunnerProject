@@ -9,6 +9,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import Screens.MenuScreen;
 import Screens.SplashScreen;
 
+/**
+ * @author      Jimmy Zimsky, Dallas Eaton, Elias Moreira, Nathaniel Snow 
+ * @version     1.0                         
+ */
+
 public class Endless extends Game {
 
 	public static final String TITLE = "Endless Runner";
@@ -26,7 +31,10 @@ public class Endless extends Game {
 	public Endless game;
 	//Texture img;
 
-
+	
+	/**
+ 	* loads the assets                        
+ 	*/
 	@Override
 	public void create () {
 		manager = new AssetManager();
@@ -43,6 +51,10 @@ public class Endless extends Game {
 	public void render () { super.render();
 	}
 	
+	
+	/**
+ 	* disposes the assets                       
+ 	*/
 	@Override
 	public void dispose () {
 		batch.dispose();
