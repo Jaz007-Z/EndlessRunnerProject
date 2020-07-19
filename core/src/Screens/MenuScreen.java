@@ -19,6 +19,11 @@ import com.mygdx.game.Endless;
 
 import static com.badlogic.gdx.Gdx.input;
 
+/**
+ * @author      Jimmy Zimsky, Dallas Eaton, Elias Moreira, Nathaniel Snow 
+ * @version     1.0                         
+ */
+
 public class MenuScreen implements Screen {
 
     private Stage stage = new Stage(new FitViewport(Endless.V_WIDTH, Endless.V_HEIGHT));
