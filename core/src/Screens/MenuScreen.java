@@ -164,15 +164,6 @@ public class MenuScreen implements Screen {
             else if ((actor.getName().equals("Exit"))) {
                 Gdx.app.exit();
             }
-            /*else if (actor.getName().equals("Sound")) {
-                if (Endless.SOUND_ON) {
-                    Endless.SOUND_ON = false;
-                    ((TextButton) actor).setText("Sound: Off");
-                } else {
-                    Endless.SOUND_ON = true;
-                    ((TextButton) actor).setText("Sound: On");
-                }
-            }*/
         }
     }
 }
