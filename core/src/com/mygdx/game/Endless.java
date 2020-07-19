@@ -27,9 +27,17 @@ public class Endless extends Game {
 	public AssetManager manager;
 	public Endless game;
 
-	
+
+	//Box2D Collision Bits
+	public static final short NOTHING_BIT = 0;
+	public static final short GROUND_BIT = 1;
+	public static final short PLAYER_BIT = 2;
+	public static final short FIRE_BIT = 4;
+	public static final short COIN_BIT = 8;
+
+
 	/**
- 	* loads the assets                        
+ 	* loads the assets
  	*/
 	@Override
 	public void create () {
@@ -47,9 +55,9 @@ public class Endless extends Game {
 	public void render () { super.render();
 	}
 	
-	
+
 	/**
- 	* disposes the assets                       
+ 	* disposes the assets
  	*/
 	@Override
 	public void dispose () {

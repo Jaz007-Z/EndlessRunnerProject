@@ -32,6 +32,7 @@ public class FireArea extends Level {
         BodyDef bdef = new BodyDef();
         FixtureDef fdef = new FixtureDef();
         PolygonShape groundShape = new PolygonShape();
+        fdef.friction = 0.0f;
         //making in a loop for real procedural generation
         for (int i = 0; i < areaSize; i++) {
             bdef.position.set(newEnd / Endless.PPM, -60 / Endless.PPM); //position of the polygon
@@ -76,7 +77,11 @@ public class FireArea extends Level {
             bdefFire.type = BodyDef.BodyType.DynamicBody;
             b2Fire = world.createBody(bdefFire);
             shape.setRadius(5 / Endless.PPM);
+
+            fdefFire.filter.categoryBits = Endless.FIRE_BIT;
+            fdefFire.filter.maskBits = Endless.PLAYER_BIT;
             fdefFire.shape = shape;
+
             b2Fire.createFixture(fdefFire).setUserData(this);
             bodiesFire.add(b2Fire);
         }

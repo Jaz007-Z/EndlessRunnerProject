@@ -1,7 +1,7 @@
 package LevelGen;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -10,13 +10,11 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Endless;
 
 import java.util.ArrayList;
 
-import javax.swing.plaf.nimbus.State;
-
+import Scenes.Hud;
 import Sprites.Player;
 
 /**
@@ -33,10 +31,10 @@ public class Level {
     protected float previousEnd;
     protected float newEnd;
 
+    private static final String TAG = "MyActivity";
+
 
     //textures
-
-
 
     public TextureRegion spike = new TextureRegion(new Texture("spike.png"));
     protected Texture groundTex = new Texture("ground.png");
@@ -139,6 +137,7 @@ public class Level {
     public ArrayList<Body> getBodiesFire() {
         return bodiesFire;
     }
+
     public float getNewEnd() {
         return newEnd;
     }
@@ -151,25 +150,12 @@ public class Level {
 
     public void generateDesign() {
 
-        //static creation for testing
-        /*Body b2bodyT;
-        BodyDef bdefT = new BodyDef();
-        bdefT.position.set(0 / Endless.PPM, -60 / Endless.PPM); //position of the polygon
-        bdefT.type = BodyDef.BodyType.StaticBody;
-        b2bodyT = world.createBody(bdefT);
-        FixtureDef fdefT = new FixtureDef();
-        //makes a box. It can be a straight line like now or vertical. hx is length, hy is height. vector2's x sets new center for box relative to position.
-        PolygonShape groundShapeT = new PolygonShape();
-        groundShapeT.setAsBox(50 / Endless.PPM, 0 / Endless.PPM, new Vector2(50 / Endless.PPM, 0 / Endless.PPM), 0 / Endless.PPM);
-        fdefT.shape = groundShapeT;
-        b2bodyT.createFixture(fdefT).setUserData(this);*/
-
         //setting loop up
         Body b2body;
         BodyDef bdef = new BodyDef();
         FixtureDef fdef = new FixtureDef();
         PolygonShape groundShape = new PolygonShape();
-        //fdef.friction = 0.3f;
+        fdef.friction = 0.0f;
         //making in a loop for real procedural generation
         for (int i = 0; i < areaSize; i++) {
             bdef.position.set(newEnd / Endless.PPM, -60 / Endless.PPM); //position of the polygon
@@ -213,14 +199,28 @@ public class Level {
             bdefCoin.type = BodyDef.BodyType.DynamicBody;
             b2Coin = world.createBody(bdefCoin);
             shape.setRadius(3 / Endless.PPM);
+            //contact
+            fdefCoin.filter.categoryBits = Endless.COIN_BIT;
+            fdefCoin.filter.maskBits =  Endless.PLAYER_BIT;
+
             fdefCoin.shape = shape;
             b2Coin.createFixture(fdefCoin).setUserData(this);
             bodiesCoin.add(b2Coin);
         }
     }
 
+    public void coinCollect (Player player, Body body) {
+        Gdx.app.log(TAG, "coin collected");
+        System.out.println("coin collected");
+        Hud.score += 10;
+        Hud.coins += 1;
+        bodiesCoin.remove(body);
+    }
 
-
+    public void damage(Player player) {
+        System.out.println("playerHit");
+        player.decreaseHealth();
+    }
     public void dispose() {
         for (Body b : bodiesGround) {
             world.destroyBody(b);

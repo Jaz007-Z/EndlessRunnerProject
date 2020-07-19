@@ -63,6 +63,7 @@ public class FireHoleArea extends Level  {
         fdefFire.isSensor = true;
         CircleShape shape = new CircleShape();
         fireLocation = previousEnd;
+        fdefFire.friction = 0.0f;
 
         for (int i = 0; i < areaSize; i++) {
             fireSpacing = (float) (Math.random() * (fireMax - fireMin + 1) + fireMin);
@@ -75,7 +76,10 @@ public class FireHoleArea extends Level  {
             bdefFire.type = BodyDef.BodyType.DynamicBody;
             b2Fire = world.createBody(bdefFire);
             shape.setRadius(5 / Endless.PPM);
+            fdefFire.filter.categoryBits = Endless.FIRE_BIT;
+            fdefFire.filter.maskBits = Endless.PLAYER_BIT;
             fdefFire.shape = shape;
+
             b2Fire.createFixture(fdefFire).setUserData(this);
             bodiesFire.add(b2Fire);
         }

@@ -27,7 +27,7 @@ public class PlatformArea extends Level {
         BodyDef bdef = new BodyDef();
         FixtureDef fdef = new FixtureDef();
         PolygonShape groundShape = new PolygonShape();
-        //fdef.friction = 0.3f;
+        fdef.friction = 0.0f;
 
 
         //making in a loop for real procedural generation

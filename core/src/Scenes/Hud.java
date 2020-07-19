@@ -28,7 +28,7 @@ public class Hud {
     private Viewport viewport;
 
     public Integer worldTimer = 0;
-    public Integer coins;
+    public static Integer coins;
 
     public static Integer score;
 
@@ -111,7 +111,7 @@ public class Hud {
             var2 = this.scoreImplement;
 
             var3 = this.scoreImplement = this.scoreImplement + 1;
-
+            coinsLabel.setText(coins);
         }
 
 

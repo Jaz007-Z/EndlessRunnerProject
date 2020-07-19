@@ -1,6 +1,5 @@
 package Screens;
 
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -10,6 +9,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -23,20 +23,18 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Endless;
-import Scenes.Hud;
-import com.badlogic.gdx.graphics.g2d.Animation;
 
 import java.util.ArrayList;
 import java.util.Random;
-
-import javax.swing.plaf.nimbus.State;
 
 import LevelGen.FireArea;
 import LevelGen.FireHoleArea;
 import LevelGen.HoleArea;
 import LevelGen.Level;
 import LevelGen.PlatformArea;
+import Scenes.Hud;
 import Sprites.Player;
+import Tools.WorldContactListener;
 
 /**
  * @author      Jimmy Zimsky, Dallas Eaton, Elias Moreira, Nathaniel Snow 
@@ -47,7 +45,8 @@ public class PlayScreen implements Screen {
 
     Endless game;
 
-
+    private Level level;
+    private TextureRegion textureRegion;
     public OrthographicCamera gamecam;
     private Viewport gamePort;
 
@@ -59,7 +58,7 @@ public class PlayScreen implements Screen {
     Level level2;
     Level level3;
     Level level4;
-
+    Level level5;
     boolean destroy;
     boolean destroyLv3;
     boolean destroyLv4;
@@ -75,14 +74,16 @@ public class PlayScreen implements Screen {
     //Box2d variables
     public World world;
     private Box2DDebugRenderer b2dr;
+    private Body b2body;
+    float playerSpeed = 10.0f; // 10 pixels per second. May be too fast
+    float playerX;
+    float playerY;
 
     //sprites
     private Player player;
 
     //player texture/animation assets
     private TextureAtlas atlas = new TextureAtlas("Run.atlas");
-
-    //private TextureAtlas coinAtlas = new TextureAtlas("coins.atlas");
     public Animation playerRun;
     public TextureRegion playerJump;
     public TextureRegion playerFall;
@@ -92,6 +93,8 @@ public class PlayScreen implements Screen {
     public Texture coinTex = new Texture("coins.png");
     public Animation coinsAnimation;
     private float stateTimer;
+    private boolean coinIsDead;
+
     public enum State { COLLECTED, ALIVE }
     public State coinState;
     public State oldCoinState;
@@ -155,6 +158,8 @@ public class PlayScreen implements Screen {
         //allows for debug lines of our box2d world.
         b2dr = new Box2DDebugRenderer();
 
+        world.setContactListener(new WorldContactListener());
+
         //Level prep
         destroy = true;
         setLevel3 = false;
@@ -205,9 +210,6 @@ public class PlayScreen implements Screen {
         stateTimer = 0;
         coinState = State.ALIVE;
         oldCoinState = State.COLLECTED;
-
-
-
 
         viewport = new FitViewport(Endless.V_WIDTH, Endless.V_HEIGHT, new OrthographicCamera());
 
@@ -260,7 +262,9 @@ public class PlayScreen implements Screen {
         handleInput(dt);
         player.update(dt);
 
-
+        if(player.b2body.getPosition().y <= -1){
+            player.setPlayerIsDead();
+        }
 
         //takes 1 step in the physics simulation(60 times per second)
         world.step(1 / 60f, 6, 2);
@@ -268,13 +272,13 @@ public class PlayScreen implements Screen {
         //update the HUD
         hud.update(dt);
 
-        if(player.b2body.getPosition().y <= -1){
-            player.setPlayerIsDead();
-        }
 
         //attach our gamecam to our players.x coordinate
         gamecam.position.x = player.b2body.getPosition().x;
 
+        if (player.b2body.getLinearVelocity().x <= 1.7f) {
+            player.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2body.getWorldCenter(), true);
+        }
         //update our gamecam with correct coordinates after changes
         gamecam.update();
 
@@ -307,6 +311,7 @@ public class PlayScreen implements Screen {
             timer = 0;
             useTimer = false;
         }
+
 
         //PAUSE CODE
         if(isPaused){
@@ -344,6 +349,7 @@ public class PlayScreen implements Screen {
         //renderer our Box2DDebugLines
 
         game.batch.begin();
+
 
         for (Level level : levels) {
             for (Body body : level.getBodiesGround()) {
@@ -569,9 +575,8 @@ public class PlayScreen implements Screen {
         return world;
     }
 
-    public Screen getScreen() {return this; }
-
     public TextureAtlas getAtlas() {return atlas;}
+
 
     public TextureRegion getCoinRegion(float dt){
 
@@ -591,4 +596,5 @@ public class PlayScreen implements Screen {
         oldCoinState = coinState;
         return region;
     }
+
 }
