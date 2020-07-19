@@ -10,6 +10,11 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Endless;
 
+/**
+ * @author      Jimmy Zimsky, Dallas Eaton, Elias Moreira, Nathaniel Snow 
+ * @version     1.0                         
+ */
+
 public class FireArea extends Level {
 
 
