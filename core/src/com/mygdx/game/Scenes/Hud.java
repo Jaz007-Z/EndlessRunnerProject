@@ -23,6 +23,7 @@ public class Hud {
     private Viewport viewport;
 
     public Integer worldTimer = 0;
+    public Integer coins;
 
     Screen screen;
 
@@ -42,10 +43,12 @@ public class Hud {
 
     Label healthLabel;
 
+    Label coinsLabel;
 
     public Hud(SpriteBatch sb, PlayScreen screen) {
 
         score = 0;
+        coins = 0;
 
         this.scoreImplement = 0;
 
@@ -81,13 +84,12 @@ public class Hud {
 
         this.stage.addActor(table);
 
-        Table tableHealth = new Table();
-        tableHealth.top();
-        tableHealth.setFillParent(true);
-        this.healthLabel = new Label("HEALTH", new LabelStyle(new BitmapFont(), Color.WHITE));
-        tableHealth.add(this.healthLabel).padLeft(-300f).padTop(5f);
-        this.stage.addActor(tableHealth);
-
+        Table table2 = new Table();
+        table2.top();
+        table2.setFillParent(true);
+        this.coinsLabel = new Label(String.format("%d", coins), new LabelStyle(new BitmapFont(), Color.WHITE));
+        table2.add(this.coinsLabel).padRight(-285f).padBottom(-47f);
+        this.stage.addActor(table2);
     }
 
     public void update(float dt) {

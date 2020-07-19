@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.PolygonSprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
@@ -89,18 +90,18 @@ public class PlayScreen implements Screen {
 
     public TextureRegionDrawable background = new TextureRegionDrawable((new TextureRegion(new Texture("playscreen_background.jpg"))));
     private TextureRegionDrawable ground;
-    private final Texture pausebtnActive;
-    private final Texture pausebtnInactive;
-    //private static final float PAUSE_WIDTH = 0.3f;
-    //private static final float PAUSE_HEIGHT = 0.3f;
+    private Texture pausebtnActive;
+    private Texture pausebtnInactive;
+    private Texture fullHeart, midHeart, emptyHeart, coinHudIcon;
+    private Texture menuContainer;
+    private static final float PAUSE_WIDTH = 0.3f;
+    private static final float PAUSE_HEIGHT = 0.3f;
 
     //HUD AND HEALTH BAR
     private Hud hud;
-    Texture blank;
-    float damage = 0;
-    float health = 0.7f;
-    private static final int PAUSE_WIDTH = 50;
-    private static final int PAUSE_HEIGHT = 50;
+    private final Vector2 mouseInWorld2D = new Vector2();
+    private final Vector3 mouseInWorld3D = new Vector3();
+    private boolean isPaused = false;
 
     //testLogs
     private static final String TAG = "MyActivity";
@@ -120,7 +121,11 @@ public class PlayScreen implements Screen {
         ground = new TextureRegionDrawable(new Texture("groundTestPNG.png"));
         pausebtnActive = new Texture("Button_62.png");
         pausebtnInactive = new Texture("Button_63.png");
-        blank = new Texture("blank.png");
+        menuContainer = new Texture("Windows_07.png");
+        fullHeart = new Texture("full-heart.png");
+        midHeart = new Texture("mid-heart.png");
+        emptyHeart = new Texture("empty-heart.png");
+        coinHudIcon = new Texture("coin-alone.png");
 
         hud = new Hud(game.batch, this);
         //cams
@@ -225,19 +230,6 @@ public class PlayScreen implements Screen {
         handleInput(dt);
         player.update(dt);
 
-        //takes 1 step in the physics simulation(60 times per second)
-        world.step(1 / 60f, 6, 2);
-
-        //update the HUD
-        hud.update(dt);
-
-        //THIS IS THE LOGIC TO "DAMAGE" THE HERO.
-        // add some number to var damage, in the example above
-        // the hero's life will decrease a little every 3 seconds.
-        //if(hud.scoreImplement == 1){
-        //    damage += 0.005f;
-        //}
-
         if(player.b2body.getPosition().y <= -1){
             player.setPlayerIsDead();
         }
@@ -281,6 +273,17 @@ public class PlayScreen implements Screen {
             timer = 0;
             useTimer = false;
         }
+
+        //PAUSE CODE
+        if(isPaused){
+            game.pause();
+            world.step(0, 0, 0);
+        }
+        else{
+            game.resume();
+            world.step(1 / 60f, 6, 2);
+            hud.update(dt);
+        }
     }
 
 
@@ -301,6 +304,12 @@ public class PlayScreen implements Screen {
 
         game.batch.setProjectionMatrix(gamecam.combined);
 
+        mouseInWorld3D.x = Gdx.input.getX();
+        mouseInWorld3D.y = Gdx.input.getY();
+        mouseInWorld3D.z = 0;
+        gamecam.unproject(mouseInWorld3D);
+        mouseInWorld2D.x = mouseInWorld3D.x;
+        mouseInWorld2D.y = mouseInWorld3D.y;
         //gamecam.update();
 
         game.batch.begin();
@@ -310,14 +319,92 @@ public class PlayScreen implements Screen {
         game.batch.draw(pausebtnInactive, gamecam.position.x - 0.1f, gamecam.position.y + 0.7f,
                 PAUSE_WIDTH, PAUSE_HEIGHT);
 
-        game.batch.draw(blank, gamecam.position.x - 1.1f, gamecam.position.y + 0.82f,
-                health - damage, 0.15f);
+        game.batch.draw(coinHudIcon, gamecam.position.x + 2f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+
+        if(player.health == 3){
+            game.batch.draw(fullHeart, gamecam.position.x - 2f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(fullHeart, gamecam.position.x - 1.7f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(fullHeart, gamecam.position.x - 1.4f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+        }
+        else if(player.health == 2.5){
+            game.batch.draw(fullHeart, gamecam.position.x - 2f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(fullHeart, gamecam.position.x - 1.7f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(midHeart, gamecam.position.x - 1.4f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+        }
+        else if(player.health == 2) {
+            game.batch.draw(fullHeart, gamecam.position.x - 2f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(fullHeart, gamecam.position.x - 1.7f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(emptyHeart, gamecam.position.x - 1.4f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+        }
+        else if(player.health == 1.5) {
+            game.batch.draw(fullHeart, gamecam.position.x - 2f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(midHeart, gamecam.position.x - 1.7f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(emptyHeart, gamecam.position.x - 1.4f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+        }
+        else if(player.health == 1) {
+            game.batch.draw(fullHeart, gamecam.position.x - 2f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(emptyHeart, gamecam.position.x - 1.7f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(emptyHeart, gamecam.position.x - 1.4f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+        }
+        else if(player.health == 0.5) {
+            game.batch.draw(midHeart, gamecam.position.x - 2f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(emptyHeart, gamecam.position.x - 1.7f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(emptyHeart, gamecam.position.x - 1.4f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+        }
+        else{
+            game.batch.draw(emptyHeart, gamecam.position.x - 2f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(emptyHeart, gamecam.position.x - 1.7f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(emptyHeart, gamecam.position.x - 1.4f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+        }
+
+
+
+        //PAUSE BUTTON HANDLING
+        if((mouseInWorld2D.x > gamecam.position.x - 0.1f && mouseInWorld2D.x < gamecam.position.x - 0.1f + PAUSE_WIDTH)&&
+                (mouseInWorld2D.y > gamecam.position.y + 0.6f && mouseInWorld2D.y < gamecam.position.y + 0.6f + PAUSE_HEIGHT)){
+            isPaused = true;
+        }
+
+        //PAUSE MENU
+        if(isPaused){
+            game.batch.draw(pausebtnActive, gamecam.position.x - 0.1f, gamecam.position.y + 0.7f,
+                    PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(menuContainer, gamecam.position.x - 1f, gamecam.position.y - 1f,
+                    2f, 2f);
+            // RESUME BUTTON
+            if((mouseInWorld2D.x > gamecam.position.x - 0.5f && mouseInWorld2D.x < gamecam.position.x - 0.5f +(1)) &&
+                    (mouseInWorld2D.y > gamecam.position.y + 0.36f && mouseInWorld2D.y < gamecam.position.y + 0.36f + 0.3f)
+            ){
+                isPaused = false;
+            }
+            // RESTART BUTTON
+            if((mouseInWorld2D.x > gamecam.position.x - 0.5f && mouseInWorld2D.x < gamecam.position.x - 0.5f +(1)) &&
+                    (mouseInWorld2D.y > gamecam.position.y && mouseInWorld2D.y < gamecam.position.y + 0.1f)
+            ){
+                game.batch.end();
+                this.game.setScreen(new PlayScreen(this.game, this.manager));
+                return;
+            }
+            //EXIT BUTTON
+            if((mouseInWorld2D.x > gamecam.position.x - 0.5f && mouseInWorld2D.x < gamecam.position.x - 0.5f +(1)) &&
+                    (mouseInWorld2D.y > gamecam.position.y - 0.76f && mouseInWorld2D.y < gamecam.position.y - 0.76f + 0.3f)
+            ){
+                Gdx.app.exit();
+            }
+
+        }
+        else{
+            game.batch.draw(pausebtnInactive, gamecam.position.x - 0.1f, gamecam.position.y + 0.7f,
+                    PAUSE_WIDTH, PAUSE_HEIGHT);
+            isPaused = false;
+        }
+
 
         // Conditions to GAME OVER:
         // 1 - the player falls,
         // 2 - the health goes 0.
         // feel free to add what you want in this IF STATEMENT.
-        if(player.currentState == DEAD || damage >= 0.7f){
+        if(player.currentState == DEAD || player.health == 0){
             game.batch.end();
             pause();
             game.setScreen(new GameOverScreen(this.game, this.manager, getHud(), game.batch));
