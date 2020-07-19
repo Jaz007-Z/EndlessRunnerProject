@@ -4,6 +4,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.util.Stack;
 
+/**
+ * @author      Jimmy Zimsky, Dallas Eaton, Elias Moreira, Nathaniel Snow 
+ * @version     1.0                         
+ */
+
 public class GameScreenManager {
 
     private Stack<Screen> screens;
