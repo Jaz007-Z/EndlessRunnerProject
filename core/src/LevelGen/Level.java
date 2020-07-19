@@ -19,6 +19,11 @@ import javax.swing.plaf.nimbus.State;
 
 import Sprites.Player;
 
+/**
+ * @author      Jimmy Zimsky, Dallas Eaton, Elias Moreira, Nathaniel Snow 
+ * @version     1.0                         
+ */
+
 public class Level {
 
     //variables for keeping track of general level generation
