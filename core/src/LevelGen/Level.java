@@ -1,6 +1,7 @@
 package LevelGen;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -24,7 +25,9 @@ public class Level {
 
 
     //textures
-    protected Texture ground;
+
+    protected Texture groundTex = new Texture("ground.png");
+    public TextureRegion ground = new TextureRegion(groundTex);
     protected Texture fire;
     protected Texture platform;
 
@@ -35,8 +38,10 @@ public class Level {
 
 
     //body array for disposal
-    ArrayList<Body> bodies;
-
+    ArrayList<Body> bodiesGround;
+    ArrayList<Body> bodiesFire;
+    ArrayList<Body> bodiesCoin;
+    ArrayList<Body> bodiesPlatform;
 
     //fireVariables
     float coinLocation;
@@ -87,7 +92,10 @@ public class Level {
         spacing = 10;
         //fire variables
         fireSpacing = 30;
-        bodies = new ArrayList<Body>();
+        bodiesGround = new ArrayList<Body>();
+        bodiesFire = new ArrayList<Body>();
+        bodiesCoin = new ArrayList<Body>();
+        bodiesPlatform = new ArrayList<Body>();
 
 
     }
@@ -99,6 +107,14 @@ public class Level {
         //fire variables
         fireSpacing = 30;
 
+    }
+
+    public float getGroundLengthD2() {
+        return groundLengthD2;
+    }
+
+    public ArrayList<Body> getBodiesGround() {
+        return bodiesGround;
     }
 
     public float getNewEnd() {
@@ -147,14 +163,13 @@ public class Level {
 
             fdef.shape = groundShape;
             b2body.createFixture(fdef).setUserData(this);
-            bodies.add(b2body);
+            bodiesGround.add(b2body);
 
             previousEnd = newEnd;
 
             newEnd = previousEnd + (groundLengthD2 * 2);
 
             generateCoin(previousEnd, newEnd);
-            //newEnd = previousEnd + (groundLengthD2 * 2);
         }
     }
 
@@ -181,17 +196,33 @@ public class Level {
             shape.setRadius(3 / Endless.PPM);
             fdefCoin.shape = shape;
             b2Coin.createFixture(fdefCoin).setUserData(this);
-            bodies.add(b2Coin);
+            bodiesCoin.add(b2Coin);
         }
     }
 
 
 
     public void dispose() {
-        for (Body b : bodies) {
+        for (Body b : bodiesGround) {
             world.destroyBody(b);
         }
-        bodies.clear();
+        bodiesGround.clear();
+
+        for (Body b : bodiesFire) {
+            world.destroyBody(b);
+        }
+        bodiesFire.clear();
+
+        for (Body b : bodiesCoin) {
+            world.destroyBody(b);
+        }
+        bodiesCoin.clear();
+
+        for (Body b : bodiesPlatform) {
+            world.destroyBody(b);
+        }
+        bodiesPlatform.clear();
+
     }
 
 }

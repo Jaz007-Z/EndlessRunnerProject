@@ -39,7 +39,7 @@ public class FireArea extends Level {
 
             fdef.shape = groundShape;
             b2body.createFixture(fdef).setUserData(this);
-            bodies.add(b2body);
+            bodiesGround.add(b2body);
 
             previousEnd = newEnd;
             newEnd = previousEnd + (groundLengthD2 * 2);
@@ -73,7 +73,7 @@ public class FireArea extends Level {
             shape.setRadius(5 / Endless.PPM);
             fdefFire.shape = shape;
             b2Fire.createFixture(fdefFire).setUserData(this);
-            bodies.add(b2Fire);
+            bodiesFire.add(b2Fire);
         }
     }
 }

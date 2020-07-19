@@ -156,11 +156,11 @@ public class PlayScreen implements Screen {
         levels.get(0).generateDesign();
         //level.generateDesign();*/
 
-        level0 = new FireArea(world);
+        level0 = new Level(world);
         level1 = new FireArea(world);
         level2 = new FireArea(world);
         level3 = new FireArea(world);
-        //level4 = new FireArea(world);
+        level4 = new FireArea(world);
 
         levels.add(level0);
         levels.add(level1);
@@ -335,6 +335,13 @@ public class PlayScreen implements Screen {
         b2dr.render(world, gamecam.combined);
 
         game.batch.begin();
+
+        for (Level level : levels) {
+            for (Body body : level.getBodiesGround()) {
+                game.batch.draw(level.ground, body.getPosition().x, body.getPosition().y - (10 / Endless.PPM),
+                        level.getGroundLengthD2() * 2 / Endless.PPM, 13 / Endless.PPM);
+            }
+        }
 
         player.draw(game.batch);
 
