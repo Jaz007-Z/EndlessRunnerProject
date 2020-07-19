@@ -84,6 +84,10 @@ public class Player extends Sprite {
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
         setRegion(getFrame(dt));
 
+        if (health <= 0) {
+            setPlayerIsDead();
+        }
+
     }
 
 
