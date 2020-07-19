@@ -16,6 +16,10 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
 
+/**
+ * @author      Jimmy Zimsky, Dallas Eaton, Elias Moreira, Nathaniel Snow 
+ * @version     1.0                         
+ */
 
 public class SplashScreen implements Screen {												//Resolver for GPGS events
     private Texture texture = new Texture(Gdx.files.internal("splashlogo.png"));    	//Load splash logo image
