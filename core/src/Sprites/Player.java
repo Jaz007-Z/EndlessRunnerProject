@@ -79,11 +79,7 @@ public class Player extends Sprite {
 
     public void update(float dt){
 
-        //if(currentState == State.RUNNING) {
-        //    b2body.applyLinearImpulse(new Vector2(.04f, 0f), b2body.getWorldCenter(), true);
-        //}
-       //b2body.applyLinearImpulse(new Vector2(.015f, 0f ) , b2body.getWorldCenter(), true); // keep applying movement
-            // keep applying movement
+        // keep applying movement
         //update our sprite to correspond with the position of our Box2D body
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
         setRegion(getFrame(dt));
@@ -125,9 +121,6 @@ public class Player extends Sprite {
             case JUMPING:
                 region = (TextureRegion) screen.playerJump;
                 break;
-            /*case DEAD:
-                region = (TextureRegion) screen.playerDead.getKeyFrame(getStateTimer());
-                break;*/
             case RUNNING:
             default:
                 region = (TextureRegion) screen.playerRun.getKeyFrame(stateTimer, true);
