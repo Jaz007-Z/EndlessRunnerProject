@@ -38,6 +38,12 @@ import LevelGen.Level;
 import LevelGen.PlatformArea;
 import Sprites.Player;
 
+/**
+ * @author      Jimmy Zimsky, Dallas Eaton, Elias Moreira, Nathaniel Snow 
+ * @version     Final                
+ * @since       7/19/2020          
+ */
+
 public class PlayScreen implements Screen {
 
     Endless game;
@@ -240,7 +246,11 @@ public class PlayScreen implements Screen {
     public void show() {
 
     }
-
+    
+    /**
+    * Handles movement for the player. 
+    * Uses Gdx.input for both arrow keys and touch screen
+    */
     public void handleInput(float dt){
         //control our player using immediate impulses
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 2)
@@ -263,9 +273,6 @@ public class PlayScreen implements Screen {
         }
 
     }
-
-
-
 
     public void update(float dt){
         //handle user input first
@@ -429,6 +436,7 @@ public class PlayScreen implements Screen {
                     PAUSE_WIDTH, PAUSE_HEIGHT);
             isPaused = false;
         }
+        
 
         game.batch.draw(coinHudIcon, gamecam.position.x + 2f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
 
@@ -535,6 +543,10 @@ public class PlayScreen implements Screen {
             setLevel4 = false;
         }
     }
+    
+    /**
+    * Creates random levels 
+    */
 
     protected Level randomizeArea (Level level) {
         Random random = new Random();
