@@ -24,10 +24,8 @@ public class Endless extends Game {
 	public static final float PPM = 100;
 	public static boolean SOUND_ON = true;
 
-
 	public AssetManager manager;
 	public Endless game;
-	//Texture img;
 
 	
 	/**
