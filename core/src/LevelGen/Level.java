@@ -151,19 +151,6 @@ public class Level {
 
     public void generateDesign() {
 
-        //static creation for testing
-        /*Body b2bodyT;
-        BodyDef bdefT = new BodyDef();
-        bdefT.position.set(0 / Endless.PPM, -60 / Endless.PPM); //position of the polygon
-        bdefT.type = BodyDef.BodyType.StaticBody;
-        b2bodyT = world.createBody(bdefT);
-        FixtureDef fdefT = new FixtureDef();
-        //makes a box. It can be a straight line like now or vertical. hx is length, hy is height. vector2's x sets new center for box relative to position.
-        PolygonShape groundShapeT = new PolygonShape();
-        groundShapeT.setAsBox(50 / Endless.PPM, 0 / Endless.PPM, new Vector2(50 / Endless.PPM, 0 / Endless.PPM), 0 / Endless.PPM);
-        fdefT.shape = groundShapeT;
-        b2bodyT.createFixture(fdefT).setUserData(this);*/
-
         //setting loop up
         Body b2body;
         BodyDef bdef = new BodyDef();
@@ -213,10 +200,18 @@ public class Level {
             bdefCoin.type = BodyDef.BodyType.DynamicBody;
             b2Coin = world.createBody(bdefCoin);
             shape.setRadius(3 / Endless.PPM);
+            //contact
+            fdefCoin.filter.categoryBits = Endless.COIN_BIT;
+            fdefCoin.filter.maskBits =  Endless.PLAYER_BIT;
+
             fdefCoin.shape = shape;
             b2Coin.createFixture(fdefCoin).setUserData(this);
             bodiesCoin.add(b2Coin);
         }
+    }
+    
+    public void coinCollect (Player player) {
+            Gdx.app.log(TAG, "coin collected");
     }
 
 
