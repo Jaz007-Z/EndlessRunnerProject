@@ -47,8 +47,10 @@ public class GameOverScreen implements Screen {
 
         Preferences prefs = Gdx.app.getPreferences("endlessGame");
 
+        //sets and saves the highscore on the hud
         highscore = prefs.getInteger("highscore", 0);
 
+        //modifies the highscore
         if (score > this.highscore) {
 
             prefs.putInteger("highscore", score);
@@ -63,6 +65,10 @@ public class GameOverScreen implements Screen {
             this.gameOverLabel = new Label("GAME OVER :(", new LabelStyle(new BitmapFont(), Color.WHITE));
         }
 
+        /**
+        * @author      Elias Moreira
+        * Sets up the hud                         
+        */
         this.viewport = new FitViewport(400.0F, 208.0F, new OrthographicCamera());
         this.stage = new Stage(this.viewport, sb);
         this.gameOverLabel2 = new Label("Hit the screen to play again!", new LabelStyle(new BitmapFont(), Color.WHITE));
