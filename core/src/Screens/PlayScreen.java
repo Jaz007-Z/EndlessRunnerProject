@@ -1,5 +1,6 @@
 package Screens;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Endless;
@@ -26,6 +28,8 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 
 import java.util.ArrayList;
 import java.util.Random;
+
+import javax.swing.plaf.nimbus.State;
 
 import LevelGen.FireArea;
 import LevelGen.FireHoleArea;
@@ -38,8 +42,7 @@ public class PlayScreen implements Screen {
 
     Endless game;
 
-    private Level level;
-    private TextureRegion textureRegion;
+
     public OrthographicCamera gamecam;
     private Viewport gamePort;
 
@@ -51,7 +54,7 @@ public class PlayScreen implements Screen {
     Level level2;
     Level level3;
     Level level4;
-    Level level5;
+
     boolean destroy;
     boolean destroyLv3;
     boolean destroyLv4;
@@ -67,20 +70,30 @@ public class PlayScreen implements Screen {
     //Box2d variables
     public World world;
     private Box2DDebugRenderer b2dr;
-    private Body b2body;
+    /*private Body b2body;
     float playerSpeed = 10.0f; // 10 pixels per second. May be too fast
     float playerX;
-    float playerY;
+    float playerY;*/
 
     //sprites
     private Player player;
 
     //player texture/animation assets
-    private TextureAtlas atlas = new TextureAtlas("Run.pack");
+    private TextureAtlas atlas = new TextureAtlas("Run.atlas");
+
+    //private TextureAtlas coinAtlas = new TextureAtlas("coins.atlas");
     public Animation playerRun;
     public TextureRegion playerJump;
     public TextureRegion playerFall;
-    //public Animation playerDead;
+
+    //coins
+    public Array<TextureRegion> frames = new Array<>();
+    public Texture coinTex = new Texture("coins.png");
+    public Animation coinsAnimation;
+    private float stateTimer;
+    public enum State { COLLECTED, ALIVE }
+    public State coinState;
+    public State oldCoinState;
 
 
     //private Texture ground;
@@ -88,6 +101,7 @@ public class PlayScreen implements Screen {
     public TextureRegionDrawable ground;
     private Texture pausebtnActive;
     private Texture pausebtnInactive;
+    private Texture fullHeart, midHeart, emptyHeart, coinHudIcon;
     private Texture healthBarContainer;
     private Texture menuContainer;
     private static final float PAUSE_WIDTH = 0.3f;
@@ -117,11 +131,14 @@ public class PlayScreen implements Screen {
         this.game = game;
 
         //textures
-        /*ground = new Texture("groundTestPNG.png");
-        textureRegion = new TextureRegion(ground);*/
-        ground = new TextureRegionDrawable(new Texture("ground.png"));
         pausebtnActive = new Texture("Button_62.png");
         pausebtnInactive = new Texture("Button_63.png");
+        menuContainer = new Texture("Windows_07.png");
+        fullHeart = new Texture("full-heart.png");
+        midHeart = new Texture("mid-heart.png");
+        emptyHeart = new Texture("empty-heart.png");
+        coinHudIcon = new Texture("coin-alone.png");
+
         this.healthBarContainer = new Texture("Windows_52.png");
         this.menuContainer = new Texture("Windows_07.png");
         blank = new Texture("Windows_50.png");
@@ -133,7 +150,7 @@ public class PlayScreen implements Screen {
         gamePort = new FitViewport(Endless.V_WIDTH / Endless.PPM, Endless.V_HEIGHT / Endless.PPM, gamecam);
 
         //create our Box2D world, setting no gravity in X, -10 gravity in Y, and allow bodies to sleep
-        world = new World(new Vector2(0, -5), true); //lowered gravity from -10 to show effect
+        world = new World(new Vector2(0.0f, -5.0f), true); //lowered gravity from -10 to show effect
         //allows for debug lines of our box2d world.
         b2dr = new Box2DDebugRenderer();
 
@@ -160,7 +177,7 @@ public class PlayScreen implements Screen {
         level1 = new FireArea(world);
         level2 = new FireArea(world);
         level3 = new FireArea(world);
-        //level4 = new FireArea(world);
+        level4 = new FireArea(world);
 
         levels.add(level0);
         levels.add(level1);
@@ -186,6 +203,21 @@ public class PlayScreen implements Screen {
 
 
         player = new Player(this, manager);
+
+        //coins
+        frames.add(new TextureRegion(coinTex, 0, 0, 16, 16));
+        frames.add(new TextureRegion(coinTex, 0, 16, 16, 16));
+        frames.add(new TextureRegion(coinTex, 0, 32, 16, 16));
+        frames.add(new TextureRegion(coinTex, 0, 48, 16, 16));
+        frames.add(new TextureRegion(coinTex, 0, 64, 16, 16));
+        frames.add(new TextureRegion(coinTex, 0, 80, 16, 16));
+        coinsAnimation = new Animation(2.5f, frames);
+        stateTimer = 0;
+        coinState = State.ALIVE;
+        oldCoinState = State.COLLECTED;
+
+
+
 
         viewport = new FitViewport(Endless.V_WIDTH, Endless.V_HEIGHT, new OrthographicCamera());
 
@@ -239,6 +271,8 @@ public class PlayScreen implements Screen {
         //handle user input first
         handleInput(dt);
         player.update(dt);
+
+
 
         //takes 1 step in the physics simulation(60 times per second)
         world.step(1 / 60f, 6, 2);
@@ -332,17 +366,28 @@ public class PlayScreen implements Screen {
         mouseInWorld2D.y = mouseInWorld3D.y;
 
         //renderer our Box2DDebugLines
-        b2dr.render(world, gamecam.combined);
+        //b2dr.render(world, gamecam.combined);
 
         game.batch.begin();
 
+        for (Level level : levels) {
+            for (Body body : level.getBodiesGround()) {
+                game.batch.draw(level.ground, body.getPosition().x, body.getPosition().y - (10 / Endless.PPM),
+                        level.getGroundLengthD2() * 2 / Endless.PPM, 13 / Endless.PPM);
+            }
+            for (Body body : level.getBodiesFire()) {
+                game.batch.draw(level.spike, body.getPosition().x, body.getPosition().y,
+                        16 / Endless.PPM, 16 / Endless.PPM);
+            }
+            for (Body body : level.getBodiesCoin()) {
+                game.batch.draw(getCoinRegion(delta), body.getPosition().x, body.getPosition().y,
+                        16 / Endless.PPM, 16 / Endless.PPM);
+            }
+        }
+
+
+
         player.draw(game.batch);
-
-        game.batch.draw(healthBarContainer, gamecam.position.x - 1.8f, gamecam.position.y + 0.7f,
-                1.5f, PAUSE_HEIGHT);
-
-        game.batch.draw(blank, gamecam.position.x - 1.4f, gamecam.position.y + 0.78f,
-                health, 0.15f);
 
         //PAUSE BUTTON HANDLING
         if((mouseInWorld2D.x > gamecam.position.x - 0.1f && mouseInWorld2D.x < gamecam.position.x - 0.1f + PAUSE_WIDTH)&&
@@ -385,7 +430,43 @@ public class PlayScreen implements Screen {
             isPaused = false;
         }
 
+        game.batch.draw(coinHudIcon, gamecam.position.x + 2f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
 
+        if(player.health == 3){
+            game.batch.draw(fullHeart, gamecam.position.x - 2f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(fullHeart, gamecam.position.x - 1.7f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(fullHeart, gamecam.position.x - 1.4f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+        }
+        else if(player.health == 2.5){
+            game.batch.draw(fullHeart, gamecam.position.x - 2f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(fullHeart, gamecam.position.x - 1.7f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(midHeart, gamecam.position.x - 1.4f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+        }
+        else if(player.health == 2) {
+            game.batch.draw(fullHeart, gamecam.position.x - 2f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(fullHeart, gamecam.position.x - 1.7f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(emptyHeart, gamecam.position.x - 1.4f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+        }
+        else if(player.health == 1.5) {
+            game.batch.draw(fullHeart, gamecam.position.x - 2f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(midHeart, gamecam.position.x - 1.7f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(emptyHeart, gamecam.position.x - 1.4f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+        }
+        else if(player.health == 1) {
+            game.batch.draw(fullHeart, gamecam.position.x - 2f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(emptyHeart, gamecam.position.x - 1.7f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(emptyHeart, gamecam.position.x - 1.4f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+        }
+        else if(player.health == 0.5) {
+            game.batch.draw(midHeart, gamecam.position.x - 2f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(emptyHeart, gamecam.position.x - 1.7f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(emptyHeart, gamecam.position.x - 1.4f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+        }
+        else{
+            game.batch.draw(emptyHeart, gamecam.position.x - 2f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(emptyHeart, gamecam.position.x - 1.7f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(emptyHeart, gamecam.position.x - 1.4f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
+        }
 
 
         // Conditions to GAME OVER:
@@ -398,8 +479,6 @@ public class PlayScreen implements Screen {
             return;
         }
 
-        //game.batch.draw('player', (int)playerX, (int)playerY);
-        //player.draw(game.batch);
         game.batch.end();
         //game.batch.setProjectionMatrix(stage.getCamera().combined);
 
@@ -514,4 +593,23 @@ public class PlayScreen implements Screen {
     public Screen getScreen() {return this; }
 
     public TextureAtlas getAtlas() {return atlas;}
+
+    public TextureRegion getCoinRegion(float dt){
+
+        TextureRegion region;
+        switch(coinState) {
+
+            case COLLECTED:
+                region = null;
+                break;
+            case ALIVE:
+            default:
+                region = (TextureRegion) coinsAnimation.getKeyFrame(stateTimer, true);
+                break;
+        }
+
+        stateTimer =  coinState == oldCoinState ? stateTimer + dt : 0;
+        oldCoinState = coinState;
+        return region;
+    }
 }

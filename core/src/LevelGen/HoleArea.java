@@ -35,7 +35,7 @@ public class HoleArea extends Level {
 
             fdef.shape = groundShape;
             b2body.createFixture(fdef).setUserData(this);
-            bodies.add(b2body);
+            bodiesGround.add(b2body);
 
             previousEnd = newEnd;
 
@@ -43,8 +43,8 @@ public class HoleArea extends Level {
             holeLocation += holeSpacing; //makes the space between holes random within set bounds
 
             newEnd = previousEnd + (groundLengthD2 * 2) + holeSpacing;
-            //newEnd = previousEnd + (groundLengthD2 * 2);
 
+            generateCoin(previousEnd, newEnd);
         }
     }
 

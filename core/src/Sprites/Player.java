@@ -34,6 +34,7 @@ public class Player extends Sprite {
 
     private boolean playerIsDead;
     private float stateTimer;
+    public float health;
 
     private PlayScreen screen;
 
@@ -42,6 +43,7 @@ public class Player extends Sprite {
         this.screen = screen;
         this.world = screen.world;
         this.manager = manager;
+        this.health = 3;
         currentState = State.RUNNING;
         previousState = State.RUNNING;
         stateTimer = 0;
@@ -64,7 +66,7 @@ public class Player extends Sprite {
 
 
         definePlayer(world);
-        setBounds(0, 1, 32 / Endless.PPM, 32 / Endless.PPM);
+        setBounds(0, 16, 32 / Endless.PPM, 32 / Endless.PPM);
         setRegion(screen.playerFall);
     }
 
@@ -165,6 +167,10 @@ public class Player extends Sprite {
             b2body.applyLinearImpulse(new Vector2(0, 2f), b2body.getWorldCenter(), true);
             currentState = State.JUMPING;
         }
+    }
+
+    public void decreaseHealth(){
+        this.health -= 0.5;
     }
 
     public float getStateTimer(){

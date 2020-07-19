@@ -28,7 +28,7 @@ public class FireArea extends Level {
         FixtureDef fdef = new FixtureDef();
         PolygonShape groundShape = new PolygonShape();
         //making in a loop for real procedural generation
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < areaSize; i++) {
             bdef.position.set(newEnd / Endless.PPM, -60 / Endless.PPM); //position of the polygon
             bdef.type = BodyDef.BodyType.StaticBody;
             b2body = world.createBody(bdef);
@@ -39,13 +39,13 @@ public class FireArea extends Level {
 
             fdef.shape = groundShape;
             b2body.createFixture(fdef).setUserData(this);
-            bodies.add(b2body);
+            bodiesGround.add(b2body);
 
             previousEnd = newEnd;
             newEnd = previousEnd + (groundLengthD2 * 2);
 
-            //if (i == 0)
             generateFire(previousEnd, newEnd);
+            generateCoin(previousEnd, newEnd);
         }
     }
 
@@ -62,7 +62,7 @@ public class FireArea extends Level {
 
         for (int i = 0; i < areaSize; i++) {
             fireSpacing = (float) (Math.random() * (fireMax - fireMin + 1) + fireMin);
-            fireLocation += fireSpacing; //make fireSpacing random later on
+            fireLocation += fireSpacing;
             if (fireLocation > newEnd - fireBufferSpace) {//make new minus the spacing if there are holes in the level area
                 break;
             }
@@ -73,7 +73,7 @@ public class FireArea extends Level {
             shape.setRadius(5 / Endless.PPM);
             fdefFire.shape = shape;
             b2Fire.createFixture(fdefFire).setUserData(this);
-            bodies.add(b2Fire);
+            bodiesFire.add(b2Fire);
         }
     }
 }

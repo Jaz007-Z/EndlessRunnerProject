@@ -36,7 +36,7 @@ public class PlatformArea extends Level {
 
             fdef.shape = groundShape;
             b2body.createFixture(fdef).setUserData(this);
-            bodies.add(b2body);
+            bodiesPlatform.add(b2body);
 
             previousEnd = newEnd;
 
@@ -44,8 +44,8 @@ public class PlatformArea extends Level {
             platformLocation += platformSpacing; //makes the space between holes random within set bounds
 
             newEnd = previousEnd + (platformWidthD2 * 2) + platformSpacing;
-            //newEnd = previousEnd + (groundLengthD2 * 2);
 
+            generateCoin(previousEnd, newEnd);
         }
     }
 
