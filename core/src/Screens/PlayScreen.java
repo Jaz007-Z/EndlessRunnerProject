@@ -85,29 +85,20 @@ public class PlayScreen implements Screen {
 
     //private Texture ground;
     public TextureRegionDrawable background = new TextureRegionDrawable((new TextureRegion(new Texture("playscreen_background.jpg"))));
-<<<<<<< HEAD
     private TextureRegionDrawable ground;
     private Texture pausebtnActive;
     private Texture pausebtnInactive;
     private Texture fullHeart, midHeart, emptyHeart, coinHudIcon;
-=======
-    public TextureRegionDrawable ground;
-    private Texture pausebtnActive;
-    private Texture pausebtnInactive;
     private Texture healthBarContainer;
->>>>>>> 7093d7aedd4de743f2fbc83c81e24b87351700d9
     private Texture menuContainer;
     private static final float PAUSE_WIDTH = 0.3f;
     private static final float PAUSE_HEIGHT = 0.3f;
 
     //HUD AND HEALTH BAR
     private Hud hud;
-<<<<<<< HEAD
-=======
     Texture blank;
     Texture blank2;
     float health = 0.95f;
->>>>>>> 7093d7aedd4de743f2fbc83c81e24b87351700d9
     private final Vector2 mouseInWorld2D = new Vector2();
     private final Vector3 mouseInWorld3D = new Vector3();
     private boolean isPaused = false;
@@ -132,18 +123,16 @@ public class PlayScreen implements Screen {
         ground = new TextureRegionDrawable(new Texture("ground.png"));
         pausebtnActive = new Texture("Button_62.png");
         pausebtnInactive = new Texture("Button_63.png");
-<<<<<<< HEAD
         menuContainer = new Texture("Windows_07.png");
         fullHeart = new Texture("full-heart.png");
         midHeart = new Texture("mid-heart.png");
         emptyHeart = new Texture("empty-heart.png");
         coinHudIcon = new Texture("coin-alone.png");
-=======
+
         this.healthBarContainer = new Texture("Windows_52.png");
         this.menuContainer = new Texture("Windows_07.png");
         blank = new Texture("Windows_50.png");
         blank2 = new Texture("blank.png");
->>>>>>> 7093d7aedd4de743f2fbc83c81e24b87351700d9
 
         hud = new Hud(game.batch, this);
         //cams
@@ -335,13 +324,11 @@ public class PlayScreen implements Screen {
         gamecam.unproject(mouseInWorld3D);
         mouseInWorld2D.x = mouseInWorld3D.x;
         mouseInWorld2D.y = mouseInWorld3D.y;
-<<<<<<< HEAD
+
         //gamecam.update();
-=======
 
         //renderer our Box2DDebugLines
         b2dr.render(world, gamecam.combined);
->>>>>>> 7093d7aedd4de743f2fbc83c81e24b87351700d9
 
         game.batch.begin();
 
@@ -353,12 +340,6 @@ public class PlayScreen implements Screen {
         }
 
         player.draw(game.batch);
-
-        game.batch.draw(healthBarContainer, gamecam.position.x - 1.8f, gamecam.position.y + 0.7f,
-                1.5f, PAUSE_HEIGHT);
-
-        game.batch.draw(blank, gamecam.position.x - 1.4f, gamecam.position.y + 0.78f,
-                health, 0.15f);
 
         //PAUSE BUTTON HANDLING
         if((mouseInWorld2D.x > gamecam.position.x - 0.1f && mouseInWorld2D.x < gamecam.position.x - 0.1f + PAUSE_WIDTH)&&
@@ -403,7 +384,6 @@ public class PlayScreen implements Screen {
 
 
 
-<<<<<<< HEAD
         game.batch.draw(coinHudIcon, gamecam.position.x + 2f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
 
         if(player.health == 3){
@@ -484,18 +464,15 @@ public class PlayScreen implements Screen {
             isPaused = false;
         }
 
-=======
->>>>>>> 7093d7aedd4de743f2fbc83c81e24b87351700d9
-
         // Conditions to GAME OVER:
         // 1 - the player falls,
         // 2 - the health goes 0.
         // feel free to add what you want in this IF STATEMENT.
-<<<<<<< HEAD
-        if(player.currentState == DEAD || player.health == 0){
-=======
+        if(player.health == 0){
+
+        }
         if(player.getState().toString() == Player.State.DEAD.toString() || health <= 0){
->>>>>>> 7093d7aedd4de743f2fbc83c81e24b87351700d9
+
             game.batch.end();
             game.setScreen(new GameOverScreen(this.game, this.manager, hud.score, game.batch));
             return;
