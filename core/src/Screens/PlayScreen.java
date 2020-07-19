@@ -75,10 +75,6 @@ public class PlayScreen implements Screen {
     //Box2d variables
     public World world;
     private Box2DDebugRenderer b2dr;
-    /*private Body b2body;
-    float playerSpeed = 10.0f; // 10 pixels per second. May be too fast
-    float playerX;
-    float playerY;*/
 
     //sprites
     private Player player;
@@ -167,17 +163,6 @@ public class PlayScreen implements Screen {
         destroyLv4 = false;
         useTimer = false;
 
-        /*levels.add(level);
-        levels.get(0).generateDesign();
-        levels.get(0).dispose();
-
-        oldNewEnd = levels.get(0).getNewEnd();
-        level = new HoleArea(world);
-        level.setNewEnd(oldNewEnd);
-        levels.add(level);
-        levels.get(0).generateDesign();
-        //level.generateDesign();*/
-
         level0 = new FireArea(world);
         level1 = new FireArea(world);
         level2 = new FireArea(world);
@@ -228,8 +213,6 @@ public class PlayScreen implements Screen {
 
         stage = new Stage(viewport, game.batch);
 
-        //gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
-
         music = manager.get("music/main.mp3", Music.class);
         music.setLooping(true);
         music.setVolume(0.3f);
@@ -265,7 +248,6 @@ public class PlayScreen implements Screen {
         if (Gdx.input.isTouched() && player.b2body.getPosition().y < -30 / Endless.PPM && (player.b2body.getLinearVelocity().x >= -2 || player.b2body.getLinearVelocity().x >= 2)) {
 
             if (player.getState() != Player.State.FALLING) {
-                //player.b2body.applyLinearImpulse(new Vector2(0, 0.4f), player.b2body.getWorldCenter(), true);
                 player.b2body.applyForceToCenter(0, 30f, true);
             }
 
@@ -286,29 +268,18 @@ public class PlayScreen implements Screen {
         //update the HUD
         hud.update(dt);
 
-        //THIS IS THE LOGIC TO "DAMAGE" THE HERO.
-        // add some number to var damage, in the example above
-        // the hero's life will decrease a little every 3 seconds.
-        //if(hud.scoreImplement == 1){
-        //    damage += 0.005f;
-        //}
-
         if(player.b2body.getPosition().y <= -1){
             player.setPlayerIsDead();
         }
 
         //attach our gamecam to our players.x coordinate
-        //if(player.currentState != DEAD) {
         gamecam.position.x = player.b2body.getPosition().x;
-        //}
 
         //update our gamecam with correct coordinates after changes
-
         gamecam.update();
 
         //tell our renderer to draw only what our camera can see in our game world.
         //add for loop that will have all of the levels draw themselves in the right range
-        //System.out.println(gamecam.position);
         System.out.println(player.currentState);
 
         if ( (int) (area2NewEnd)  < (int) player.b2body.getPosition().x && destroy) {
@@ -358,7 +329,6 @@ public class PlayScreen implements Screen {
 
         Gdx.gl.glClearColor(0.13f, 0.14f, 0.19f, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        //Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         hud.stage.draw();
 
@@ -372,7 +342,6 @@ public class PlayScreen implements Screen {
         mouseInWorld2D.y = mouseInWorld3D.y;
 
         //renderer our Box2DDebugLines
-        //b2dr.render(world, gamecam.combined);
 
         game.batch.begin();
 
@@ -407,7 +376,7 @@ public class PlayScreen implements Screen {
                     PAUSE_WIDTH, PAUSE_HEIGHT);
             game.batch.draw(menuContainer, gamecam.position.x - 1f, gamecam.position.y - 1f,
                     2f, 2f);
-            //health -= 0.01f;
+
             // RESUME BUTTON
             if((mouseInWorld2D.x > gamecam.position.x - 0.5f && mouseInWorld2D.x < gamecam.position.x - 0.5f +(1)) &&
                     (mouseInWorld2D.y > gamecam.position.y + 0.36f && mouseInWorld2D.y < gamecam.position.y + 0.36f + 0.3f)
@@ -487,7 +456,6 @@ public class PlayScreen implements Screen {
         }
 
         game.batch.end();
-        //game.batch.setProjectionMatrix(stage.getCamera().combined);
 
     }
 
