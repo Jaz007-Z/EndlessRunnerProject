@@ -21,8 +21,6 @@ public class Endless extends Game {
 	//Virtual Screen size and Box2D Scale(Pixels Per Meter)
 	public static final int V_WIDTH = 500; //better zoom this way, can be adjusted
 	public static final int V_HEIGHT = 300;
-	//public static final int V_WIDTH = 600;
-	//public static final int V_HEIGHT = 390;
 	public static final float PPM = 100;
 	public static boolean SOUND_ON = true;
 
