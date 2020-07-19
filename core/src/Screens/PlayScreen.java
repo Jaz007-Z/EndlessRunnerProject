@@ -163,7 +163,7 @@ public class PlayScreen implements Screen {
         destroyLv4 = false;
         useTimer = false;
 
-        level0 = new FireArea(world);
+        level0 = new Level(world);
         level1 = new FireArea(world);
         level2 = new FireArea(world);
         level3 = new FireArea(world);
@@ -357,6 +357,10 @@ public class PlayScreen implements Screen {
             for (Body body : level.getBodiesCoin()) {
                 game.batch.draw(getCoinRegion(delta), body.getPosition().x, body.getPosition().y,
                         16 / Endless.PPM, 16 / Endless.PPM);
+            }
+            for (Body body : level.getBodiesPlatform()) {
+                game.batch.draw(level.ground, body.getPosition().x, body.getPosition().y - (10 / Endless.PPM),
+                        level.getPlatformWidthD2() * 2 / Endless.PPM, 13 / Endless.PPM);
             }
         }
 

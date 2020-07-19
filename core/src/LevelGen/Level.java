@@ -126,8 +126,16 @@ public class Level {
 
     }
 
+    public ArrayList<Body> getBodiesPlatform() {
+        return bodiesPlatform;
+    }
+
     public float getGroundLengthD2() {
         return groundLengthD2;
+    }
+
+    public float getPlatformWidthD2() {
+        return platformWidthD2;
     }
 
     public ArrayList<Body> getBodiesGround() {
@@ -211,7 +219,8 @@ public class Level {
     }
     
     public void coinCollect (Player player) {
-            Gdx.app.log(TAG, "coin collected");
+           player.decreaseHealth();
+           System.out.println();
     }
 
 
