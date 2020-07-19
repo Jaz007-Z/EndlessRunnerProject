@@ -16,6 +16,11 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import Screens.PlayScreen;
 import Screens.Screen;
 
+/**
+ * @author      Jimmy Zimsky, Dallas Eaton, Elias Moreira, Nathaniel Snow 
+ * @version     1.0                         
+ */
+
 public class Hud {
 
     public Stage stage;
