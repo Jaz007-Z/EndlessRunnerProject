@@ -30,12 +30,11 @@ public class FireHoleArea extends Level  {
             b2body = world.createBody(bdef);
 
             //makes a box. It can be a straight line like now or vertical. hx is length, hy is height. vector2's x sets new center for box relative to position.
-
             groundShape.setAsBox(groundLengthD2 / Endless.PPM, 1 / Endless.PPM, new Vector2(groundLengthD2 / Endless.PPM, 0 / Endless.PPM), 0 / Endless.PPM);
 
             fdef.shape = groundShape;
             b2body.createFixture(fdef).setUserData(this);
-            bodies.add(b2body);
+            bodiesGround.add(b2body);
 
 
 
@@ -45,8 +44,8 @@ public class FireHoleArea extends Level  {
             previousEnd = newEnd;
             newEnd = previousEnd + (groundLengthD2 * 2) + holeSpacing;
 
-            //if (i == 0 || i == 1)
             generateFire(previousEnd, newEnd - holeSpacing);
+            generateCoin(previousEnd, newEnd);
         }
     }
 
@@ -74,7 +73,7 @@ public class FireHoleArea extends Level  {
             shape.setRadius(5 / Endless.PPM);
             fdefFire.shape = shape;
             b2Fire.createFixture(fdefFire).setUserData(this);
-            bodies.add(b2Fire);
+            bodiesFire.add(b2Fire);
         }
     }
 

@@ -9,7 +9,6 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.PolygonSprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -18,13 +17,11 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Endless;
-import com.mygdx.game.Scenes.Hud;
+import Scenes.Hud;
 import com.badlogic.gdx.graphics.g2d.Animation;
 
 import java.util.ArrayList;
@@ -36,8 +33,6 @@ import LevelGen.HoleArea;
 import LevelGen.Level;
 import LevelGen.PlatformArea;
 import Sprites.Player;
-
-import static Sprites.Player.State.DEAD;
 
 public class PlayScreen implements Screen {
 
@@ -80,25 +75,39 @@ public class PlayScreen implements Screen {
     //sprites
     private Player player;
 
+    //player texture/animation assets
     private TextureAtlas atlas = new TextureAtlas("Run.pack");
     public Animation playerRun;
     public TextureRegion playerJump;
     public TextureRegion playerFall;
-    public Animation playerDead;
+    //public Animation playerDead;
 
 
-
+    //private Texture ground;
     public TextureRegionDrawable background = new TextureRegionDrawable((new TextureRegion(new Texture("playscreen_background.jpg"))));
+<<<<<<< HEAD
     private TextureRegionDrawable ground;
     private Texture pausebtnActive;
     private Texture pausebtnInactive;
     private Texture fullHeart, midHeart, emptyHeart, coinHudIcon;
+=======
+    public TextureRegionDrawable ground;
+    private Texture pausebtnActive;
+    private Texture pausebtnInactive;
+    private Texture healthBarContainer;
+>>>>>>> 7093d7aedd4de743f2fbc83c81e24b87351700d9
     private Texture menuContainer;
     private static final float PAUSE_WIDTH = 0.3f;
     private static final float PAUSE_HEIGHT = 0.3f;
 
     //HUD AND HEALTH BAR
     private Hud hud;
+<<<<<<< HEAD
+=======
+    Texture blank;
+    Texture blank2;
+    float health = 0.95f;
+>>>>>>> 7093d7aedd4de743f2fbc83c81e24b87351700d9
     private final Vector2 mouseInWorld2D = new Vector2();
     private final Vector3 mouseInWorld3D = new Vector3();
     private boolean isPaused = false;
@@ -118,14 +127,23 @@ public class PlayScreen implements Screen {
         this.game = game;
 
         //textures
-        ground = new TextureRegionDrawable(new Texture("groundTestPNG.png"));
+        /*ground = new Texture("groundTestPNG.png");
+        textureRegion = new TextureRegion(ground);*/
+        ground = new TextureRegionDrawable(new Texture("ground.png"));
         pausebtnActive = new Texture("Button_62.png");
         pausebtnInactive = new Texture("Button_63.png");
+<<<<<<< HEAD
         menuContainer = new Texture("Windows_07.png");
         fullHeart = new Texture("full-heart.png");
         midHeart = new Texture("mid-heart.png");
         emptyHeart = new Texture("empty-heart.png");
         coinHudIcon = new Texture("coin-alone.png");
+=======
+        this.healthBarContainer = new Texture("Windows_52.png");
+        this.menuContainer = new Texture("Windows_07.png");
+        blank = new Texture("Windows_50.png");
+        blank2 = new Texture("blank.png");
+>>>>>>> 7093d7aedd4de743f2fbc83c81e24b87351700d9
 
         hud = new Hud(game.batch, this);
         //cams
@@ -133,7 +151,7 @@ public class PlayScreen implements Screen {
         gamePort = new FitViewport(Endless.V_WIDTH / Endless.PPM, Endless.V_HEIGHT / Endless.PPM, gamecam);
 
         //create our Box2D world, setting no gravity in X, -10 gravity in Y, and allow bodies to sleep
-        world = new World(new Vector2(1, -5), true); //lowered gravity from -10 to show effect
+        world = new World(new Vector2(0, -5), true); //lowered gravity from -10 to show effect
         //allows for debug lines of our box2d world.
         b2dr = new Box2DDebugRenderer();
 
@@ -148,6 +166,7 @@ public class PlayScreen implements Screen {
         /*levels.add(level);
         levels.get(0).generateDesign();
         levels.get(0).dispose();
+
         oldNewEnd = levels.get(0).getNewEnd();
         level = new HoleArea(world);
         level.setNewEnd(oldNewEnd);
@@ -155,11 +174,11 @@ public class PlayScreen implements Screen {
         levels.get(0).generateDesign();
         //level.generateDesign();*/
 
-        level0 = new FireArea(world);
+        level0 = new Level(world);
         level1 = new FireArea(world);
         level2 = new FireArea(world);
         level3 = new FireArea(world);
-        //level4 = new FireArea(world);
+        level4 = new FireArea(world);
 
         levels.add(level0);
         levels.add(level1);
@@ -182,6 +201,7 @@ public class PlayScreen implements Screen {
         levels.get(3).generateDesign();
         //Level prep finished
         area2NewEnd = levels.get(2).getNewEnd() / Endless.PPM;
+
 
         player = new Player(this, manager);
 
@@ -209,17 +229,25 @@ public class PlayScreen implements Screen {
 
     public void handleInput(float dt){
         //control our player using immediate impulses
-        if(player.currentState != DEAD) {
-            if (Gdx.input.isKeyJustPressed(Input.Keys.UP))
-                player.jump();
-            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 2)
-                player.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2body.getWorldCenter(), true);
-            if (Gdx.input.isTouched()) {
-                if (Gdx.input.getX() < Gdx.graphics.getWidth() / 2){
-                    player.b2body.applyLinearImpulse(new Vector2(0, 0.15f), player.b2body.getWorldCenter(), true);
-                }
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 2)
+            player.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2body.getWorldCenter(), true);
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -2)
+            player.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2body.getWorldCenter(), true);
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) && player.b2body.getPosition().y < -30 / Endless.PPM && (player.b2body.getLinearVelocity().x >= -2 || player.b2body.getLinearVelocity().x >= 2))
+            if (player.getState() != Player.State.FALLING) {
+                player.b2body.applyForceToCenter(0, 30f, true);
             }
+
+
+        if (Gdx.input.isTouched() && player.b2body.getPosition().y < -30 / Endless.PPM && (player.b2body.getLinearVelocity().x >= -2 || player.b2body.getLinearVelocity().x >= 2)) {
+
+            if (player.getState() != Player.State.FALLING) {
+                //player.b2body.applyLinearImpulse(new Vector2(0, 0.4f), player.b2body.getWorldCenter(), true);
+                player.b2body.applyForceToCenter(0, 30f, true);
+            }
+
         }
+
     }
 
 
@@ -265,7 +293,7 @@ public class PlayScreen implements Screen {
             randomizeLevels();
             area2NewEnd = levels.get(2).getNewEnd() / Endless.PPM;
         }
-        if (useTimer == true) {
+        if (useTimer) {
             timer = timer + dt;
         }
         if (timer >= 4) {
@@ -293,14 +321,11 @@ public class PlayScreen implements Screen {
         //Clear the game screen with Black
         update(delta);
 
-        Gdx.gl.glClearColor(0, 0, 0, 0);
+        Gdx.gl.glClearColor(0.13f, 0.14f, 0.19f, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         //Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         hud.stage.draw();
-
-        //renderer our Box2DDebugLines
-        b2dr.render(world, gamecam.combined);
 
         game.batch.setProjectionMatrix(gamecam.combined);
 
@@ -310,15 +335,75 @@ public class PlayScreen implements Screen {
         gamecam.unproject(mouseInWorld3D);
         mouseInWorld2D.x = mouseInWorld3D.x;
         mouseInWorld2D.y = mouseInWorld3D.y;
+<<<<<<< HEAD
         //gamecam.update();
+=======
+
+        //renderer our Box2DDebugLines
+        b2dr.render(world, gamecam.combined);
+>>>>>>> 7093d7aedd4de743f2fbc83c81e24b87351700d9
 
         game.batch.begin();
 
+        for (Level level : levels) {
+            for (Body body : level.getBodiesGround()) {
+                game.batch.draw(level.ground, body.getPosition().x, body.getPosition().y - (10 / Endless.PPM),
+                        level.getGroundLengthD2() * 2 / Endless.PPM, 13 / Endless.PPM);
+            }
+        }
+
         player.draw(game.batch);
 
-        game.batch.draw(pausebtnInactive, gamecam.position.x - 0.1f, gamecam.position.y + 0.7f,
-                PAUSE_WIDTH, PAUSE_HEIGHT);
+        game.batch.draw(healthBarContainer, gamecam.position.x - 1.8f, gamecam.position.y + 0.7f,
+                1.5f, PAUSE_HEIGHT);
 
+        game.batch.draw(blank, gamecam.position.x - 1.4f, gamecam.position.y + 0.78f,
+                health, 0.15f);
+
+        //PAUSE BUTTON HANDLING
+        if((mouseInWorld2D.x > gamecam.position.x - 0.1f && mouseInWorld2D.x < gamecam.position.x - 0.1f + PAUSE_WIDTH)&&
+                (mouseInWorld2D.y > gamecam.position.y + 0.6f && mouseInWorld2D.y < gamecam.position.y + 0.6f + PAUSE_HEIGHT)){
+            isPaused = true;
+        }
+
+        //PAUSE MENU
+        if(isPaused){
+            game.batch.draw(pausebtnActive, gamecam.position.x - 0.1f, gamecam.position.y + 0.7f,
+                    PAUSE_WIDTH, PAUSE_HEIGHT);
+            game.batch.draw(menuContainer, gamecam.position.x - 1f, gamecam.position.y - 1f,
+                    2f, 2f);
+            //health -= 0.01f;
+            // RESUME BUTTON
+            if((mouseInWorld2D.x > gamecam.position.x - 0.5f && mouseInWorld2D.x < gamecam.position.x - 0.5f +(1)) &&
+                    (mouseInWorld2D.y > gamecam.position.y + 0.36f && mouseInWorld2D.y < gamecam.position.y + 0.36f + 0.3f)
+            ){
+                isPaused = false;
+            }
+            // RESTART BUTTON
+            if((mouseInWorld2D.x > gamecam.position.x - 0.5f && mouseInWorld2D.x < gamecam.position.x - 0.5f +(1)) &&
+                    (mouseInWorld2D.y > gamecam.position.y && mouseInWorld2D.y < gamecam.position.y + 0.3f)
+            ){
+                game.batch.end();
+                this.game.setScreen(new PlayScreen(this.game, this.manager));
+                return;
+            }
+            //EXIT BUTTON
+            if((mouseInWorld2D.x > gamecam.position.x - 0.5f && mouseInWorld2D.x < gamecam.position.x - 0.5f +(1)) &&
+                    (mouseInWorld2D.y > gamecam.position.y - 0.76f && mouseInWorld2D.y < gamecam.position.y - 0.76f + 0.3f)
+            ){
+                Gdx.app.exit();
+            }
+
+        }
+        else{
+            game.batch.draw(pausebtnInactive, gamecam.position.x - 0.1f, gamecam.position.y + 0.7f,
+                    PAUSE_WIDTH, PAUSE_HEIGHT);
+            isPaused = false;
+        }
+
+
+
+<<<<<<< HEAD
         game.batch.draw(coinHudIcon, gamecam.position.x + 2f, gamecam.position.y + 1f, PAUSE_WIDTH, PAUSE_HEIGHT);
 
         if(player.health == 3){
@@ -399,20 +484,26 @@ public class PlayScreen implements Screen {
             isPaused = false;
         }
 
+=======
+>>>>>>> 7093d7aedd4de743f2fbc83c81e24b87351700d9
 
         // Conditions to GAME OVER:
         // 1 - the player falls,
         // 2 - the health goes 0.
         // feel free to add what you want in this IF STATEMENT.
+<<<<<<< HEAD
         if(player.currentState == DEAD || player.health == 0){
+=======
+        if(player.getState().toString() == Player.State.DEAD.toString() || health <= 0){
+>>>>>>> 7093d7aedd4de743f2fbc83c81e24b87351700d9
             game.batch.end();
-            pause();
-            game.setScreen(new GameOverScreen(this.game, this.manager, getHud(), game.batch));
+            game.setScreen(new GameOverScreen(this.game, this.manager, hud.score, game.batch));
             return;
         }
 
+        //game.batch.draw('player', (int)playerX, (int)playerY);
+        //player.draw(game.batch);
         game.batch.end();
-
         //game.batch.setProjectionMatrix(stage.getCamera().combined);
 
     }
@@ -522,8 +613,6 @@ public class PlayScreen implements Screen {
     public World getWorld() {
         return world;
     }
-
-    public Hud getHud(){return hud;}
 
     public Screen getScreen() {return this; }
 
